@@ -1,6 +1,5 @@
-numpy
-MDAnalysis
-nglview
-matplotlib.pyplot
-pandas
-streamlit
+numpy>=1.0
+MDAnalysis>=2.0
+nglview>=3.0
+matplotlib.pyplot>=0.1
+pandas>=1.3

@@ -266,7 +266,7 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
     ### hole analysis ###
     aligned_path = path
     fig, ax = plt.subplots()
-    plt.title(r'HOLE ' + title, fontsize=f_size)
+    plt.title(title, fontsize=f_size)
     colors = ['black', 'blue', 'orange', 'purple','green','red','gray', 'brown',
               'cyan', 'violet', 'olive', 'peru', 'slategray',
     ]
@@ -296,9 +296,9 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
 
     ax.tick_params(axis='both', which='major', labelsize=f_size)
     if legend_outside:
-        plt.legend(prop={'size': 10},  loc='upper center', bbox_to_anchor=(1.4,1.0), frameon=False)
+        plt.legend(prop={'size': f_size},  loc='upper center', bbox_to_anchor=(1.4,1.0), frameon=False)
     else:
-        ax.legend(prop={'size': 10}, loc='upper left') # loc='upper center'
+        ax.legend(prop={'size': f_size}, loc='upper left') # loc='upper center'
         fig.tight_layout()
     fig.savefig(path + save[:-1] +'HOLE_pathwayprofile.png', bbox_inches='tight')
     #df.to_csv(outpath + '/Pathway_HOLE_comparison_pdb.csv', sep=',', index=False, header=True)

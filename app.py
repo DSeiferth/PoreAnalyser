@@ -32,7 +32,17 @@ st.pyplot(fig)
 
 uploaded_files = st.file_uploader("Choose a file", label_visibility="visible",  accept_multiple_files=True )
 
+labels = []
+names = []
 if uploaded_files:
    for uploaded_file in uploaded_files:
        st.write("Filename: ", uploaded_file.name)
+       labels.append(uploaded_file.name)
+       names.append(uploaded_file.name)
 
+    fig = hole_analysis.analysis(names, labels=labels, path='', 
+                             end_radius=15, save='Uploaded', title='', typ='pdb',
+                       legend_outside=True
+                       )
+
+    st.pyplot(fig)

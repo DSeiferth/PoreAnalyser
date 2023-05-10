@@ -30,7 +30,7 @@ fig = hole_analysis.analysis(names, labels=labels, path=path_save+dirs[0],
 
 st.pyplot(fig)
 
-uploaded_file = st.file_uploader("Choose a file", label_visibility="visible",  accept_multiple_files=True )
+uploaded_files = st.file_uploader("Choose a file", label_visibility="visible",  accept_multiple_files=True )
 
 if uploaded_files:
    for uploaded_file in uploaded_files:

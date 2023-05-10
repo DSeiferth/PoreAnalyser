@@ -255,9 +255,9 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
             ref.atoms.write(path+names[0]+'.pdb')
     else:
         for i in range(1, len(names)):
-            conf =  path + names[i] + '.'+typ
+            conf =  path + names[i] #+ '.'+typ
             top = conf
-            u = MDAnalysis.Universe(top, conf, topology_format=typ, format=typ)
+            u = MDAnalysis.Universe(top, conf,) #topology_format=typ, format=typ)
             print('align', names[i], 'with', names[0], 'as reference')
             print('TMD_lower', TMD_lower, 'TMD_higher', TMD_higher)
             align_and_write(universe=u, reference=ref, names=[names[i] ,names[0]],
@@ -273,8 +273,8 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
               'cyan', 'violet', 'olive', 'peru', 'slategray',
     ]
     for i in range(len(names)):
-        midpoints, means = hole_analysis(name=names[i]+'.pdb', path=aligned_path,
-                                                  typ='pdb', end_radius=end_radius, sel=sel)
+        midpoints, means = hole_analysis(name=names[i]+'.pdb', path=aligned_path, #typ='pdb',
+                                                end_radius=end_radius, sel=sel)
         rmin = min(means)
         ax.plot(midpoints, means, color=colors[i],
                 label=labels[i] + r' R$_{min}$ = '+str(round(rmin,2)) + r'$\AA$')

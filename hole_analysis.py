@@ -291,7 +291,7 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
 
     y1 = 0.0
     y2 = 20
-    ax.set_ylim([y1,y2])
+    #ax.set_ylim([y1,y2])
     xlim = ax.get_xlim()
     ax.plot(xlim, [1.15,1.15], '--',color='red') # label=r'r < 1.15 $\AA$'
     ax.plot(xlim, [2.3,2.3], '--',color='green') # label=r'r < 2.30 $\AA$'

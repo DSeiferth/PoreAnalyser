@@ -22,7 +22,7 @@ names = [
 ]
 
 fig = hole_analysis.analysis(names, labels=labels, path=path_save+dirs[0], 
-                             end_radius=20, 
+                             end_radius=15, 
                        #TMD_lower=59, TMD_higher=97,
                         save='', title=titles[0], typ='pdb',
                        legend_outside=True
@@ -39,5 +39,5 @@ if uploaded_files:
        st.write("Filename: ", uploaded_file.name)
        labels.append(uploaded_file.name)
        names.append(uploaded_file.name)
-    fig = hole_analysis.analysis(names, labels=labels, path='', end_radius=15, save='Uploaded', title='', typ='pdb', legend_outside=True)
+    fig = hole_analysis.analysis(names, labels=labels, path='', end_radius=15, save='Uploaded', title='', typ='pdb',legend_outside=True)
     st.pyplot(fig)

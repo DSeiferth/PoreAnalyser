@@ -1,0 +1,2 @@
+hole2/hole filter=lfs diff=lfs merge=lfs -text
+hole2/sph_process filter=lfs diff=lfs merge=lfs -text

@@ -21,9 +21,11 @@ names = [
     #'8fe1', # 'GlyR-Gly-Ivm'
 ]
 
-hole_analysis.analysis(names, labels=labels, path=path_save+dirs[0], 
+fig = hole_analysis.analysis(names, labels=labels, path=path_save+dirs[0], 
                              end_radius=20, 
                        #TMD_lower=59, TMD_higher=97,
                         save='', title=titles[0], typ='pdb',
                        legend_outside=True
                        )
+
+st.pyplot(fig)

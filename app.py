@@ -42,5 +42,5 @@ if uploaded_files:
         names.append(uploaded_file.name)
         with open(uploaded_file.name,"wb") as f:
             f.write(uploaded_file.getbuffer())
-    fig = hole_analysis.analysis(names, labels=labels, path='tempDir/', end_radius=15, save='Uploaded', title='',legend_outside=True)
+    fig = hole_analysis.analysis(names, labels=labels, path='', end_radius=15, save='Uploaded', title='',legend_outside=True)
     st.pyplot(fig)

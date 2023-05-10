@@ -1,5 +1,6 @@
 import streamlit as st
 import hole_analysis as hole_analysis
+import os
 
 x = st.slider('Select a value')
 st.write(x, 'squared is', x * x)

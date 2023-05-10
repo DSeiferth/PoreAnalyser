@@ -1,6 +1,6 @@
 import streamlit as st
 import hole_analysis as hole_analysis
-import os
+#import os
 
 x = st.slider('Select a value')
 st.write(x, 'squared is', x * x)
@@ -40,7 +40,7 @@ if uploaded_files:
         st.write("Filename: ", uploaded_file.name)
         labels.append(uploaded_file.name)
         names.append(uploaded_file.name)
-        with open(os.path.join("tempDir",uploaded_file.name),"wb") as f:
+        with open(uploaded_file.name,"wb") as f:
             f.write(uploaded_file.getbuffer())
     fig = hole_analysis.analysis(names, labels=labels, path='tempDir/', end_radius=15, save='Uploaded', title='',legend_outside=True)
     st.pyplot(fig)

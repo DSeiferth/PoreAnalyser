@@ -33,14 +33,3 @@ st.pyplot(fig)
 
 uploaded_files = st.file_uploader("Choose a file", label_visibility="visible",  accept_multiple_files=True )
 
-labels = []
-names = []
-if uploaded_files:
-    for uploaded_file in uploaded_files:
-        st.write("Filename: ", uploaded_file.name)
-        labels.append(uploaded_file.name)
-        names.append(uploaded_file.name)
-        with open(uploaded_file.name,"wb") as f:
-            f.write(uploaded_file.getbuffer())
-    fig = hole_analysis.analysis(names, labels=labels, path='tempDir/', end_radius=15, save='Uploaded', title='',legend_outside=True)
-    st.pyplot(fig)

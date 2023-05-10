@@ -40,7 +40,7 @@ if uploaded_files:
        labels.append(uploaded_file.name)
        names.append(uploaded_file.name)
 
-    fig = hole_analysis.analysis(names, labels=labels, path='', 
+    fig = hole_analysis.analysis(names, labels=labels, path='',
                              end_radius=15, save='Uploaded', title='', typ='pdb',
                        legend_outside=True
                        )

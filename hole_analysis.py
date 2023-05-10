@@ -96,11 +96,13 @@ def visualise_aligned(names, path):
     v = nv.show_mdanalysis(mer.atoms)
     return v
 
-def hole_analysis(name, path, typ='pdb', end_radius=20, sel='protein'):
+#def hole_analysis(name, path, typ='pdb', end_radius=20, sel='protein'):
+def hole_analysis(name, path, end_radius=20, sel='protein'):
     tmpdir = path #+ 'tmpdir/'
     conf = path + name
     top = conf
-    sys = MDAnalysis.Universe(top, conf, topology_format=typ, format=typ)
+    sys = MDAnalysis.Universe(top, conf) 
+    #topology_format=typ, format=typ)
     ha2 = hole2.HoleAnalysis(
                                 sys, select=sel,
                                 cpoint='center_of_geometry',
@@ -228,7 +230,7 @@ def visualisation(name , path='/biggin/b198/orie4254/Documents/CHAP/', out=0,
     return v
 
 def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_radius=15,
-            TMD_lower=0, TMD_higher=0, save='', title='', typ='gro', sel='protein', legend_outside=False):
+            TMD_lower=0, TMD_higher=0, save='', title='', sel='protein', legend_outside=False):
     ### Downloading pdb models ###
     #for name in names:
     #    ! wget 'https://files.rcsb.org/download/'$name'.pdb1'
@@ -236,11 +238,11 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
     #    ! cp $name'.pdb1' $path
 
     ### align model ###
-    conf =  path + names[0] +'.'+ typ
+    conf =  path + names[0] 
     print('conf', conf)
     #! ls $conf
     top = conf
-    ref = MDAnalysis.Universe(top, conf, topology_format=typ, format=typ)
+    ref = MDAnalysis.Universe(top, conf,) # topology_format=typ, format=typ)
 
     if len(names) == 1 :
         print('ref', len(ref.atoms),ref)

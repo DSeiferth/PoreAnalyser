@@ -3,13 +3,22 @@ import hole_analysis as hole_analysis
 #import os
 
 st.title("Pore Analysis with HOLE")
-#st.header("this is the markdown")
 #st.latex(r''' a+a r^1+a r^2+a r^3 ''')
 
 #x = st.slider('Select a value')
 #st.write(x, 'squared is', x * x)
 
 st.write("HOLE is a program that allows the analysis and visualisation of the pore dimensions of the holes through molecular structures of ion channels Smart et al., 1996.")
+
+st.header("Pathway Finding Settings")
+string1 = 'Radius in Å, which is considered to be the end of the pore.'
+string2 = 'This keyword can be used to specify the radius above '
+string3 = 'which the program regards a result as indicating that the end of the pore has been reached. '
+string4 = 'This may need to be increased for large channels, or reduced for small channels.'
+end_radius = st.text_input(label=r'end_radius in $\AA$', value='15', max_chars=3,
+              help=string1+string2+string3+string4)
+end_radius = int(end_radius)
+st.write('The current end_radius is', end_radius, r'$\AA$')
 
 st.subheader("Upload pdb file(s)")
 uploaded_files = st.file_uploader("Choose a file", label_visibility="visible",  accept_multiple_files=True )
@@ -18,14 +27,14 @@ labels = []
 names = []
 if uploaded_files:
     for uploaded_file in uploaded_files:
-        st.write("Filename: ", uploaded_file.name)
+        #st.write("Filename: ", uploaded_file.name)
         labels.append(uploaded_file.name)
         names.append(uploaded_file.name)
         with open(uploaded_file.name,"wb") as f:
             f.write(uploaded_file.getbuffer())
-    st.write('Uploaded', names)
+    #st.write('Uploaded', names)
     try:
-        fig = hole_analysis.analysis(names, labels=labels, path='', end_radius=15, save='Uploaded', title='',legend_outside=True)
+        fig = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, save='Uploaded', title='',legend_outside=True)
         st.pyplot(fig)
     except:
         st.write('ERROR with', names)
@@ -47,7 +56,7 @@ else:
         #'8fe1.pdb', # 'GlyR-Gly-Ivm'
     ]
     fig = hole_analysis.analysis(names, labels=labels, path=path_save+dirs[0], 
-                             end_radius=15, 
+                             end_radius=end_radius, 
                        #TMD_lower=59, TMD_higher=97,
                         save='', title=titles[0], 
                        legend_outside=True

@@ -11,7 +11,7 @@ def convert_df(df):
 st.title("Pore Analysis with HOLE")
 #st.latex(r''' a+a r^1+a r^2+a r^3 ''')
 
-string1 = "HOLE is a program that allows the analysis and visualisation of the pore dimensions of the holes"
+string1 = "HOLE is a program that allows the analysis and visualisation of the pore dimensions of the holes "
 string2 = "through molecular structures of ion channels Smart et al., 1996."
 st.write(string1+string2)
 
@@ -33,7 +33,10 @@ string2 = r'The dashed green line indicates where there is room for a single wat
 st.write(string1+string2)
 plot_lines = st.text_input(label='Plot red and green lines (default: True)', value='True', max_chars=5,
               help=string1+string2)
-plot_lines = bool(plot_lines)
+if plot_lines == 'True':
+    plot_lines = True
+else:
+    plot_lines = False
 title = st.text_input(label='Write a title for your plot', value='', help='Title string for plot')
 f_size = st.text_input(label='Font size for figure', value='22', help='default=22')
 f_size = int(f_size)

@@ -56,7 +56,7 @@ if uploaded_files:
             mime='text/csv',
         )
         buffer = io.BytesIO() # Create an in-memory buffer
-        img.save(buffer, format=fig_format)
+        fig.save(buffer, format=fig_format)
         byte_im = buffer.getvalue()
         # Save the figure as a pdf to the buffer
         #fig.write_image(file=buffer, format=fig_format) # 'Figure' object has no attribute 'write_image'

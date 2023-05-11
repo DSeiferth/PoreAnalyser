@@ -2,6 +2,7 @@ import streamlit as st
 import hole_analysis as hole_analysis
 #import os
 import io
+import plotly.graph_objects as go
 
 @st.cache_data
 def convert_df(df):
@@ -25,8 +26,8 @@ end_radius = st.text_input(label=r'end_radius in $\AA$', value='15', max_chars=3
               help=string1+string2+string3+string4)
 end_radius = int(end_radius)
 st.write('The current end_radius is', end_radius, r'$\AA$')
-fig_format = st.text_input(label='Format to download pathway figure', value='png', max_chars=3,
-              help='default png')
+fig_format = st.text_input(label='Format to download pathway figure', value='pdf', max_chars=3,
+              help='default pdf')
 
 st.subheader("Upload pdb file(s)")
 uploaded_files = st.file_uploader("Choose a file", label_visibility="visible",  accept_multiple_files=True )
@@ -60,7 +61,7 @@ if uploaded_files:
             label="Download figure",
             data=buffer,
             file_name="hole_pathway_profile."+fig_format,
-            #mime="application/pdf",
+            mime="application/pdf",
         )
     except:
         st.write('ERROR with', names)

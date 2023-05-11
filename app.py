@@ -2,7 +2,6 @@ import streamlit as st
 import hole_analysis as hole_analysis
 #import os
 import io
-import plotly.graph_objects as go
 
 @st.cache_data
 def convert_df(df):
@@ -11,9 +10,6 @@ def convert_df(df):
 
 st.title("Pore Analysis with HOLE")
 #st.latex(r''' a+a r^1+a r^2+a r^3 ''')
-
-#x = st.slider('Select a value')
-#st.write(x, 'squared is', x * x)
 
 st.write("HOLE is a program that allows the analysis and visualisation of the pore dimensions of the holes through molecular structures of ion channels Smart et al., 1996.")
 
@@ -42,9 +38,7 @@ if uploaded_files:
         with open(uploaded_file.name,"wb") as f:
             f.write(uploaded_file.getbuffer())
     #st.write('Uploaded', names)
-    bla=1
-    if bla:
-    #try:
+    try:
         fig , df = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, save='Uploaded', title='',legend_outside=True)
         st.pyplot(fig)
         #st.write("pathway ", df)
@@ -58,17 +52,13 @@ if uploaded_files:
         fn ="hole_pathway_profile."+fig_format
         img = io.BytesIO() # Create an in-memory buffer
         fig.savefig(img, format=fig_format)
-        #byte_im = buffer.getvalue()
-        # Save the figure as a pdf to the buffer
-        #fig.write_image(file=buffer, format=fig_format) # 'Figure' object has no attribute 'write_image'
-        # Download the pdf from the buffer
         st.download_button(
             label="Download figure",
             data=img,
             file_name=fn,
             mime="image/"+fig_format
         )
-    #except:
+    except:
         st.write('ERROR with', names)
 else:
     st.markdown("Example application with 7tu9")

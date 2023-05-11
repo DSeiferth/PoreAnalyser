@@ -4,4 +4,3 @@ nglview>=3.0
 matplotlib>=0.1
 pandas>=1.3
 streamlit>=1.0
-plotly 

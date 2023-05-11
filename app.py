@@ -42,7 +42,9 @@ if uploaded_files:
         with open(uploaded_file.name,"wb") as f:
             f.write(uploaded_file.getbuffer())
     #st.write('Uploaded', names)
-    try:
+    bla=1
+    if bla:
+    #try:
         fig , df = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, save='Uploaded', title='',legend_outside=True)
         st.pyplot(fig)
         #st.write("pathway ", df)
@@ -63,7 +65,7 @@ if uploaded_files:
             file_name="hole_pathway_profile."+fig_format,
             mime="application/pdf",
         )
-    except:
+    #except:
         st.write('ERROR with', names)
 else:
     st.markdown("Example application with 7tu9")

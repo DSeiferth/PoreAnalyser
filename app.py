@@ -25,7 +25,18 @@ st.write('The current end_radius is', end_radius, r'$\AA$')
 fig_format = st.text_input(label='Format to download pathway figure', value='png', max_chars=4,
               help='default png')
 
-st.subheader("Upload pdb file(s)")
+st.subheader("Plotting options")
+string1 = r'The dashed red line indicates where the pore radius is to tight for a water molecule (r < 1.15 $\AA$). '
+string2 = r'The dashed green line indicates where there is room for a single water (r < 2.30 $\AA$).'
+st.write(string1+string2)
+plot_lines = st.text_input(label='Plot red and green lines (default: True)', value='True', max_chars=5,
+              help=string1+string2)
+plot_lines = bool(plot_lines)
+title = st.text_input(label='Write a title for your plot', value='', help='Title string for plot')
+f_size = st.text_input(label='Font size for figure', value='22', help='default=22')
+f_size = int(f_size)
+
+st.header("Upload pdb file(s)")
 uploaded_files = st.file_uploader("Choose a file", label_visibility="visible",  accept_multiple_files=True )
 
 labels = []
@@ -39,7 +50,8 @@ if uploaded_files:
             f.write(uploaded_file.getbuffer())
     #st.write('Uploaded', names)
     try:
-        fig , df = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, save='Uploaded', title='',legend_outside=True)
+        fig , df = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, save='Uploaded', title=title,
+                                          legend_outside=True, plot_line=plot_line, f_size=f_size)
         st.pyplot(fig)
         #st.write("pathway ", df)
         csv = convert_df(df)
@@ -51,7 +63,7 @@ if uploaded_files:
         )
         fn ="hole_pathway_profile."+fig_format
         img = io.BytesIO() # Create an in-memory buffer
-        fig.savefig(img, format=fig_format)
+        fig.savefig(img, format=fig_format, , bbox_inches='tight')
         st.download_button(
             label="Download figure",
             data=img,
@@ -81,7 +93,9 @@ else:
                              end_radius=end_radius, 
                        #TMD_lower=59, TMD_higher=97,
                         save='', title=titles[0], 
-                       legend_outside=True
+                       legend_outside=True,
+                       plot_line=plot_line,
+                       f_size=f_size
                        )
 
     st.pyplot(fig)

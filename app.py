@@ -3,7 +3,7 @@ import hole_analysis as hole_analysis
 #import os
 
 st.title("Pore Analysis with HOLE")
-st.header("this is the markdown")
+#st.header("this is the markdown")
 #st.latex(r''' a+a r^1+a r^2+a r^3 ''')
 
 #x = st.slider('Select a value')
@@ -23,8 +23,12 @@ if uploaded_files:
         names.append(uploaded_file.name)
         with open(uploaded_file.name,"wb") as f:
             f.write(uploaded_file.getbuffer())
-    fig = hole_analysis.analysis(names, labels=labels, path='', end_radius=15, save='Uploaded', title='',legend_outside=True)
-    st.pyplot(fig)
+    st.write('Uploaded', names)
+    try:
+        fig = hole_analysis.analysis(names, labels=labels, path='', end_radius=15, save='Uploaded', title='',legend_outside=True)
+        st.pyplot(fig)
+    except:
+        st.write('ERROR with', names)
 else:
     st.markdown("Example application with 7tu9")
     st.write("Example Filename: ", "pdb_models/7tu9.pdb")

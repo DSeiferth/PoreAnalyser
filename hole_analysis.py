@@ -156,7 +156,8 @@ def hole_analysis(name, path, end_radius=20, sel='protein'):
 #                  num_circle=24, TMD_higher=0,  TMD_lower=0, end_radius=15):
     
 def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_radius=15,
-            TMD_lower=0, TMD_higher=0, save='', title='', sel='protein', legend_outside=False):
+            TMD_lower=0, TMD_higher=0, save='', title='', sel='protein', legend_outside=False, 
+            plot_line=True, f_size=18):
     """
     Perform hole analysis on one or more PDB files and plot the results.
 
@@ -249,8 +250,9 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
     y2 = 20
     #ax.set_ylim([y1,y2])
     xlim = ax.get_xlim()
-    ax.plot(xlim, [1.15,1.15], '--',color='red') # label=r'r < 1.15 $\AA$'
-    ax.plot(xlim, [2.3,2.3], '--',color='green') # label=r'r < 2.30 $\AA$'
+    if plot_line:
+        ax.plot(xlim, [1.15,1.15], '--',color='red') # label=r'r < 1.15 $\AA$'
+        ax.plot(xlim, [2.3,2.3], '--',color='green') # label=r'r < 2.30 $\AA$'
 
     ax.tick_params(axis='both', which='major', labelsize=f_size)
     if legend_outside:

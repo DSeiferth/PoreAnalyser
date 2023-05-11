@@ -34,8 +34,9 @@ if uploaded_files:
             f.write(uploaded_file.getbuffer())
     #st.write('Uploaded', names)
     try:
-        fig ,csv = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, save='Uploaded', title='',legend_outside=True)
+        fig , csv = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, save='Uploaded', title='',legend_outside=True)
         st.pyplot(fig)
+        st.write("pathway ", csv)
         st.download_button(
             label="Download pathway profile as CSV",
             data=csv,

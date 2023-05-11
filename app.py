@@ -96,7 +96,7 @@ else:
                        #TMD_lower=59, TMD_higher=97,
                         save='', title=titles[0], 
                        legend_outside=True,
-                       plot_line=plot_line,
+                       plot_lines=plot_lines,
                        f_size=f_size
                        )
 

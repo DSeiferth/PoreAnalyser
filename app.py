@@ -11,9 +11,11 @@ def convert_df(df):
 st.title("Pore Analysis with HOLE")
 #st.latex(r''' a+a r^1+a r^2+a r^3 ''')
 
-st.write("HOLE is a program that allows the analysis and visualisation of the pore dimensions of the holes through molecular structures of ion channels Smart et al., 1996.")
+string1 = "HOLE is a program that allows the analysis and visualisation of the pore dimensions of the holes"
+string2 = "through molecular structures of ion channels Smart et al., 1996."
+st.write(string1+string2)
 
-st.header("Pathway Finding Settings")
+st.subheader("Pathway Finding Settings")
 string1 = 'Radius in Å, which is considered to be the end of the pore. '
 string2 = 'This keyword can be used to specify the radius above '
 string3 = 'which the program regards a result as indicating that the end of the pore has been reached. '
@@ -22,10 +24,10 @@ end_radius = st.text_input(label=r'end_radius in $\AA$', value='15', max_chars=3
               help=string1+string2+string3+string4)
 end_radius = int(end_radius)
 st.write('The current end_radius is', end_radius, r'$\AA$')
-fig_format = st.text_input(label='Format to download pathway figure', value='png', max_chars=4,
-              help='default png')
 
 st.subheader("Plotting options")
+fig_format = st.text_input(label='Format to download pathway figure', value='png', max_chars=4,
+              help='default png')
 string1 = r'The dashed red line indicates where the pore radius is to tight for a water molecule (r < 1.15 $\AA$). '
 string2 = r'The dashed green line indicates where there is room for a single water (r < 2.30 $\AA$).'
 st.write(string1+string2)
@@ -63,7 +65,7 @@ if uploaded_files:
         )
         fn ="hole_pathway_profile."+fig_format
         img = io.BytesIO() # Create an in-memory buffer
-        fig.savefig(img, format=fig_format, , bbox_inches='tight')
+        fig.savefig(img, format=fig_format, bbox_inches='tight')
         st.download_button(
             label="Download figure",
             data=img,
@@ -102,3 +104,4 @@ else:
 
 
 st.write("Smart, O.S., Neduvelil, J.G., Wang, X., Wallace, B.A., Sansom, M.S.P., 1996. HOLE: A program for the analysis of the pore dimensions of ion channel structural models. Journal of Molecular Graphics 14, 354–360. https://doi.org/10.1016/S0263-7855(97)00009-X")
+st.write("Gowers, R., Linke, M., Barnoud, J., Reddy, T., Melo, M., Seyler, S., Domański, J., Dotson, D., Buchoux, S., Kenney, I., Beckstein, O., 2016. MDAnalysis: A Python Package for the Rapid Analysis of Molecular Dynamics Simulations. Presented at the Python in Science Conference, Austin, Texas, pp. 98–105. https://doi.org/10.25080/Majora-629e541a-00e")

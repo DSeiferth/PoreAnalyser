@@ -11,10 +11,10 @@ st.title("Pore Analysis with HOLE")
 st.write("HOLE is a program that allows the analysis and visualisation of the pore dimensions of the holes through molecular structures of ion channels Smart et al., 1996.")
 
 st.header("Pathway Finding Settings")
-string1 = 'Radius in Å, which is considered to be the end of the pore.'
+string1 = 'Radius in Å, which is considered to be the end of the pore. '
 string2 = 'This keyword can be used to specify the radius above '
 string3 = 'which the program regards a result as indicating that the end of the pore has been reached. '
-string4 = 'This may need to be increased for large channels, or reduced for small channels.'
+string4 = 'This may need to be increased for large channels, or reduced for small channels. '
 end_radius = st.text_input(label=r'end_radius in $\AA$', value='15', max_chars=3,
               help=string1+string2+string3+string4)
 end_radius = int(end_radius)
@@ -34,8 +34,14 @@ if uploaded_files:
             f.write(uploaded_file.getbuffer())
     #st.write('Uploaded', names)
     try:
-        fig = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, save='Uploaded', title='',legend_outside=True)
+        fig ,csv = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, save='Uploaded', title='',legend_outside=True)
         st.pyplot(fig)
+        st.download_button(
+            label="Download pathway profile as CSV",
+            data=csv,
+            file_name='hole_pathway_profile.csv',
+            mime='text/csv',
+        )
     except:
         st.write('ERROR with', names)
 else:
@@ -55,7 +61,7 @@ else:
         #'7tvi.pdb', #'GlyR-Gly',
         #'8fe1.pdb', # 'GlyR-Gly-Ivm'
     ]
-    fig = hole_analysis.analysis(names, labels=labels, path=path_save+dirs[0], 
+    fig ,csv = hole_analysis.analysis(names, labels=labels, path=path_save+dirs[0], 
                              end_radius=end_radius, 
                        #TMD_lower=59, TMD_higher=97,
                         save='', title=titles[0], 

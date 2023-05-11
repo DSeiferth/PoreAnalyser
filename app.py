@@ -41,7 +41,7 @@ if uploaded_files:
     try:
         fig , df = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, save='Uploaded', title='',legend_outside=True)
         st.pyplot(fig)
-        st.write("pathway ", csv)
+        st.write("pathway ", df)
         csv = convert_df(df)
         st.download_button(
             label="Download pathway profile as CSV",

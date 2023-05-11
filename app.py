@@ -26,8 +26,8 @@ end_radius = st.text_input(label=r'end_radius in $\AA$', value='15', max_chars=3
               help=string1+string2+string3+string4)
 end_radius = int(end_radius)
 st.write('The current end_radius is', end_radius, r'$\AA$')
-fig_format = st.text_input(label='Format to download pathway figure', value='pdf', max_chars=3,
-              help='default pdf')
+fig_format = st.text_input(label='Format to download pathway figure', value='png', max_chars=4,
+              help='default png')
 
 st.subheader("Upload pdb file(s)")
 uploaded_files = st.file_uploader("Choose a file", label_visibility="visible",  accept_multiple_files=True )
@@ -56,14 +56,17 @@ if uploaded_files:
             mime='text/csv',
         )
         buffer = io.BytesIO() # Create an in-memory buffer
+        img.save(buffer, format=fig_format)
+        byte_im = buffer.getvalue()
         # Save the figure as a pdf to the buffer
-        fig.write_image(file=buffer, format=fig_format)
+        #fig.write_image(file=buffer, format=fig_format) # 'Figure' object has no attribute 'write_image'
         # Download the pdf from the buffer
         st.download_button(
             label="Download figure",
-            data=buffer,
+            data=byte_im,
             file_name="hole_pathway_profile."+fig_format,
-            mime="application/pdf",
+            #mime="application/pdf",
+            mime="image/"+fig_format
         )
     #except:
         st.write('ERROR with', names)

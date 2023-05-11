@@ -336,4 +336,4 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
         except:
             print('ERROR with', name, 'no SPH file generated')
     #return pathway
-    return fig
+    return fig, csv

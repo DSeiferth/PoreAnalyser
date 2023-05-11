@@ -53,7 +53,7 @@ if uploaded_files:
     #st.write('Uploaded', names)
     try:
         fig , df = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, save='Uploaded', title=title,
-                                          legend_outside=True, plot_line=plot_line, f_size=f_size)
+                                          legend_outside=True, plot_lines=plot_lines, f_size=f_size)
         st.pyplot(fig)
         #st.write("pathway ", df)
         csv = convert_df(df)

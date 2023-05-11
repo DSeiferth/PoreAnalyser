@@ -1,8 +1,9 @@
 import streamlit as st
 import hole_analysis as hole_analysis
 #import os
+import io
 
-@st.cache
+@st.cache_data
 def convert_df(df):
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
     return df.to_csv().encode('utf-8')
@@ -24,6 +25,8 @@ end_radius = st.text_input(label=r'end_radius in $\AA$', value='15', max_chars=3
               help=string1+string2+string3+string4)
 end_radius = int(end_radius)
 st.write('The current end_radius is', end_radius, r'$\AA$')
+fig_format = st.text_input(label='Format to download pathway figure', value='png', max_chars=3,
+              help='default png')
 
 st.subheader("Upload pdb file(s)")
 uploaded_files = st.file_uploader("Choose a file", label_visibility="visible",  accept_multiple_files=True )
@@ -41,13 +44,23 @@ if uploaded_files:
     try:
         fig , df = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, save='Uploaded', title='',legend_outside=True)
         st.pyplot(fig)
-        st.write("pathway ", df)
+        #st.write("pathway ", df)
         csv = convert_df(df)
         st.download_button(
             label="Download pathway profile as CSV",
             data=csv,
             file_name='hole_pathway_profile.csv',
             mime='text/csv',
+        )
+        buffer = io.BytesIO() # Create an in-memory buffer
+        # Save the figure as a pdf to the buffer
+        fig.write_image(file=buffer, format=fig_format)
+        # Download the pdf from the buffer
+        st.download_button(
+            label="Download figure",
+            data=buffer,
+            file_name="hole_pathway_profile."+fig_format,
+            #mime="application/pdf",
         )
     except:
         st.write('ERROR with', names)

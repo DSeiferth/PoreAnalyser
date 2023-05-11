@@ -55,17 +55,17 @@ if uploaded_files:
             file_name='hole_pathway_profile.csv',
             mime='text/csv',
         )
-        buffer = io.BytesIO() # Create an in-memory buffer
-        fig.save(buffer, format=fig_format)
+        fn ="hole_pathway_profile."+fig_format
+        img = io.BytesIO() # Create an in-memory buffer
+        fig.savefig(img, format=fig_format)
         byte_im = buffer.getvalue()
         # Save the figure as a pdf to the buffer
         #fig.write_image(file=buffer, format=fig_format) # 'Figure' object has no attribute 'write_image'
         # Download the pdf from the buffer
         st.download_button(
             label="Download figure",
-            data=byte_im,
-            file_name="hole_pathway_profile."+fig_format,
-            #mime="application/pdf",
+            data=img,
+            file_name=fn,
             mime="image/"+fig_format
         )
     #except:

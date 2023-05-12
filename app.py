@@ -1,6 +1,6 @@
 import streamlit as st
 import hole_analysis as hole_analysis
-#import os
+import os
 import io
 
 @st.cache_data
@@ -14,7 +14,7 @@ st.title("Pore Analysis with HOLE")
 string1 = "HOLE is a program that allows the analysis and visualisation of the pore dimensions of the holes "
 string2 = "through molecular structures of ion channels (Smart et al., 1996)."
 st.write(string1+string2)
-string1 = "Here we use, the MDAnalysis interface for HOLE to analyse an ion channel pore or transporter pathway. "
+string1 = "Here, we use the MDAnalysis interface for HOLE to analyse an ion channel pore or transporter pathway. "
 string2 = "The original HOLE documentation can be found here: https://www.holeprogram.org"
 st.write(string1+string2)
 
@@ -108,6 +108,6 @@ else:
 
     st.pyplot(fig)
 
-
+st.write(os.listdir())
 st.write("Smart, O.S., Neduvelil, J.G., Wang, X., Wallace, B.A., Sansom, M.S.P., 1996. HOLE: A program for the analysis of the pore dimensions of ion channel structural models. Journal of Molecular Graphics 14, 354–360. https://doi.org/10.1016/S0263-7855(97)00009-X")
 st.write("Gowers, R., Linke, M., Barnoud, J., Reddy, T., Melo, M., Seyler, S., Domański, J., Dotson, D., Buchoux, S., Kenney, I., Beckstein, O., 2016. MDAnalysis: A Python Package for the Rapid Analysis of Molecular Dynamics Simulations. Presented at the Python in Science Conference, Austin, Texas, pp. 98–105. https://doi.org/10.25080/Majora-629e541a-00e")

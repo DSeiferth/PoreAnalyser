@@ -62,6 +62,7 @@ if uploaded_files:
                                           legend_outside=True, plot_lines=plot_lines, f_size=f_size)
         st.pyplot(fig)
         #st.write("pathway ", df)
+        st.header("Download output files")
         csv = convert_df(df)
         st.download_button(
             label="Download pathway profile as CSV",
@@ -79,20 +80,22 @@ if uploaded_files:
             mime="image/"+fig_format
         )
         ### download vmd file ###
-        st.download_button(
-            label="Download vmd pathway visualisation",
-            data=uploaded_file.name+'.pdb.vmd',
-            file_name=uploaded_file.name+'.vmd',
-            #mime='text/csv',
-        )
+        with open(uploaded_file.name+'.pdb.vmd', "rb") as file:
+            st.download_button(
+                label="Download vmd pathway visualisation",
+                data=file,
+                file_name=uploaded_file.name+'.vmd',
+                help="usage: vmd -e visualise_pathway_hole.tcl -args  "+uploaded_file.name+" "+uploaded_file.name+".vmd"
+                #mime='text/csv',
+            )
     except:
         st.write('ERROR with', names)
-    file1 = open(uploaded_file.name+'.pdb.vmd', 'r')
-    count = 0
-    for line in file1:
-        count += 1
-        print("Line{}: {}".format(count, line.strip()))
-    file1.close()
+    #file1 = open(uploaded_file.name+'.pdb.vmd', 'r')
+    #count = 0
+    #for line in file1:
+    #    count += 1
+    #    print("Line{}: {}".format(count, line.strip()))
+    #file1.close()
 else:
     st.markdown("Example application with 7tu9")
     st.write("Example Filename: ", "pdb_models/7tu9.pdb")
@@ -121,6 +124,14 @@ else:
 
     st.pyplot(fig)
 
-st.write(os.listdir())
+#st.write(os.listdir())
+with open('visualisation_script/visualise_pathway_hole.tcl', "rb") as file:
+            st.download_button(
+                label="Download vmd visualisation TCL script (you need the corresponding pdb and vmd file)",
+                data=file,
+                file_name=visualise_pathway_hole.tcl,
+                help="usage: vmd -e visualise_pathway_hole.tcl -args  fname.pdb fname.pdb.vmd"
+                #mime='text/csv',
+            )
 st.write("Smart, O.S., Neduvelil, J.G., Wang, X., Wallace, B.A., Sansom, M.S.P., 1996. HOLE: A program for the analysis of the pore dimensions of ion channel structural models. Journal of Molecular Graphics 14, 354–360. https://doi.org/10.1016/S0263-7855(97)00009-X")
 st.write("Gowers, R., Linke, M., Barnoud, J., Reddy, T., Melo, M., Seyler, S., Domański, J., Dotson, D., Buchoux, S., Kenney, I., Beckstein, O., 2016. MDAnalysis: A Python Package for the Rapid Analysis of Molecular Dynamics Simulations. Presented at the Python in Science Conference, Austin, Texas, pp. 98–105. https://doi.org/10.25080/Majora-629e541a-00e")

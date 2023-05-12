@@ -79,10 +79,6 @@ if uploaded_files:
             mime="image/"+fig_format
         )
         ### download vmd file ###
-        file1 = open(uploaded_file.name+'.pdb.vmd', 'r')
-        for line in file1:
-            print("Line{}: {}".format(count, line.strip()))
-        file1.close()
         st.download_button(
             label="Download vmd pathway visualisation",
             data=uploaded_file.name+'.pdb.vmd',
@@ -91,6 +87,10 @@ if uploaded_files:
         )
     except:
         st.write('ERROR with', names)
+    file1 = open(uploaded_file.name+'.pdb.vmd', 'r')
+    for line in file1:
+        print("Line{}: {}".format(count, line.strip()))
+    file1.close()
 else:
     st.markdown("Example application with 7tu9")
     st.write("Example Filename: ", "pdb_models/7tu9.pdb")

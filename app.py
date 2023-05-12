@@ -88,7 +88,9 @@ if uploaded_files:
     except:
         st.write('ERROR with', names)
     file1 = open(uploaded_file.name+'.pdb.vmd', 'r')
+    count = 0
     for line in file1:
+        count += 1
         print("Line{}: {}".format(count, line.strip()))
     file1.close()
 else:

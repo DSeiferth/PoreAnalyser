@@ -12,7 +12,10 @@ st.title("Pore Analysis with HOLE")
 #st.latex(r''' a+a r^1+a r^2+a r^3 ''')
 
 string1 = "HOLE is a program that allows the analysis and visualisation of the pore dimensions of the holes "
-string2 = "through molecular structures of ion channels Smart et al., 1996."
+string2 = "through molecular structures of ion channels (Smart et al., 1996)."
+st.write(string1+string2)
+string1 = "Here we use, the MDAnalysis interface for HOLE to analyse an ion channel pore or transporter pathway. "
+string2 = "The original HOLE documentation can be found here: https://www.holeprogram.org"
 st.write(string1+string2)
 
 st.subheader("Pathway Finding Settings")
@@ -27,7 +30,7 @@ st.write('The current end_radius is', end_radius, r'$\AA$')
 
 st.subheader("Plotting options")
 fig_format = st.text_input(label='Format to download pathway figure', value='png', max_chars=4,
-              help='default png')
+              help='default: png, other options: jpeg, tiff, eps, pdf, ...')
 string1 = r'The dashed red line indicates where the pore radius is to tight for a water molecule (r < 1.15 $\AA$). '
 string2 = r'The dashed green line indicates where there is room for a single water (r < 2.30 $\AA$).'
 st.write(string1+string2)

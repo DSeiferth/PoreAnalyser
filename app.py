@@ -129,7 +129,7 @@ with open('visualisation_script/visualise_pathway_hole.tcl', "rb") as file:
             st.download_button(
                 label="Download vmd visualisation TCL script (you need the corresponding pdb and vmd file)",
                 data=file,
-                file_name=visualise_pathway_hole.tcl,
+                file_name="visualise_pathway_hole.tcl",
                 help="usage: vmd -e visualise_pathway_hole.tcl -args  fname.pdb fname.pdb.vmd"
                 #mime='text/csv',
             )

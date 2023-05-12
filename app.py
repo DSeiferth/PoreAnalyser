@@ -78,6 +78,13 @@ if uploaded_files:
             file_name=fn,
             mime="image/"+fig_format
         )
+        ### download vmd file ###
+        st.download_button(
+            label="Download vmd pathway visualisation",
+            data=uploaded_file.name+'.pdb.vmd',
+            file_name=uploaded_file.name+'.vmd',
+            #mime='text/csv',
+        )
     except:
         st.write('ERROR with', names)
 else:

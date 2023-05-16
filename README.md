@@ -14,7 +14,7 @@ license: mit
 example: uploaded_file.name = '7tu9.pdb'
 - uploaded_file.name: uploaded pdb file
 - uploaded_file.name+".pdb.vmd": vmd surface for uploaded pdb file
-- "visualise_pathway_hole.tcl": vmd script for plotting the pore surface; the script can be used in the following way: "vmd -e visualise_pathway_hole.tcl -args  7tu9.pdb 7tu9.pdb.vmd"
+- "visualise_pathway_hole.tcl": vmd script for plotting the pore surface; the script can be used in the following way: "vmd -e visualise_pathway_hole.tcl -args  7tu9.pdb 7tu9.pdb.pdb.vmd"
 - uploaded_file.name + '_circle.pdb': point cloud for pore surface
 - "hole_pathway_profile.csv": A DataFrame containing the results of the hole analysis, with the following columns:
         - 'Label z [A]': the z-coordinate of each point along the pore axis.

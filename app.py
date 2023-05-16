@@ -7,6 +7,7 @@ from stmol import showmol
 import py3Dmol
 import numpy as np
 from visualization import write_pdb_with_pore_surface
+from zipfile import ZipFile
 
 @st.cache_data
 def convert_df(df):
@@ -74,7 +75,7 @@ if uploaded_files:
         xyzview = py3Dmol.view(height=800, width=800,) 
         xyzview.addModelsAsFrames(system)
         xyzview.setStyle({'model': -1}, {"cartoon": {'color': 'spectrum'}})
-        with open(path_save + names[0] + '_ellipsoid.pdb') as ifile:
+        with open(path_save + names[0] + '_circle.pdb') as ifile:
             sph2 = "".join([x for x in ifile])
         xyzview.addModelsAsFrames(sph2)
         xyzview.addSurface(py3Dmol.SES,{'opacity':0.9,'color':'lightblue'}, {'model': -1})
@@ -82,6 +83,27 @@ if uploaded_files:
         showmol(xyzview, height=800, width=800)
 
         st.header("Download output files")
+        df.to_csv('hole_pathway_profile.csv',sep=',')
+        # To zip entire directory use command “shutil.make_archive(“name”,”zip”, root_dir)
+        # To select the files to zip use command “ZipFile.write(filename)”
+        # shutil.make_archive('', 'zip', dir_name)
+        with ZipFile("poreFinding_output.zip", "w") as newzip:
+            newzip.write(uploaded_file.name+'.pdb.vmd')
+            newzip.write("visualise_pathway_hole.tcl")
+            newzip.write(path_save + names[0] + '_circle.pdb')
+            newzip.write(uploaded_file.name)
+            newzip.write("README.md")
+            newzip.write("hole.out")
+            newzip.write('hole_pathway_profile.csv)
+        with open("poreFinding_output.zip", "rb") as file:
+            st.download_button(
+                label="Download ZIP",
+                data=file,
+                file_name="poreFinding_output.zip",
+                help="usage: vmd -e visualise_pathway_hole.tcl -args  "+uploaded_file.name+" "+uploaded_file.name+".vmd"
+                #mime='text/csv',
+            )
+
         csv = convert_df(df)
         st.download_button(
             label="Download pathway profile as CSV",
@@ -155,7 +177,7 @@ else:
             sph = "".join([x for x in ifile])
         xyzview.addModelsAsFrames(sph)
         #xyzview.setStyle({'model': -1},{'sphere':{'colorscheme':'orangeCarbon'}})
-    with open(path_save + names[0] + '_ellipsoid.pdb') as ifile:
+    with open(path_save + names[0] + '_circle.pdb') as ifile:
         sph2 = "".join([x for x in ifile])
     xyzview.addModelsAsFrames(sph2)
     xyzview.addSurface(py3Dmol.SES,{'opacity':0.9,'color':'lightblue'}, {'model': -1})
@@ -164,7 +186,7 @@ else:
 
 
 #st.write(os.listdir())
-with open('visualisation_script/visualise_pathway_hole.tcl', "rb") as file:
+with open('visualise_pathway_hole.tcl', "rb") as file:
             st.download_button(
                 label="Download vmd visualisation TCL script (you need the corresponding pdb and vmd file)",
                 data=file,

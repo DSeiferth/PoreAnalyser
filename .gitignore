@@ -2,3 +2,9 @@
 *out
 *vmd
 *old
+*sph
+*png
+*.pdb.pdb
+*.pdb_ellipsoid.pdb
+__pycache__/*
+*.rad

@@ -35,4 +35,4 @@ def write_pdb_with_pore_surface(path='', name='', end_radius=15, num_circle = 24
     #assert coord_array.shape == (n_atoms, 1)
     sol2.atoms.positions = coord_array
     sel = sol2.select_atoms('name *')
-    sel.write(path + name + '_ellipsoid.pdb')
+    sel.write(path + name + '_circle.pdb')

@@ -5,6 +5,7 @@
 *sph
 *png
 *.pdb.pdb
-*.pdb_ellipsoid.pdb
+*.pdb_circle.pdb
 __pycache__/*
 *.rad
+*zip

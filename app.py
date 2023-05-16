@@ -2,6 +2,11 @@ import streamlit as st
 import hole_analysis as hole_analysis
 import os
 import io
+import MDAnalysis
+from stmol import showmol
+import py3Dmol
+import numpy as np
+from visualization import write_pdb_with_pore_surface
 
 @st.cache_data
 def convert_df(df):
@@ -61,7 +66,21 @@ if uploaded_files:
         fig , df = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, save='Uploaded', title=title,
                                           legend_outside=True, plot_lines=plot_lines, f_size=f_size)
         st.pyplot(fig)
-        #st.write("pathway ", df)
+        path_save = ''
+        st.write("Pathway visualisation for ", names[0])
+        write_pdb_with_pore_surface(path=path_save, name=names[0], end_radius=end_radius, num_circle = 24)
+        with open(path_save+names[0]) as ifile:
+            system = "".join([x for x in ifile])
+        xyzview = py3Dmol.view(height=800, width=800,) 
+        xyzview.addModelsAsFrames(system)
+        xyzview.setStyle({'model': -1}, {"cartoon": {'color': 'spectrum'}})
+        with open(path_save + names[0] + '_ellipsoid.pdb') as ifile:
+            sph2 = "".join([x for x in ifile])
+        xyzview.addModelsAsFrames(sph2)
+        xyzview.addSurface(py3Dmol.SES,{'opacity':0.9,'color':'lightblue'}, {'model': -1})
+        xyzview.zoomTo()
+        showmol(xyzview, height=800, width=800)
+
         st.header("Download output files")
         csv = convert_df(df)
         st.download_button(
@@ -100,7 +119,6 @@ else:
     st.markdown("Example application with 7tu9")
     st.write("Example Filename: ", "pdb_models/7tu9.pdb")
     path_save = 'pdb_models/'
-    dirs = ['']
     titles = [r'$\alpha$$\beta$ Heteromeric Glycine Receptor']
 
     labels = [
@@ -113,7 +131,7 @@ else:
         #'7tvi.pdb', #'GlyR-Gly',
         #'8fe1.pdb', # 'GlyR-Gly-Ivm'
     ]
-    fig ,csv = hole_analysis.analysis(names, labels=labels, path=path_save+dirs[0], 
+    fig ,csv = hole_analysis.analysis(names, labels=labels, path=path_save, 
                              end_radius=end_radius, 
                        #TMD_lower=59, TMD_higher=97,
                         save='', title=titles[0], 
@@ -123,6 +141,27 @@ else:
                        )
 
     st.pyplot(fig)
+    write_pdb_with_pore_surface(path=path_save, name=names[0], end_radius=end_radius, num_circle = 24)
+    # https://github.com/napoles-uach/stmol
+    # https://william-dawson.github.io/using-py3dmol.html
+    with open(path_save+names[0]) as ifile:
+        system = "".join([x for x in ifile])
+    xyzview = py3Dmol.view(height=800, width=800,) 
+    xyzview.addModelsAsFrames(system)
+    xyzview.setStyle({'model': -1}, {"cartoon": {'color': 'spectrum'}})
+    visu_center_line = False
+    if visu_center_line:
+        with open(path_save+names[0]+".sph") as ifile:
+            sph = "".join([x for x in ifile])
+        xyzview.addModelsAsFrames(sph)
+        #xyzview.setStyle({'model': -1},{'sphere':{'colorscheme':'orangeCarbon'}})
+    with open(path_save + names[0] + '_ellipsoid.pdb') as ifile:
+        sph2 = "".join([x for x in ifile])
+    xyzview.addModelsAsFrames(sph2)
+    xyzview.addSurface(py3Dmol.SES,{'opacity':0.9,'color':'lightblue'}, {'model': -1})
+    xyzview.zoomTo()
+    showmol(xyzview, height=800, width=800)
+
 
 #st.write(os.listdir())
 with open('visualisation_script/visualise_pathway_hole.tcl', "rb") as file:
@@ -135,3 +174,4 @@ with open('visualisation_script/visualise_pathway_hole.tcl', "rb") as file:
             )
 st.write("Smart, O.S., Neduvelil, J.G., Wang, X., Wallace, B.A., Sansom, M.S.P., 1996. HOLE: A program for the analysis of the pore dimensions of ion channel structural models. Journal of Molecular Graphics 14, 354–360. https://doi.org/10.1016/S0263-7855(97)00009-X")
 st.write("Gowers, R., Linke, M., Barnoud, J., Reddy, T., Melo, M., Seyler, S., Domański, J., Dotson, D., Buchoux, S., Kenney, I., Beckstein, O., 2016. MDAnalysis: A Python Package for the Rapid Analysis of Molecular Dynamics Simulations. Presented at the Python in Science Conference, Austin, Texas, pp. 98–105. https://doi.org/10.25080/Majora-629e541a-00e")
+

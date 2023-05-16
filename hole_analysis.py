@@ -277,13 +277,14 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
                 path = path + '/PROD/'
                 #!cp $path/prod.pdb .
                 name = 'prod'
+            print('pdbfile=path+name', path+name)
             ha2 =  hole2.hole(
-                    pdbfile=name +'.pdb',
+                    pdbfile=path+name ,#+'.pdb',
                     #cpoint='center_of_geometry',
                     executable=hole_exe,
                     #tmpdir=path,
                     #sph_process=sph_proc,
-                    sphpdb_file=name+'.sph',
+                    sphpdb_file=path+name+'.sph',
                     end_radius=end_radius,
                     keep_files=True
             )

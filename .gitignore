@@ -9,3 +9,5 @@
 __pycache__/*
 *.rad
 *zip
+*csv
+*tcl

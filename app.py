@@ -9,6 +9,10 @@ import numpy as np
 from visualization import write_pdb_with_pore_surface
 from zipfile import ZipFile
 
+import multiprocessing as mp
+print("Number of processors: ", mp.cpu_count())
+st.write("Number of processors: ", mp.cpu_count())
+
 @st.cache_data
 def convert_df(df):
     # IMPORTANT: Cache the conversion to prevent computation on every rerun

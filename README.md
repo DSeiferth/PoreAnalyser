@@ -22,6 +22,7 @@ example: uploaded_file.name = '7tu9.pdb'
         'Label' corresponds to the labels provided in the `labels` parameter in the hole_analysis.analysis() function.
 - "README.md"
 - "hole.out": HOLE output
+- "hole_pathway_profile."+fig_format: pathway profile figure in desired format
 
 ## Notes
 

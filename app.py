@@ -84,6 +84,8 @@ if uploaded_files:
 
         st.header("Download output files")
         df.to_csv('hole_pathway_profile.csv',sep=',')
+        fn ="hole_pathway_profile."+fig_format
+        fig.savefig(fn, format=fig_format, bbox_inches='tight')
         # To zip entire directory use command “shutil.make_archive(“name”,”zip”, root_dir)
         # To select the files to zip use command “ZipFile.write(filename)”
         # shutil.make_archive('', 'zip', dir_name)
@@ -94,7 +96,8 @@ if uploaded_files:
             newzip.write(uploaded_file.name)
             newzip.write("README.md")
             newzip.write("hole.out")
-            newzip.write('hole_pathway_profile.csv)
+            newzip.write('hole_pathway_profile.csv')
+            newzip.write(fn)
         with open("poreFinding_output.zip", "rb") as file:
             st.download_button(
                 label="Download ZIP",

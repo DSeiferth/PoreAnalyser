@@ -266,7 +266,7 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
     ### visualise pathway ###
     pathways = []
     for count, name in enumerate(names):
-        try:
+        #try:
             print(name, '### visualise pathway ###')
             if count<2:
                 #! echo $path/{name}.pdb
@@ -284,7 +284,7 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
                     executable=hole_exe,
                     #tmpdir=path,
                     #sph_process=sph_proc,
-                    sphpdb_file=path+name+'.sph',
+                    sphpdb_file=path+name[:-4]+".sph",
                     end_radius=end_radius,
                     keep_files=True
             )
@@ -292,7 +292,7 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
             #pathways.append(pathway)
             #! mv {name}.sph $path
             #! rm {name}.pdb
-        except:
-            print('ERROR with', name, 'no SPH file generated')
+        #except:
+        #    print('ERROR with', name, 'no SPH file generated')
     #return pathway
     return fig, df

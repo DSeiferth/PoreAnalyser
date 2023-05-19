@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import py3Dmol
+import streamlit as st
 
 def write_pdb_with_pore_surface(path='', name='', end_radius=15, num_circle = 24):
     conf = path + name[:-4] + '.sph'
@@ -76,3 +77,13 @@ def pathway_visu(path, name):
     xyzview.addSurface(py3Dmol.SES,{'opacity':0.9,'color':'lightblue'}, {'model': -1})
     xyzview.zoomTo()
     return xyzview
+
+def st_write_ellipsoid():
+    st.subheader("Path finding with ellipsoidal probe particle")
+    string1 = '1. Load HOLE output file with positions and radii of probes.\n'
+    string2 = '2. Loop through all spherical probe particles:\n'
+    string3 = 'a) Ellipsoid initialized with spherical probe particle parameters from HOLE output.\n'
+    string4 = 'b) First Nelder-Mead 4-dim optimization to insert ellipsoid with smaller bounds for parameters [x, y, r1, θ ].\n'
+    string5 = 'c) Second optimization with larger boundaries for parameters to further increase ellipsoid.\n'
+    string6 = 'The loop takes around 60s to complete...'
+    st.write(string1+string2+string3+string4+string5+string6)

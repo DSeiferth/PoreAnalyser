@@ -56,13 +56,14 @@ def neighbor_vec(universe, probe, probe1, n_xy_fac, out=0, call=0):
     protein = universe.select_atoms('protein')
     start_neighbors = time.time()
     n_xy = n_xy_fac*probe.r 
+    if out: print('n_xy', n_xy, 'probe.r', probe.r)
     n_z = 2
     string_x = 'prop abs x >'+str(probe.x-n_xy) + ' and prop abs x<'+str(probe.x+n_xy)
     string_y = 'prop abs y >'+str(probe.y-n_xy) + ' and prop abs y<'+str(probe.y+n_xy)
     string_z = 'prop abs z >'+str(probe.z-n_z) + ' and prop abs z<'+str(probe.z+n_z)
     select = string_x + ' and ' + string_y + ' and ' + string_z 
     if out: print(select)
-    neighbors = universe.select_atoms('group id1 and '+ select, id1=protein, id2=probe1)
+    neighbors = universe.select_atoms('group id1 and '+ select, id1=protein)
     end = time.time()
     if out: print("TIME(start_neighbors)=",end - start_neighbors)
     if out:  print('number of neighbors' ,len(neighbors))
@@ -85,14 +86,14 @@ def neighbor_vec(universe, probe, probe1, n_xy_fac, out=0, call=0):
     if len(a_vec)>150 and call<4:
         if out: print('DECREASE n_xy_fac')
         call += 1
-        a_vec, neighbour_labels = neighbor_vec(universe, probe, probe1, 0.75*n_xy_fac,
-                                              call=call)
+        return neighbor_vec(universe, probe, probe1, 0.75*n_xy_fac,
+                                              call=call, out=out)
         print('number of neighbors with R>0' ,len(a_vec), 'n_xy_fac', 0.75*n_xy_fac)
     elif len(a_vec)<30 and call<4:
         if out: print('INCREASE n_xy_fac')
         call += 1 
-        a_vec, neighbour_labels = neighbor_vec(universe, probe, probe1, 1.25*n_xy_fac,
-                                              call=call)
+        return neighbor_vec(universe, probe, probe1, 1.25*n_xy_fac,
+                                              call=call, out=out)
         if out: print('number of neighbors with R>0' ,len(a_vec), 'n_xy_fac', 1.25*n_xy_fac)
         #return -1, -1
     
@@ -154,8 +155,8 @@ def insert_ellipse(index, dataframe, universe,
     initial_radius = dataframe['r'].loc[index]
 
     ### neighbor vector ###
-    a_vec, neighbour_labels = neighbor_vec(universe, probe, probe1, n_xy_fac)
-    assert len(a_vec)>2, "in function 'insert_ellipse': len(a_vec)<2 (neighbor vector of probe particle)"
+    a_vec, neighbour_labels = neighbor_vec(universe, probe, probe1, n_xy_fac, out=out)
+    assert len(a_vec)>2, "in function 'insert_ellipse': len(a_vec)<2="+str(len(a_vec))
 
     fig, ax = plt.subplots()
     plt.gca().set_aspect('equal', adjustable='box')
@@ -349,7 +350,8 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
                       timeout=20,
                       start_index = 50,
                       f_size = 22,
-                      out = 0
+                      out = 0,
+                      n_xy_fac = 1.6
 
                      ):
     """Generate ellipsoids to represent the pore path of a biomolecule.
@@ -478,7 +480,8 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
         start_time = time.time()
         results = insert_ellipse_async(index=vec, dataframe=df2, universe=mer, 
                                        out=out, plt_path=p+pdb_name+'_pathway_slices_parallel2/',
-                                       num_processes=num_processes, timeout=timeout
+                                       num_processes=num_processes, timeout=timeout,
+                                       n_xy_fac=n_xy_fac
                                       )   
         #print(results)
         

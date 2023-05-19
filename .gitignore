@@ -6,7 +6,8 @@
 *png
 *.pdb.pdb
 *.pdb_circle.pdb
-*__pycache__/*
+__pycache__/*
+ProbeParticleEllipsoid/__pycache__/*
 *.rad
 *zip
 *csv

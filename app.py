@@ -73,7 +73,7 @@ if uploaded_files:
         with open(uploaded_file.name,"wb") as f:
             f.write(uploaded_file.getbuffer())
     #st.write('Uploaded', names)
-    try:
+    #try:
         fig , df = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, save='Uploaded', title=title,
                                           legend_outside=True, plot_lines=plot_lines, f_size=f_size)
         st.pyplot(fig)
@@ -106,8 +106,8 @@ if uploaded_files:
         df_res.sort_values('z', inplace=True)
         fig = plt_ellipsoid_pathway(df_res, f_size=f_size, title=title, end_radius=end_radius)
         st.pyplot(fig)
-    except:
-        st.write('ERROR with', names)
+    #except:
+    #    st.write('ERROR with', names)
 else:
     st.markdown("Example application with 7tu9")
     st.write("Example Filename: ", "pdb_models/7tu9.pdb")

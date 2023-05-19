@@ -65,49 +65,50 @@ uploaded_files = st.file_uploader("Choose a file", label_visibility="visible",  
 
 labels = []
 names = []
+names_aligned = []
 if uploaded_files:
     for uploaded_file in uploaded_files:
         #st.write("Filename: ", uploaded_file.name)
-        labels.append(uploaded_file.name)
+        labels.append(uploaded_file.name[:-4])
         names.append(uploaded_file.name)
+        names_aligned.append(uploaded_file.name[:4]+'_aligned_z.pdb')
         with open(uploaded_file.name,"wb") as f:
             f.write(uploaded_file.getbuffer())
     #st.write('Uploaded', names)
-    #try:
-        fig , df = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, save='Uploaded', title=title,
-                                          legend_outside=True, plot_lines=plot_lines, f_size=f_size)
-        st.pyplot(fig)
-        path_save = ''
-        st.write("Pathway visualisation for ", names[0])
-        write_pdb_with_pore_surface(path=path_save, name=names[0], end_radius=end_radius, num_circle = 24)
-        xyzview = pathway_visu(path=path_save, name=names[0])
-        showmol(xyzview, height=800, width=800)
+    fig , df = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, save='Uploaded', title=title,
+                                            legend_outside=True, plot_lines=plot_lines, f_size=f_size)
+    st.pyplot(fig)
+    path_save = ''
+    st.write("Pathway visualisation for ", names[0])
+    write_pdb_with_pore_surface(path=path_save, name=names[0], end_radius=end_radius, num_circle = 24)
+    xyzview = pathway_visu(path=path_save, name=names[0])
+    showmol(xyzview, height=800, width=800)
 
-        st.header("Download output files")
-        df.to_csv('hole_pathway_profile.csv',sep=',')
-        fn ="hole_pathway_profile."+fig_format
-        fig.savefig(fn, format=fig_format, bbox_inches='tight')
-        
-        download_output(uploaded_file, fn, df, fig, fig_format, path_save, names )
+    st.header("Download HOLE output files")
+    df.to_csv('hole_pathway_profile.csv',sep=',')
+    fn ="hole_pathway_profile."+fig_format
+    fig.savefig(fn, format=fig_format, bbox_inches='tight')
+    ### Download ###
+    download_output(names_aligned[0][:-4], fn, df, fig, fig_format, path_save, names )
 
-        ### Elipsoid ###
-        ellipsoid_pathway(p=path_save, 
-                          pdb_name = uploaded_file.name, 
-                          sph_name = uploaded_file.name[:-4], 
-                          slice_dz=4, parallel=True, 
-                          num_processes=12, timeout=6, 
-                          start_index = 1, end_radius=end_radius-1,
-                          out = 0,
-                          n_xy_fac = 1.6
-                 )
-        res = np.loadtxt(path_save + uploaded_file.name + '_pathway_ellipse_parallel2.txt', 
-                 comments='#', delimiter=',')
-        df_res = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
-        df_res.sort_values('z', inplace=True)
-        fig = plt_ellipsoid_pathway(df_res, f_size=f_size, title=title, end_radius=end_radius)
-        st.pyplot(fig)
-    #except:
-    #    st.write('ERROR with', names)
+    ### Elipsoid ###
+    ellipsoid_pathway(p=path_save, 
+                        pdb_name = names_aligned[0], 
+                        sph_name = names_aligned[0][:-4], 
+                        slice_dz=4, parallel=True, 
+                        num_processes=12, timeout=6, 
+                        start_index = 1, end_radius=end_radius-1,
+                        out = 0,
+                        n_xy_fac = 1.6
+                    )
+    res = np.loadtxt(path_save + names_aligned[0]+ '_pathway_ellipse_parallel2.txt', 
+                    comments='#', delimiter=',')
+    df_res = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
+    df_res.sort_values('z', inplace=True)
+    fig = plt_ellipsoid_pathway(df_res, f_size=f_size, title=title, end_radius=end_radius)
+    st.pyplot(fig)
+
+    #st.write('ERROR with', names)
 else:
     st.markdown("Example application with 7tu9")
     st.write("Example Filename: ", "pdb_models/7tu9.pdb")

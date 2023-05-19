@@ -8,16 +8,16 @@ def convert_df(df):
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
     return df.to_csv().encode('utf-8')
 
-def download_output(uploaded_file, fn, df, fig, fig_format,
+def download_output(pdb_name, fn, df, fig, fig_format,
                     path_save, names ):
     # To zip entire directory use command “shutil.make_archive(“name”,”zip”, root_dir)
     # To select the files to zip use command “ZipFile.write(filename)”
     # shutil.make_archive('', 'zip', dir_name)
     with ZipFile("poreFinding_output.zip", "w") as newzip:
-            newzip.write(uploaded_file.name+'.pdb.vmd')
+            newzip.write(pdb_name+'.vmd')
             newzip.write("visualise_pathway_hole.tcl")
             newzip.write(path_save + names[0] + '_circle.pdb')
-            newzip.write(uploaded_file.name)
+            newzip.write(pdb_name+'.pdb')
             newzip.write("README.md")
             newzip.write("hole.out")
             newzip.write('hole_pathway_profile.csv')
@@ -27,7 +27,7 @@ def download_output(uploaded_file, fn, df, fig, fig_format,
                 label="Download ZIP",
                 data=file,
                 file_name="poreFinding_output.zip",
-                help="usage: vmd -e visualise_pathway_hole.tcl -args  "+uploaded_file.name+" "+uploaded_file.name+".vmd"
+                help="usage: vmd -e visualise_pathway_hole.tcl -args  "+pdb_name+" "+pdb_name+".vmd"
                 #mime='text/csv',
             )
 
@@ -48,11 +48,10 @@ def download_output(uploaded_file, fn, df, fig, fig_format,
             mime="image/"+fig_format
         )
     ### download vmd file ###
-    with open(uploaded_file.name+'.pdb.vmd', "rb") as file:
-            st.download_button(
-                label="Download vmd pathway visualisation",
+    with open(pdb_name+'.vmd', "rb") as file:
+        st.download_button(
+              label="Download vmd pathway visualisation",
                 data=file,
-                file_name=uploaded_file.name+'.vmd',
-                help="usage: vmd -e visualise_pathway_hole.tcl -args  "+uploaded_file.name+" "+uploaded_file.name+".vmd"
-                #mime='text/csv',
-            )
+                file_name=pdb_name+'.vmd',
+                help="usage: vmd -e visualise_pathway_hole.tcl -args  "+pdb_name+" "+pdb_name+".vmd"
+        )

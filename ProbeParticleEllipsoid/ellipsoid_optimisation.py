@@ -409,7 +409,7 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
     top = conf
     sph = MDAnalysis.Universe(top, conf, topology_format='pdb', format='pdb') # tpr_resid_from_one=True
 
-    conf =  p + pdb_name + '.pdb'
+    conf =  p + pdb_name 
     top = conf
     u = MDAnalysis.Universe(top, conf, topology_format='pdb', format='pdb')
 

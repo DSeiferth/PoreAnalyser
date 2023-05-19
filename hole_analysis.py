@@ -12,100 +12,29 @@ f_size = 18
 
 import warnings; warnings.simplefilter('ignore')
 
-from MDAnalysis.analysis import align
-def align_and_write(universe, reference, names, out_path,
-                   TMD_lower=0, TMD_higher=0):
+def align_to_z(p, pdb_name):
     """
-    Aligns the `universe` structure to the `reference` structure using the `alignto` method of `MDAnalysis`.
-    Writes the aligned structures to `out_path` with the names specified in `names`.
-    
-    Args:
-    universe (MDAnalysis Universe object): The structure to be aligned.
-    reference (MDAnalysis Universe object): The reference structure to align to.
-    names (list of str): A list of two strings, where the first string represents the name of the aligned structure and 
-                         the second string represents the name of the reference structure.
-                         names=[names[i] ,names[0]]: 2nd name refers to reference
-    out_path (str): The path where the output files will be written.
-    TMD_lower (int, optional): The lower bound of the transmembrane domain of the protein structure. Default is 0.
-    TMD_higher (int, optional): The upper bound of the transmembrane domain of the protein structure. Default is 0.
-    
-    Returns:
-    tuple: A tuple of `names` and the second element of `rmsds`.
+    rotate the principal axes of the molecule to align with Cartesian coordinate system
     """
-    try:
-        CA_2align = universe.select_atoms('name CA ') #and chainID A and segid seg_0_PROA
-        CA_ref = reference.select_atoms('name CA ') # and chainID A
-        print('calphas model 1, reference (model 0)', len(CA_2align), len(CA_ref))
-        align_IDs = np.unique(CA_2align.resids)
-        ref_IDs = np.unique(CA_ref.resids)
-        mask1 = np.isin(align_IDs, ref_IDs)
-        mask2 = np.isin(ref_IDs, align_IDs)
-        chains = '(chainID A )' # for glycine
-        print(np.unique(align_IDs[mask1] == ref_IDs[mask2]),
-              'number of common c-alphas', len(ref_IDs[mask2]),  len(align_IDs[mask1]))
-        select = 'name CA and ('
-        for i in ref_IDs[mask2]:
-            select = select + 'resid '+str(i) + ' or '
-        select = select + 'resid '+str(ref_IDs[mask2][0])+' ) ' #'and ' + chains
-        sel1 = universe.select_atoms(select)
-        sel2 = reference.select_atoms(select)
-        print('selection in reference', len(sel2), 'selection in structure to be aligned',
-              len(sel1))
-
-        rmsds = align.alignto(universe.atoms,  # mobile
-                          reference.atoms,  # reference
-                          select=select, # selection to operate on
-                          #match_atoms=True # whether to match atoms
-                         )
-        print('returns (old_rmsd, new_rmsd)',rmsds)
-
-        sel1 = 'protein and prop  z<'+str(TMD_higher)
-        sel2 = ' and prop z>'+str(TMD_lower)
-
-        aligned = MDAnalysis.Merge(universe.atoms).select_atoms('protein')
-        if TMD_higher!=0 and TMD_lower!=0 :
-            TM = aligned.select_atoms(sel1+sel2)
-            TM.write(out_path+  names[0]+'.pdb')
-        else:
-            aligned.atoms.write(out_path+  names[0]+'.pdb')
-
-        ref = MDAnalysis.Merge(reference.atoms).select_atoms('protein')
-        if TMD_higher!=0 and TMD_lower!=0 :
-            TM = ref.select_atoms(sel1+sel2)
-            TM.write(out_path+  names[1]+'.pdb')
-        else:
-            ref.atoms.write(out_path+names[1]+'.pdb')
-        print('aligned', names[0], 'with', names[1], 'as reference')
-    except:
-        print('ERROR: Alignment did not work')
-        print('usually the following error:')
-        print('electionError: Reference and trajectory atom selections do not contain the same number of atoms: ')
-        print('Printing the orignal models as pdb')
-        universe.atoms.write(out_path+  names[0]+'.pdb')
-        reference.atoms.write(out_path+names[1]+'.pdb')
-        return names, [0,0,0]
-
-    return names, rmsds[1]
-
-def visualise_aligned(names, path):
-    '''
-    Args:
-    names (list of str): A list of two strings, where the first string represents the name of the aligned structure and 
-                         the second string represents the name of the reference structure.
-    path 
-    Returns:
-    a nglview object
-    '''
-    conf =  path +  names[0] + '.pdb'
+    conf =  p + pdb_name + '.pdb'
     top = conf
-    u = MDAnalysis.Universe(top, conf, topology_format='pdb', format='pdb')
-    conf =  path +  names[1] + '.pdb'
-    top = conf
-    ref = MDAnalysis.Universe(top, conf, topology_format='pdb', format='pdb')
-
-    mer = MDAnalysis.Merge(u.atoms, ref.atoms).select_atoms('protein') #name *
-    v = nv.show_mdanalysis(mer.atoms)
-    return v
+    u = MDAnalysis.Universe(top, conf, ) #topology_format='pdb', format='pdb'
+    protein = u.select_atoms("protein")
+    CA = u.select_atoms("protein and name CA")
+    I = CA.moment_of_inertia()
+    print('moment_of_inertia', I)
+    # https://pythoninchemistry.org/ch40208/comp_chem_methods/moments_of_inertia.html
+    eigenval , eigenvec = np.linalg.eig(I)
+    tranform = np.linalg.inv(eigenvec)
+    # rotate such that principal axis are aligned to Cartesian axis
+    protein.rotate(tranform)
+    # rotate 90 deg around y-axis
+    R_matrix = np.zeros((3,3))
+    R_matrix[0][2] = 1 
+    R_matrix[1][1] = 1 
+    R_matrix[2][0] = -1
+    protein.rotate(R_matrix)
+    protein.write(p + pdb_name + '_aligned_z.pdb')
 
 def hole_analysis(name, path, end_radius=20, sel='protein'):
     """
@@ -141,7 +70,7 @@ def hole_analysis(name, path, end_radius=20, sel='protein'):
     ha2.run(random_seed=31415)
     try:
         #http://minium.com.au/UserGuide/stable/examples/analysis/polymers_and_membranes/hole.html
-        ha2.create_vmd_surface(filename=path+name+'.vmd') #source hole1.vmd
+        ha2.create_vmd_surface(filename=path+name[:-4]+'.vmd') #source hole1.vmd
         print('vmd surface created for', name)
     except:
         print('ERROR: No vmd surface created for', name)
@@ -156,7 +85,7 @@ def hole_analysis(name, path, end_radius=20, sel='protein'):
 #                  num_circle=24, TMD_higher=0,  TMD_lower=0, end_radius=15):
     
 def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_radius=15,
-            TMD_lower=0, TMD_higher=0, save='', title='', sel='protein', legend_outside=False, 
+            save='', title='', sel='protein', legend_outside=False, 
             plot_lines=True, f_size=18):
     """
     Perform hole analysis on one or more PDB files and plot the results.
@@ -172,12 +101,7 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
         Path to the directory containing the PDB files. Default is '/biggin/b198/orie4254/Documents/CHAP/'.
     end_radius : float, optional
         End radius of the HOLE cylinder, in Angstroms. Default is 15.
-    TMD_lower : float, optional
-        Lower bound for the TMD selection, in Angstroms along the z-axis. If both TMD_lower and TMD_higher
-        are non-zero, only atoms within the TMD range will be selected. Default is 0.
-    TMD_higher : float, optional
-        Upper bound for the TMD selection, in Angstroms along the z-axis. If both TMD_lower and TMD_higher
-        are non-zero, only atoms within the TMD range will be selected. Default is 0.
+    
     save : str, optional
         Name of the file to save the plot as (without extension). If not provided, the plot will not be saved.
     title : str, optional
@@ -197,31 +121,10 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
         - 'Label Radius [A]': the radius of the pore at each point.
         'Label' corresponds to the labels provided in the `labels` parameter.
     """
-    ### align model ###
-    conf =  path + names[0] 
-    print('conf', conf)
-    #! ls $conf
-    top = conf
-    ref = MDAnalysis.Universe(top, conf,) 
-
-    if len(names) == 1 :
-        print('ref', len(ref.atoms),ref)
-        if TMD_lower!=0 and TMD_higher!=0:
-            sel1 = 'protein and prop  z<'+str(TMD_higher)
-            sel2 = ' and prop z>'+str(TMD_lower)
-            TM = ref.select_atoms(sel1+sel2)
-            TM.write(path+names[0]+'.pdb')
-        else:
-            ref.atoms.write(path+names[0]+'.pdb')
-    else:
-        for i in range(1, len(names)):
-            conf =  path + names[i] 
-            top = conf
-            u = MDAnalysis.Universe(top, conf,) 
-            print('align', names[i], 'with', names[0], 'as reference')
-            print('TMD_lower', TMD_lower, 'TMD_higher', TMD_higher)
-            align_and_write(universe=u, reference=ref, names=[names[i] ,names[0]],
-                            out_path=path, TMD_lower=TMD_lower, TMD_higher=TMD_higher)
+    
+    for i in range(len(names)):
+         align_to_z(p=path, pdb_name=names[i][:-4])
+         names[i] = names[i][:-4] + '_aligned_z.pdb' 
     ### hole analysis ###
     aligned_path = path
     fig, ax = plt.subplots()
@@ -230,7 +133,7 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
               'cyan', 'violet', 'olive', 'peru', 'slategray',
     ]
     for i in range(len(names)):
-        midpoints, means = hole_analysis(name=names[i]+'.pdb', path=aligned_path, #typ='pdb',
+        midpoints, means = hole_analysis(name=names[i], path=aligned_path, #typ='pdb',
                                                 end_radius=end_radius, sel=sel)
         rmin = min(means)
         ax.plot(midpoints, means, color=colors[i],
@@ -288,11 +191,6 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
                     end_radius=end_radius,
                     keep_files=True
             )
-            #pathway = visualisation(name = names[0], path=path, out=0, end_radius=end_radius )
-            #pathways.append(pathway)
-            #! mv {name}.sph $path
-            #! rm {name}.pdb
         #except:
         #    print('ERROR with', name, 'no SPH file generated')
-    #return pathway
     return fig, df

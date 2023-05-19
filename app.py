@@ -6,12 +6,22 @@ import MDAnalysis
 from stmol import showmol
 import py3Dmol
 import numpy as np
-from visualization import write_pdb_with_pore_surface
+from visualization import write_pdb_with_pore_surface, plt_ellipsoid_pathway, pathway_visu
 from zipfile import ZipFile
 
-import multiprocessing as mp
-print("Number of processors: ", mp.cpu_count())
-#st.write("Number of processors: ", mp.cpu_count())
+try:
+    import multiprocessing 
+    print("Number of processors: ", multiprocessing.cpu_count())
+    #st.write("Number of processors: ", multiprocessing.cpu_count())
+    parallel = True
+except:
+    parallel = False
+    st.write("Could not import multiprocessing library, => multiprocessing disabled")
+import sys
+sys.path.append('ProbeParticleEllipsoid/')
+from ellipsoid_optimisation import ellipsoid_pathway
+import pandas as pd
+import matplotlib.pyplot as plt
 
 @st.cache_data
 def convert_df(df):
@@ -74,16 +84,7 @@ if uploaded_files:
         path_save = ''
         st.write("Pathway visualisation for ", names[0])
         write_pdb_with_pore_surface(path=path_save, name=names[0], end_radius=end_radius, num_circle = 24)
-        with open(path_save+names[0]) as ifile:
-            system = "".join([x for x in ifile])
-        xyzview = py3Dmol.view(height=800, width=800,) 
-        xyzview.addModelsAsFrames(system)
-        xyzview.setStyle({'model': -1}, {"cartoon": {'color': 'spectrum'}})
-        with open(path_save + names[0] + '_circle.pdb') as ifile:
-            sph2 = "".join([x for x in ifile])
-        xyzview.addModelsAsFrames(sph2)
-        xyzview.addSurface(py3Dmol.SES,{'opacity':0.9,'color':'lightblue'}, {'model': -1})
-        xyzview.zoomTo()
+        xyzview = pathway_visu(path=path_save, name=names[0])
         showmol(xyzview, height=800, width=800)
 
         st.header("Download output files")
@@ -138,12 +139,7 @@ if uploaded_files:
             )
     except:
         st.write('ERROR with', names)
-    #file1 = open(uploaded_file.name+'.pdb.vmd', 'r')
-    #count = 0
-    #for line in file1:
-    #    count += 1
-    #    print("Line{}: {}".format(count, line.strip()))
-    #file1.close()
+
 else:
     st.markdown("Example application with 7tu9")
     st.write("Example Filename: ", "pdb_models/7tu9.pdb")
@@ -173,23 +169,16 @@ else:
     write_pdb_with_pore_surface(path=path_save, name=names[0], end_radius=end_radius, num_circle = 24)
     # https://github.com/napoles-uach/stmol
     # https://william-dawson.github.io/using-py3dmol.html
-    with open(path_save+names[0]) as ifile:
-        system = "".join([x for x in ifile])
-    xyzview = py3Dmol.view(height=800, width=800,) 
-    xyzview.addModelsAsFrames(system)
-    xyzview.setStyle({'model': -1}, {"cartoon": {'color': 'spectrum'}})
-    visu_center_line = False
-    if visu_center_line:
-        with open(path_save+names[0]+".sph") as ifile:
-            sph = "".join([x for x in ifile])
-        xyzview.addModelsAsFrames(sph)
-        #xyzview.setStyle({'model': -1},{'sphere':{'colorscheme':'orangeCarbon'}})
-    with open(path_save + names[0] + '_circle.pdb') as ifile:
-        sph2 = "".join([x for x in ifile])
-    xyzview.addModelsAsFrames(sph2)
-    xyzview.addSurface(py3Dmol.SES,{'opacity':0.9,'color':'lightblue'}, {'model': -1})
-    xyzview.zoomTo()
+    xyzview = pathway_visu(path=path_save, name=names[0])
     showmol(xyzview, height=800, width=800)
+
+    ### Ellipsoidal probe particle ###
+    res = np.loadtxt('pdb_models/7tu9.pdb_pathway_ellipse_parallel2.txt', 
+                 comments='#', delimiter=',')
+    df_res = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
+    df_res.sort_values('z', inplace=True)
+    fig = plt_ellipsoid_pathway(df_res, f_size=f_size, title=title, end_radius=end_radius)
+    st.pyplot(fig)
 
 
 #st.write(os.listdir())

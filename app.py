@@ -6,7 +6,7 @@ import MDAnalysis
 from stmol import showmol
 import py3Dmol
 import numpy as np
-from visualization import write_pdb_with_pore_surface, plt_ellipsoid_pathway, pathway_visu
+from visualization import write_pdb_with_pore_surface, plt_ellipsoid_pathway, pathway_visu, st_write_ellipsoid
 from download_files import download_output
 
 try:
@@ -62,6 +62,7 @@ f_size = int(f_size)
 
 st.header("Upload pdb file(s)")
 uploaded_files = st.file_uploader("Choose a file", label_visibility="visible",  accept_multiple_files=True )
+st.write('First, we align the principal axis to the z-axis.')
 
 labels = []
 names = []
@@ -92,6 +93,7 @@ if uploaded_files:
     download_output(names_aligned[0][:-4], fn, df, fig, fig_format, path_save, names )
 
     ### Elipsoid ###
+    st_write_ellipsoid()
     ellipsoid_pathway(p=path_save, 
                         pdb_name = names_aligned[0], 
                         sph_name = names_aligned[0][:-4], 
@@ -142,6 +144,7 @@ else:
     showmol(xyzview, height=800, width=800)
 
     ### Ellipsoidal probe particle ###
+    st_write_ellipsoid()
     res = np.loadtxt('pdb_models/7tu9.pdb_pathway_ellipse_parallel2.txt', 
                  comments='#', delimiter=',')
     df_res = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])

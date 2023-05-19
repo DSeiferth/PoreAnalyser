@@ -13,3 +13,5 @@ ProbeParticleEllipsoid/__pycache__/*
 *csv
 DTP_Poster/*
 *txt
+.nfs*
+*pdb

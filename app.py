@@ -11,7 +11,7 @@ from zipfile import ZipFile
 
 import multiprocessing as mp
 print("Number of processors: ", mp.cpu_count())
-st.write("Number of processors: ", mp.cpu_count())
+#st.write("Number of processors: ", mp.cpu_count())
 
 @st.cache_data
 def convert_df(df):

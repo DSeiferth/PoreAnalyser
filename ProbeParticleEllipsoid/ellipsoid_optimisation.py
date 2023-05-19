@@ -155,6 +155,7 @@ def insert_ellipse(index, dataframe, universe,
 
     ### neighbor vector ###
     a_vec, neighbour_labels = neighbor_vec(universe, probe, probe1, n_xy_fac)
+    assert len(a_vec)>2, "in function 'insert_ellipse': len(a_vec)<2 (neighbor vector of probe particle)"
 
     fig, ax = plt.subplots()
     plt.gca().set_aspect('equal', adjustable='box')
@@ -166,7 +167,7 @@ def insert_ellipse(index, dataframe, universe,
     ax.plot(probe.x,probe.y, '-x', color='blue')
     ### vdw particles ###
     start_neighbors_loop = time.time()
-    prev = neighbour_labels[0]
+    #prev = neighbour_labels[0]
     for count, a in enumerate(a_vec):
         vdw = ellipse(a=a.r, b=a.r, theta=0, cx=a.x, cy=a.y)
         x0, y0 = vdw.draw()
@@ -347,7 +348,8 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
                       num_processes=None, 
                       timeout=20,
                       start_index = 50,
-                      f_size = 22
+                      f_size = 22,
+                      out = 0
 
                      ):
     """Generate ellipsoids to represent the pore path of a biomolecule.
@@ -475,7 +477,7 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
 
         start_time = time.time()
         results = insert_ellipse_async(index=vec, dataframe=df2, universe=mer, 
-                                       out=0, plt_path=p+pdb_name+'_pathway_slices_parallel2/',
+                                       out=out, plt_path=p+pdb_name+'_pathway_slices_parallel2/',
                                        num_processes=num_processes, timeout=timeout
                                       )   
         #print(results)

@@ -58,9 +58,9 @@ def neighbor_vec(universe, probe, probe1, n_xy_fac, out=0, call=0):
     n_xy = n_xy_fac*probe.r 
     if out: print('n_xy', n_xy, 'probe.r', probe.r)
     n_z = 2
-    string_x = 'prop abs x >'+str(probe.x-n_xy) + ' and prop abs x<'+str(probe.x+n_xy)
-    string_y = 'prop abs y >'+str(probe.y-n_xy) + ' and prop abs y<'+str(probe.y+n_xy)
-    string_z = 'prop abs z >'+str(probe.z-n_z) + ' and prop abs z<'+str(probe.z+n_z)
+    string_x = 'prop x >'+str(probe.x-n_xy) + ' and prop x<'+str(probe.x+n_xy)
+    string_y = 'prop y >'+str(probe.y-n_xy) + ' and prop y<'+str(probe.y+n_xy)
+    string_z = 'prop z >'+str(probe.z-n_z) + ' and prop z<'+str(probe.z+n_z)
     select = string_x + ' and ' + string_y + ' and ' + string_z 
     if out: print(select)
     neighbors = universe.select_atoms('group id1 and '+ select, id1=protein)

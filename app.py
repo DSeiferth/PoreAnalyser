@@ -73,7 +73,7 @@ if uploaded_files:
         with open(uploaded_file.name,"wb") as f:
             f.write(uploaded_file.getbuffer())
     #st.write('Uploaded', names)
-    try:
+    #try:
         fig , df = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, save='Uploaded', title=title,
                                           legend_outside=True, plot_lines=plot_lines, f_size=f_size)
         st.pyplot(fig)
@@ -89,9 +89,23 @@ if uploaded_files:
         fig.savefig(fn, format=fig_format, bbox_inches='tight')
         
         download_output(uploaded_file, fn, df, fig, fig_format, path_save, names )
-    except:
-        st.write('ERROR with', names)
 
+        ### Elipsoid ###
+        ellipsoid_pathway(p=path_save, 
+                          pdb_name = uploaded_file.name, 
+                          sph_name = uploaded_file.name[:-4], 
+                          slice_dz=4, parallel=True, 
+                          num_processes=12, timeout=6, 
+                          start_index = 1, end_radius=end_radius-1
+                 )
+        res = np.loadtxt(path_save + uploaded_file.name + '_pathway_ellipse_parallel2.txt', 
+                 comments='#', delimiter=',')
+        df_res = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
+        df_res.sort_values('z', inplace=True)
+        fig = plt_ellipsoid_pathway(df_res, f_size=f_size, title=title, end_radius=end_radius)
+        st.pyplot(fig)
+    #except:
+        st.write('ERROR with', names)
 else:
     st.markdown("Example application with 7tu9")
     st.write("Example Filename: ", "pdb_models/7tu9.pdb")

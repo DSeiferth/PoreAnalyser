@@ -26,8 +26,8 @@ class ellipse:
         c1r = self.cx*np.cos(-self.theta) - self.cy*np.sin(-self.theta)
         c2r = self.cx*np.sin(-self.theta) + self.cy*np.cos(-self.theta)
         return (x1-c1r)*(x1-c1r)/(self.a*self.a) + (y1-c2r)*(y1-c2r)/(self.b*self.b) <= 1
-    def draw(self):
-        t = np.arange(0, 2*np.pi, 0.01)
+    def draw(self, res=0.01):
+        t = np.arange(0, 2*np.pi, res)
         x = self.a * np.cos(t) #+ c1
         y = self.b * np.sin(t) #+ c2
 

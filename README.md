@@ -10,19 +10,53 @@ pinned: false
 license: mit
 ---
 
-# Usage of (zipped) output files
-example: uploaded_file.name = '7tu9.pdb'
+# What does this package add?
+- Pore finding with new features: 
+- Capture pore asymmetry.
+  - Asymmetry of crystal/cryoEM structures due to heterogeneous subunit composition.
+  - from crystal structure broken in simulations.
+- Making a tool accessible without installation or download of any package.
+
+
+# Path finding with ellipsoidal probe particle
+
+1. Align principal axis to z-axis
+2. Load HOLE output file with positions and radii of probes.
+3. Loop through all spherical probe particles: 
+    a) Ellipsoid initialized with spherical probe particle parameters from HOLE output. 
+    b) First Nelder-Mead 4-dim optimization to insert ellipsoid with smaller bounds for parameters [x, y, r1, θ ]. 
+    c) Second optimization with larger boundaries for parameters to further increase ellipsoid. The loop takes around 60s to complete...
+
+# Conent and Usage of (zipped) HOLE output files
+example: uploaded_file.name = '7tu9_aligned_z.pdb'
 - uploaded_file.name: uploaded pdb file
 - uploaded_file.name+".pdb.vmd": vmd surface for uploaded pdb file
-- "visualise_pathway_hole.tcl": vmd script for plotting the pore surface; the script can be used in the following way: "vmd -e visualise_pathway_hole.tcl -args  7tu9.pdb 7tu9.pdb.pdb.vmd"
+- "visualise_pathway_hole.tcl": vmd script for plotting the pore surface; the script can be used in the following way: "vmd -e visualise_pathway_hole.tcl -args  7tu9_aligned_z.pdb 7tu9_aligned_z.vmd"
 - uploaded_file.name + '_circle.pdb': point cloud for pore surface
 - "hole_pathway_profile.csv": A DataFrame containing the results of the hole analysis, with the following columns:
-        - 'Label z [A]': the z-coordinate of each point along the pore axis.
-        - 'Label Radius [A]': the radius of the pore at each point.
-        'Label' corresponds to the labels provided in the `labels` parameter in the hole_analysis.analysis() function.
+  - 'Label z [A]': the z-coordinate of each point along the pore axis.
+  - 'Label Radius [A]': the radius of the pore at each point.
+  - 'Label' corresponds to the labels provided in the `labels` parameter in the hole_analysis.analysis() function.
 - "README.md"
 - "hole.out": HOLE output
 - "hole_pathway_profile."+fig_format: pathway profile figure in desired format
+
+# Conent and Usage of (zipped) output files for pathfinding with an ellipsoidal probe particle
+exampleL pdb_name = 7tu9_aligned_z
+- vmd files
+  - pdb_name+'.pdb_pathway_ellipse.vmd'
+  - "visualise_pathway_hole.tcl"
+  - the script can be used in the following way: "vmd -e visualise_pathway_hole.tcl -args  7tu9_aligned_z.pdb 7tu9_aligned_z.pdb_pathway_ellipse.vmd.vmd"
+- pdb files 
+  - pdb_name + '.pdb_ellipsoid.pdb'
+  - pdb_name+'.pdb'
+- other files
+  - "README.md"
+  - pdb_name + '.pdb_pathway_ellipse.txt': A DataFrame containing the results of the pathfinding analysis, with the following columns:
+    - "x", "y", "z": position of ellipsoid center
+    - "a", "b": larger and smaller radius of the ellipsoid
+    - "theta": orientation of ellipsoid
+  - figure plotting the spherical HOLE radius and the larger radius of the ellipsoid
 
 ## Notes
 

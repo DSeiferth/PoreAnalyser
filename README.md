@@ -28,21 +28,24 @@ license: mit
     c) Second optimization with larger boundaries for parameters to further increase ellipsoid. The loop takes around 60s to complete...
 
 # Conent and Usage of (zipped) HOLE output files
-example: uploaded_file.name = '7tu9_aligned_z.pdb'
-- uploaded_file.name: uploaded pdb file
-- uploaded_file.name+".pdb.vmd": vmd surface for uploaded pdb file
-- "visualise_pathway_hole.tcl": vmd script for plotting the pore surface; the script can be used in the following way: "vmd -e visualise_pathway_hole.tcl -args  7tu9_aligned_z.pdb 7tu9_aligned_z.vmd"
-- uploaded_file.name + '_circle.pdb': point cloud for pore surface
-- "hole_pathway_profile.csv": A DataFrame containing the results of the hole analysis, with the following columns:
-  - 'Label z [A]': the z-coordinate of each point along the pore axis.
-  - 'Label Radius [A]': the radius of the pore at each point.
-  - 'Label' corresponds to the labels provided in the `labels` parameter in the hole_analysis.analysis() function.
-- "README.md"
-- "hole.out": HOLE output
-- "hole_pathway_profile."+fig_format: pathway profile figure in desired format
+example: pdb_name = '7tu9_aligned_z.pdb'
+- pdb files
+  - pdb_name: uploaded pdb file (aligned to z-axis)
+  - pdb_name + '_circle.pdb': point cloud for pore surface
+- vmd files
+  - pdb_name + ".vmd": vmd surface for uploaded pdb file
+  - "visualise_pathway_hole.tcl": vmd script for plotting the pore surface; the script can be used in the following way: "vmd -e visualise_pathway_hole.tcl -args  7tu9_aligned_z.pdb 7tu9_aligned_z.vmd"
+- other files
+  - "hole_pathway_profile.csv": A DataFrame containing the results of the hole analysis, with the following columns:
+    - 'Label z [A]': the z-coordinate of each point along the pore axis.
+    - 'Label Radius [A]': the radius of the pore at each point.
+    - 'Label' corresponds to the labels provided in the `labels` parameter in the hole_analysis.analysis() function.
+  - "README.md"
+  - "hole.out": HOLE output
+  - "hole_pathway_profile."+fig_format: pathway profile figure in desired format
 
 # Conent and Usage of (zipped) output files for pathfinding with an ellipsoidal probe particle
-exampleL pdb_name = 7tu9_aligned_z
+example: pdb_name = 7tu9_aligned_z
 - vmd files
   - pdb_name+'.pdb_pathway_ellipse.vmd'
   - "visualise_pathway_hole.tcl"

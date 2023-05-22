@@ -24,15 +24,16 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-st.title("Pore Analysis with HOLE")
+st.title("Extending the capabilities of the HOLE Package for Annotation of Ion Channels")
 #st.latex(r''' a+a r^1+a r^2+a r^3 ''')
 
-string1 = "HOLE is a program that allows the analysis and visualisation of the pore dimensions of the holes "
-string2 = "through molecular structures of ion channels (Smart et al., 1996)."
-st.write(string1+string2)
-string1 = "Here, we use the MDAnalysis interface for HOLE to analyse an ion channel pore or transporter pathway. "
-string2 = "The original HOLE documentation can be found here: https://www.holeprogram.org"
-st.write(string1+string2)
+str1 = 'Over the last two decades, advances in structural biology along with recent artificial intelligence–driven structure prediction '
+str2 = 'algorithms, such as AlphaFold, have revealed a plethora of 3-D ion channel and nanopore structures in different conformational states. '
+str3 = 'However, in nearly every case, these structures still require functional annotation.'
+str4 = 'Different tools, such as HOLE and CHAP, allow the analysis of the physical dimensions of the pore running through an ion channel.'  
+str5 = 'Here, we present an interactive web-page that allows users to calculate the pore profile of any input structure. '
+str6 = 'Based on the well-established HOLE programme, we add a new feature to capture pore asymmetry by using an ellipsoidal probe particle.'
+st.write(str1+str2+str3+str4+str5+str6)
 
 st.subheader("Pathway Finding Settings")
 string1 = 'Radius in Å, which is considered to be the end of the pore. '
@@ -60,8 +61,17 @@ title = st.text_input(label='Write a title for your plot', value='', help='Title
 f_size = st.text_input(label='Font size for figure', value='22', help='default=22')
 f_size = int(f_size)
 
-st.header("Upload pdb file(s)")
+st.subheader("Upload pdb file(s)")
 uploaded_files = st.file_uploader("Choose a file", label_visibility="visible",  accept_multiple_files=True )
+
+st.subheader("Pathfinding with a spherical probe particle (HOLE)")
+string1 = "HOLE is a program that allows the analysis and visualisation of the pore dimensions of the holes "
+string2 = "through molecular structures of ion channels (Smart et al., 1996)."
+st.write(string1+string2)
+string1 = "Here, we use the MDAnalysis interface for HOLE to analyse an ion channel pore or transporter pathway. "
+string2 = "The original HOLE documentation can be found here: https://www.holeprogram.org"
+st.write(string1+string2)
+
 st.write('First, we align the principal axis to the z-axis.')
 
 labels = []
@@ -85,7 +95,7 @@ if uploaded_files:
     xyzview = pathway_visu(path=path_save, name=names[0])
     showmol(xyzview, height=800, width=800)
 
-    st.header("Download HOLE output files")
+    st.subheader("Download HOLE output files")
     df.to_csv('hole_pathway_profile.csv',sep=',')
     fn ="hole_pathway_profile."+fig_format
     fig.savefig(fn, format=fig_format, bbox_inches='tight')
@@ -116,6 +126,7 @@ if uploaded_files:
     showmol(xyzview, height=800, width=800)
 
     ### Download Ellipsoid output###
+    st.subheader("Download files for pathway with ellipsoidal probe particle")
     fn ="ellipsoid_pathway_profile."+fig_format
     fig.savefig(fn, format=fig_format, bbox_inches='tight')
     download_Ellipsoid_output(names_aligned[0][:-4], fn, path_save,  )
@@ -168,6 +179,7 @@ else:
 
 
 #st.write(os.listdir())
+
 st.write("Smart, O.S., Neduvelil, J.G., Wang, X., Wallace, B.A., Sansom, M.S.P., 1996. HOLE: A program for the analysis of the pore dimensions of ion channel structural models. Journal of Molecular Graphics 14, 354–360. https://doi.org/10.1016/S0263-7855(97)00009-X")
 st.write("Gowers, R., Linke, M., Barnoud, J., Reddy, T., Melo, M., Seyler, S., Domański, J., Dotson, D., Buchoux, S., Kenney, I., Beckstein, O., 2016. MDAnalysis: A Python Package for the Rapid Analysis of Molecular Dynamics Simulations. Presented at the Python in Science Conference, Austin, Texas, pp. 98–105. https://doi.org/10.25080/Majora-629e541a-00e")
 

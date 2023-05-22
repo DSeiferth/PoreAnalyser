@@ -46,8 +46,6 @@ def write_pdb_with_pore_surface(path='', name='', end_radius=15, num_circle = 24
 
 def write_pdb_with_ellipsoid_surface(p, pdbname ,fname,  num_circle = 24):
     ### load ellipsoid output file ###
-    #p = 'pdb_models/'
-    #fname = '7tu9.pdb_pathway_ellipse_parallel2.txt'
     df = pd.read_csv(p+fname, skiprows=1, header=0, 
                      names=['x', 'y', 'z', 'a', 'b', 'theta'])
     ### cooridnates of point cloud ###
@@ -62,6 +60,17 @@ def write_pdb_with_ellipsoid_surface(p, pdbname ,fname,  num_circle = 24):
     dist_prev = 0
     large_dist_prev = 0
     max_smaller = max(smaller)
+
+    ### write vmd surface ###
+    f = open(p + pdbname+'_pathway_ellipse.vmd','w')
+    f.write('color Display Background white\n')
+    f.write('mol modstyle 0 top NewCartoon\n')
+    f.write('mol modcolor 0 top ColorID 2\n') ###2 = grey ###
+    f.write('draw delete all\n')
+    f.write('draw materials off\n')
+    f.write('draw color yellow\n')
+
+    ### Loop for vmd and pdb file ###
     for i in range(n):
         # test for bulk:
         if i>0: 
@@ -74,8 +83,19 @@ def write_pdb_with_ellipsoid_surface(p, pdbname ,fname,  num_circle = 24):
         else:
             e = ellipse(a=larger[i], b=smaller[i], theta=theta[i], cx=x[i], cy=y[i])
             x_vec, y_vec = e.draw(res = 2*np.pi/ num_circle )
+
+            if smaller[i]<1.15:
+                f.write('draw color red\n')
+            elif smaller[i]>1.15 and smaller[i]<2.3:
+                f.write('draw color green\n')
+            else:
+                f.write('draw color blue\n')
+
             for j in range(len(x_vec)):
                 coordinates.append([x_vec[j], y_vec[j], z[i] ])
+                string = 'draw point  { '+str(x_vec[j])+' '+str(y_vec[j])+' '+str(z[i]) + '}\n'
+                f.write(string)
+    f.close()        
     n_atoms = len(coordinates)  
 
     ### create universe for point cloud ###
@@ -97,6 +117,8 @@ def write_pdb_with_ellipsoid_surface(p, pdbname ,fname,  num_circle = 24):
     sol2.atoms.positions = coordinates
     sel = sol2.select_atoms('name *')
     sel.write(p + pdbname + '_ellipsoid.pdb')
+
+
 
 def plt_ellipsoid_pathway(df_res, f_size=22, title='', end_radius=15):
     z = df_res['z']

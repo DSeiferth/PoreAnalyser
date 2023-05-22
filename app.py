@@ -7,7 +7,7 @@ from stmol import showmol
 import py3Dmol
 import numpy as np
 from visualization import write_pdb_with_pore_surface, plt_ellipsoid_pathway, pathway_visu, st_write_ellipsoid, write_pdb_with_ellipsoid_surface
-from download_files import download_output
+from download_files import download_output, download_Ellipsoid_output
 
 try:
     import multiprocessing 
@@ -103,7 +103,7 @@ if uploaded_files:
                         out = 0,
                         n_xy_fac = 1.6
                     )
-    res = np.loadtxt(path_save + names_aligned[0]+ '_pathway_ellipse_parallel2.txt', 
+    res = np.loadtxt(path_save + names_aligned[0]+ '_pathway_ellipse.txt', 
                     comments='#', delimiter=',')
     df_res = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
     df_res.sort_values('z', inplace=True)
@@ -111,9 +111,15 @@ if uploaded_files:
     st.pyplot(fig)
     ### visualization fo ellipsoidal surface ###
     write_pdb_with_ellipsoid_surface(p='', pdbname=names_aligned[0], 
-                                     fname=names_aligned[0]+'_pathway_ellipse_parallel2.txt', num_circle = 24)
+                                     fname=names_aligned[0]+'_pathway_ellipse.txt', num_circle = 24)
     xyzview = pathway_visu(path='', name=names_aligned[0], f_end='_ellipsoid.pdb')
     showmol(xyzview, height=800, width=800)
+
+    ### Download Ellipsoid output###
+    fn ="ellipsoid_pathway_profile."+fig_format
+    fig.savefig(fn, format=fig_format, bbox_inches='tight')
+    download_Ellipsoid_output(names_aligned[0][:-4], fn, path_save,  )
+
     #st.write('ERROR with', names)
 else:
     st.markdown("Example application with 7tu9")
@@ -149,27 +155,19 @@ else:
 
     ### Ellipsoidal probe particle ###
     st_write_ellipsoid()
-    res = np.loadtxt('pdb_models/7tu9_aligned_z.pdb_pathway_ellipse_parallel2.txt', 
+    res = np.loadtxt('pdb_models/7tu9_aligned_z.pdb_pathway_ellipse.txt', 
                  comments='#', delimiter=',')
     df_res = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
     df_res.sort_values('z', inplace=True)
     fig = plt_ellipsoid_pathway(df_res, f_size=f_size, title=title, end_radius=end_radius)
     st.pyplot(fig)
     write_pdb_with_ellipsoid_surface(p='pdb_models/', pdbname='7tu9_aligned_z.pdb',
-                                     fname='7tu9_aligned_z.pdb_pathway_ellipse_parallel2.txt', num_circle = 24)
+                                     fname='7tu9_aligned_z.pdb_pathway_ellipse.txt', num_circle = 24)
     xyzview = pathway_visu(path='pdb_models/', name='7tu9_aligned_z.pdb', f_end='_ellipsoid.pdb')
     showmol(xyzview, height=800, width=800)
 
 
 #st.write(os.listdir())
-with open('visualise_pathway_hole.tcl', "rb") as file:
-            st.download_button(
-                label="Download vmd visualisation TCL script (you need the corresponding pdb and vmd file)",
-                data=file,
-                file_name="visualise_pathway_hole.tcl",
-                help="usage: vmd -e visualise_pathway_hole.tcl -args  fname.pdb fname.pdb.vmd"
-                #mime='text/csv',
-            )
 st.write("Smart, O.S., Neduvelil, J.G., Wang, X., Wallace, B.A., Sansom, M.S.P., 1996. HOLE: A program for the analysis of the pore dimensions of ion channel structural models. Journal of Molecular Graphics 14, 354–360. https://doi.org/10.1016/S0263-7855(97)00009-X")
 st.write("Gowers, R., Linke, M., Barnoud, J., Reddy, T., Melo, M., Seyler, S., Domański, J., Dotson, D., Buchoux, S., Kenney, I., Beckstein, O., 2016. MDAnalysis: A Python Package for the Rapid Analysis of Molecular Dynamics Simulations. Presented at the Python in Science Conference, Austin, Texas, pp. 98–105. https://doi.org/10.25080/Majora-629e541a-00e")
 

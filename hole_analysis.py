@@ -1,6 +1,5 @@
 import numpy as np
 import MDAnalysis
-import nglview as nv
 import matplotlib.pyplot as plt
 import pandas as pd
 from MDAnalysis.analysis import hole2

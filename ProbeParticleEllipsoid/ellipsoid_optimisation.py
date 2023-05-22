@@ -483,7 +483,7 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
 
     if not os.path.exists(p+pdb_name+'_pathway_slices_parallel2/'):
         os.makedirs(p+pdb_name+'_pathway_slices_parallel2/')
-    f = open(p+pdb_name+'_pathway_ellipse_parallel2.txt','w')
+    f = open(p+pdb_name+'_pathway_ellipse.txt','w')
     f.write('#x, y, z, a, b, theta\n')
     failed = []
     vec = np.array(df2.index)

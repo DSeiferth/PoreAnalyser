@@ -13,7 +13,7 @@ def download_output(pdb_name, fn, df, fig, fig_format,
     # To zip entire directory use command “shutil.make_archive(“name”,”zip”, root_dir)
     # To select the files to zip use command “ZipFile.write(filename)”
     # shutil.make_archive('', 'zip', dir_name)
-    with ZipFile("poreFinding_output.zip", "w") as newzip:
+    with ZipFile("poreFinding_HOLE_output.zip", "w") as newzip:
             newzip.write(pdb_name+'.vmd')
             newzip.write("visualise_pathway_hole.tcl")
             newzip.write(path_save + names[0] + '_circle.pdb')
@@ -22,11 +22,11 @@ def download_output(pdb_name, fn, df, fig, fig_format,
             newzip.write("hole.out")
             newzip.write('hole_pathway_profile.csv')
             newzip.write(fn)
-    with open("poreFinding_output.zip", "rb") as file:
+    with open("poreFinding_HOLE_output.zip", "rb") as file:
             st.download_button(
                 label="Download ZIP",
                 data=file,
-                file_name="poreFinding_output.zip",
+                file_name="poreFinding_HOLE_output.zip",
                 help="usage: vmd -e visualise_pathway_hole.tcl -args  "+pdb_name+" "+pdb_name+".vmd"
                 #mime='text/csv',
             )
@@ -55,3 +55,35 @@ def download_output(pdb_name, fn, df, fig, fig_format,
                 file_name=pdb_name+'.vmd',
                 help="usage: vmd -e visualise_pathway_hole.tcl -args  "+pdb_name+" "+pdb_name+".vmd"
         )
+    with open('visualise_pathway_hole.tcl', "rb") as file:
+            st.download_button(
+                label="Download vmd visualisation TCL script (you need the corresponding pdb and vmd file)",
+                data=file,
+                file_name="visualise_pathway_hole.tcl",
+                help="usage: vmd -e visualise_pathway_hole.tcl -args  fname.pdb fname.pdb.vmd"
+                #mime='text/csv',
+            )
+
+def download_Ellipsoid_output(pdb_name, fn, path_save,  ):
+    # To zip entire directory use command “shutil.make_archive(“name”,”zip”, root_dir)
+    # To select the files to zip use command “ZipFile.write(filename)”
+    # shutil.make_archive('', 'zip', dir_name)
+    with ZipFile("poreFinding_Ellipsoid_output.zip", "w") as newzip:
+            ### vmd ###
+            newzip.write(pdb_name+'.pdb_pathway_ellipse.vmd')
+            newzip.write("visualise_pathway_hole.tcl")
+            ### pdb files ### 
+            newzip.write(path_save + pdb_name + '.pdb_ellipsoid.pdb')
+            newzip.write(pdb_name+'.pdb')
+
+            newzip.write("README.md")
+            newzip.write(pdb_name + '.pdb_pathway_ellipse.txt')
+            newzip.write(fn)
+    with open("poreFinding_Ellipsoid_output.zip", "rb") as file:
+            st.download_button(
+                label="Download ZIP",
+                data=file,
+                file_name="poreFinding_Ellipsoid_output.zip",
+                help="usage: vmd -e visualise_pathway_hole.tcl -args  "+pdb_name+".pdb "+pdb_name+".pdb_pathway_ellipse.vmd"
+                #mime='text/csv',
+            )

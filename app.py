@@ -6,7 +6,7 @@ import MDAnalysis
 from stmol import showmol
 import py3Dmol
 import numpy as np
-from visualization import write_pdb_with_pore_surface, plt_ellipsoid_pathway, pathway_visu, st_write_ellipsoid
+from visualization import write_pdb_with_pore_surface, plt_ellipsoid_pathway, pathway_visu, st_write_ellipsoid, write_pdb_with_ellipsoid_surface
 from download_files import download_output
 
 try:
@@ -109,7 +109,11 @@ if uploaded_files:
     df_res.sort_values('z', inplace=True)
     fig = plt_ellipsoid_pathway(df_res, f_size=f_size, title=title, end_radius=end_radius)
     st.pyplot(fig)
-
+    ### visualization fo ellipsoidal surface ###
+    write_pdb_with_ellipsoid_surface(p='', pdbname=names_aligned[0], 
+                                     fname=names_aligned[0]+'_pathway_ellipse_parallel2.txt', num_circle = 24)
+    xyzview = pathway_visu(path='', name=names_aligned[0], f_end='_ellipsoid.pdb')
+    showmol(xyzview, height=800, width=800)
     #st.write('ERROR with', names)
 else:
     st.markdown("Example application with 7tu9")
@@ -145,12 +149,16 @@ else:
 
     ### Ellipsoidal probe particle ###
     st_write_ellipsoid()
-    res = np.loadtxt('pdb_models/7tu9.pdb_pathway_ellipse_parallel2.txt', 
+    res = np.loadtxt('pdb_models/7tu9_aligned_z.pdb_pathway_ellipse_parallel2.txt', 
                  comments='#', delimiter=',')
     df_res = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
     df_res.sort_values('z', inplace=True)
     fig = plt_ellipsoid_pathway(df_res, f_size=f_size, title=title, end_radius=end_radius)
     st.pyplot(fig)
+    write_pdb_with_ellipsoid_surface(p='pdb_models/', pdbname='7tu9_aligned_z.pdb',
+                                     fname='7tu9_aligned_z.pdb_pathway_ellipse_parallel2.txt', num_circle = 24)
+    xyzview = pathway_visu(path='pdb_models/', name='7tu9_aligned_z.pdb', f_end='_ellipsoid.pdb')
+    showmol(xyzview, height=800, width=800)
 
 
 #st.write(os.listdir())

@@ -90,14 +90,20 @@ def neighbor_vec(universe, probe, probe1, n_xy_fac, out=0, call=0):
                                               call=call, out=out)
         print('number of neighbors with R>0' ,len(a_vec), 'n_xy_fac', 0.75*n_xy_fac)
     elif len(a_vec)<30 and call<4:
-        if out: print('INCREASE n_xy_fac')
+        #out = 1
+        if out: 
+            print('INCREASE n_xy_fac')
         call += 1 
         return neighbor_vec(universe, probe, probe1, 1.25*n_xy_fac,
                                               call=call, out=out)
         if out: print('number of neighbors with R>0' ,len(a_vec), 'n_xy_fac', 1.25*n_xy_fac)
         #return -1, -1
-    
-    return a_vec, neighbour_labels
+    elif len(a_vec)<30 and call>4:
+        n_xy_fac = 1.5
+        n_xy = n_xy_fac*probe.r 
+        print('len(a_vec)', len(a_vec), 'call', call, 'set back to n_xy = n_xy_fac*probe.r ', n_xy , n_xy_fac,probe.r )
+        return a_vec, neighbour_labels, n_xy
+    return a_vec, neighbour_labels, n_xy
 
 def insert_ellipse(index, dataframe, universe, 
                    out=0, plt_path='', rmax=50, 
@@ -120,7 +126,7 @@ def insert_ellipse(index, dataframe, universe,
     plt_path : str, default ''
     A path to save the plot to.
     rmax : float, default 50
-    The maximum radius for the ellipsoid
+    The maximum radius for the ellipsoid (to be deleted, set rmax to n_xy)
 
     show : int, default 0
     A flag to control whether the plot is displayed.
@@ -155,7 +161,7 @@ def insert_ellipse(index, dataframe, universe,
     initial_radius = dataframe['r'].loc[index]
 
     ### neighbor vector ###
-    a_vec, neighbour_labels = neighbor_vec(universe, probe, probe1, n_xy_fac, out=out)
+    a_vec, neighbour_labels, n_xy = neighbor_vec(universe, probe, probe1, n_xy_fac, out=out)
     assert len(a_vec)>2, "in function 'insert_ellipse': len(a_vec)<2="+str(len(a_vec))
 
     fig, ax = plt.subplots()
@@ -208,7 +214,7 @@ def insert_ellipse(index, dataframe, universe,
                               [p0.a+0.13, np.pi/2, p0.cx-dx/2, p0.cy-dx/2]]
           }
     # (p0.a, rmax)
-    bnds = ((0, rmax), (-np.pi, np.pi), (p0.cx-dx, p0.cx+dx), (p0.cy-dx, p0.cy+dx))
+    bnds = ((0, n_xy), (-np.pi, np.pi), (p0.cx-dx, p0.cx+dx), (p0.cy-dx, p0.cy+dx))
     start_opt1 = time.time()
     result = minimize(penalty_overlap_4dim, pt, 
                       args = [p0.b, a_vec],
@@ -234,7 +240,7 @@ def insert_ellipse(index, dataframe, universe,
 
     ### 4d optimisation works better without initial simplex ###
     dx = 0.5*p1.a # 3 ### boundary for center of ellipse ###
-    bnds = ((p1.a, rmax), (-np.pi, np.pi), (p0.cx-dx, p0.cx+dx), (p0.cy-dx, p0.cy+dx))
+    bnds = ((p1.a, n_xy), (-np.pi, np.pi), (p0.cx-dx, p0.cx+dx), (p0.cy-dx, p0.cy+dx))
     pt = [p1.a, p1.theta, p1.cx, p1.cy ] #p0.cx, p0.cy -1,-1
     opt = {'maxiter': 800, # Maximum allowed number of iterations and function evaluations. Will default to N*200, where N is the number of variables
            'adaptive': True, #Adapt algorithm parameters to dimensionality of problem. Useful for high-dimensional minimization 
@@ -259,12 +265,27 @@ def insert_ellipse(index, dataframe, universe,
 
     p2 = ellipse(a=sol[0], b=p0.b, theta=sol[1], cx=sol[2], cy=sol[3])
     x2, y2 = p2.draw()
-    ax.plot(x2, y2, color='brown')
     ax.plot(p2.cx, p2.cy, '-x', color='brown')
     ax.set_xlabel(r"x ($\AA$)", fontsize=f_size)
     ax.set_ylabel(r"y ($\AA$)", fontsize=f_size)
     ax.tick_params(axis='both', which='major', labelsize=f_size)
     plt.title(r'xy-plane at z = '+str(z_slice)+r' $\AA$', fontsize=f_size)
+
+    ### check whether center moved ###
+    dist_prev = np.linalg.norm( np.array([p2.cx,p2.cy]) -  np.array([p1.cx,p1.cy]) )
+    if dist_prev > max(p0.b, 7) or p2.a/p1.a > 1.5:
+        print('ATTENTION', 'dist_prev > p0.b', dist_prev , p0.b, 'at z=',z_slice, '\n')
+        p2 = p1
+        ax.plot(x2, y2, '--',color='brown')
+    elif len(a_vec) < 30:
+        p2 = p1
+        print('ATTENTION', 'number of neighbors low', len(a_vec), 'at z=',z_slice, '\n')
+        ax.plot(x2, y2, '--',color='brown')
+        if p1.a > 3*p0.a:
+            print('ERROR: 1st opimisation p1.a', p1.a, '>3*p0.a, p0.a=',p0.a,  'at z=',z_slice, '\n' )
+            return -1, -1
+    else:
+        ax.plot(x2, y2, color='brown')
     
     if label: 
         xlim = ax.get_xlim()

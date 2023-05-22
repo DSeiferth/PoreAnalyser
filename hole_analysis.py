@@ -171,15 +171,6 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
     for count, name in enumerate(names):
         #try:
             print(name, '### visualise pathway ###')
-            if count<2:
-                #! echo $path/{name}.pdb
-                #!cp $path/{name}.pdb .
-                print('Not copying ...')
-            else:
-                print('last one..., hard coded')
-                path = path + '/PROD/'
-                #!cp $path/prod.pdb .
-                name = 'prod'
             print('pdbfile=path+name', path+name)
             ha2 =  hole2.hole(
                     pdbfile=path+name ,#+'.pdb',

@@ -166,3 +166,49 @@ def st_write_ellipsoid():
     string5 = 'c) Second optimization with larger boundaries for parameters to further increase ellipsoid.\n'
     string6 = 'The loop takes around 60s to complete...'
     st.write(string1+string2+string3+string4+string5+string6)
+
+def example_xy_plane(f_size):
+    a_vec = [atom(x=3.8,y=4.8,r=2), atom(-1,-3,r=2.7), atom(-4,4,r=1), atom(7,2,r=1), 
+         atom(7.9,-1,r=1.5), atom(-3,1,r=1), atom(-0.0,4.8,r=1.3), atom(3,-2.9,r=1.0)
+        ]
+    probe = atom(2,1,r=2)
+    p0 = ellipse(a=probe.r, b=probe.r, theta=0, cx=probe.x, cy=probe.y)
+
+    p_example = ellipse(a=1.5*probe.r, b=probe.r, theta=0, cx=probe.x, cy=probe.y)
+
+    p2 = ellipse(a=4.69050294820025, b=p0.b, theta=-0.33648560328658467, 
+                cx=2.061766530062544, cy=1.061766530062543)
+
+    f_size = 22
+
+    t = np.arange(0, 2*np.pi, 0.01)
+    fig, ax = plt.subplots()
+    plt.title('Example of growing probe\nparticles in the xy-plane ', fontsize=f_size)
+
+    ### probe ###
+    x0, y0 = p0.draw()
+    ax.plot(x0, y0, color='blue')
+    ax.plot(probe.x,probe.y, '-x', color='blue')
+    ### vdw particles ###
+    for a in a_vec:
+        vdw = ellipse(a=a.r, b=a.r, theta=0, cx=a.x, cy=a.y)
+        x0, y0 = vdw.draw()
+        ax.plot(x0, y0, color='black')
+        ax.plot(a.x,a.y, '-x', color='black')
+    ### ellipsoids ###
+    x1, y1 = p_example.draw()
+    ax.plot(x1, y1, color='green')
+    ax.plot(p_example.cx, p_example.cy, '-x', color='green')
+
+    x2, y2 = p2.draw()
+    ax.plot(x2, y2, color='brown')
+    ax.plot(p2.cx, p2.cy, '-x', color='brown')
+
+    ax.set_xlabel("x", fontsize=f_size)
+    ax.set_ylabel("y", fontsize=f_size)
+    ax.set_yticklabels([])
+    ax.set_xticklabels([])
+    ax.set_aspect('equal', adjustable='box')
+    plt.gca().set_aspect('equal', adjustable='box')
+    fig.tight_layout()
+    return fig

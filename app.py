@@ -6,7 +6,7 @@ import MDAnalysis
 from stmol import showmol
 import py3Dmol
 import numpy as np
-from visualization import write_pdb_with_pore_surface, plt_ellipsoid_pathway, pathway_visu, st_write_ellipsoid, write_pdb_with_ellipsoid_surface
+from visualization import write_pdb_with_pore_surface, plt_ellipsoid_pathway, pathway_visu, st_write_ellipsoid, write_pdb_with_ellipsoid_surface, example_xy_plane
 from download_files import download_output, download_Ellipsoid_output
 
 try:
@@ -166,6 +166,9 @@ else:
 
     ### Ellipsoidal probe particle ###
     st_write_ellipsoid()
+    fig_example = example_xy_plane(f_size=f_size)
+    st.pyplot(fig_example)
+
     res = np.loadtxt('pdb_models/7tu9_aligned_z.pdb_pathway_ellipse.txt', 
                  comments='#', delimiter=',')
     df_res = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])

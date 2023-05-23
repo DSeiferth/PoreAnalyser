@@ -12,7 +12,7 @@ import multiprocessing
 import time
 import os
 
-def penalty_overlap_4dim(x, args, stop_loop=True):
+def penalty_overlap_4dim(x, args):
     '''
     x: 4-dim vec
     0) radius to expand 
@@ -21,10 +21,14 @@ def penalty_overlap_4dim(x, args, stop_loop=True):
     args: 
     0) constant radius
     1) vec with surroundings vdw-spheres
+    3) stop_loop=True
     '''
     e1 = ellipse(a=x[0], b=args[0], theta=x[1], cx=x[2], cy=x[3])
     a_vec = args[1]
-    
+    if len(args)!=3:
+        stop_loop=True 
+    else:
+        stop_loop = args[2]
     #print('ellipse: a', e1.a, 'b', e1.b, 'theta', e1.theta, 'center', e1.cx, e1.cy)
     ### spheres ###        
     dist = np.zeros(len(a_vec))

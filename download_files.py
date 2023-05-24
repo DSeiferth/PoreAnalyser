@@ -2,6 +2,7 @@ from zipfile import ZipFile
 import streamlit as st
 import pandas as pd
 import io
+import glob
 
 @st.cache_data
 def convert_df(df):
@@ -79,6 +80,8 @@ def download_Ellipsoid_output(pdb_name, fn, path_save,  ):
             newzip.write("README.md")
             newzip.write(pdb_name + '.pdb_pathway_ellipse.txt')
             newzip.write(fn)
+            for file in glob.glob(pdb_name+'.pdb_pathway_slices/*png'):
+                  newzip.write(file)
     with open("poreFinding_Ellipsoid_output.zip", "rb") as file:
             st.download_button(
                 label="Download ZIP",

@@ -485,8 +485,8 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
     fig.tight_layout()
     plt.show()
 
-    if not os.path.exists(p+pdb_name+'_pathway_slices_parallel2/'):
-        os.makedirs(p+pdb_name+'_pathway_slices_parallel2/')
+    if not os.path.exists(p+pdb_name+'_pathway_slices/'):
+        os.makedirs(p+pdb_name+'_pathway_slices/')
     f = open(p+pdb_name+'_pathway_ellipse.txt','w')
     f.write('#x, y, z, a, b, theta\n')
     failed = []
@@ -503,7 +503,7 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
 
         start_time = time.time()
         results = insert_ellipse_async(index=vec, dataframe=df2, universe=mer, 
-                                       out=out, plt_path=p+pdb_name+'_pathway_slices_parallel2/',
+                                       out=out, plt_path=p+pdb_name+'_pathway_slices/',
                                        num_processes=num_processes, timeout=timeout,
                                        n_xy_fac=n_xy_fac
                                       )   
@@ -528,7 +528,7 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
                 print('try', i ,df2['resid'].loc[i])
                 e, z = insert_ellipse(index=i, dataframe=df2, universe=mer, 
                                       out=0, show=1,
-                                    plt_path=p+pdb_name+'_pathway_slices_parallel2/',
+                                    plt_path=p+pdb_name+'_pathway_slices/',
                                     R_N=25)
                 position_center = str(e.cx) + ', ' +  str(e.cy) + ', ' + str(z) + ', '
                 param = str(e.a) + ', ' +  str(e.b) + ', ' + str(e.theta) + '\n'

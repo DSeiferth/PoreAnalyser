@@ -11,28 +11,29 @@ f_size = 18
 
 import warnings; warnings.simplefilter('ignore')
 
-def align_to_z(p, pdb_name):
+def align_to_z(p, pdb_name, align_bool=True):
     """
     rotate the principal axes of the molecule to align with Cartesian coordinate system
     """
     conf =  p + pdb_name + '.pdb'
     top = conf
-    u = MDAnalysis.Universe(top, conf, ) #topology_format='pdb', format='pdb'
+    u = MDAnalysis.Universe(top, conf, topology_format='pdb', format='pdb')
     protein = u.select_atoms("protein")
-    CA = u.select_atoms("protein and name CA")
-    I = CA.moment_of_inertia()
-    print('moment_of_inertia', I)
-    # https://pythoninchemistry.org/ch40208/comp_chem_methods/moments_of_inertia.html
-    eigenval , eigenvec = np.linalg.eig(I)
-    tranform = np.linalg.inv(eigenvec)
-    # rotate such that principal axis are aligned to Cartesian axis
-    protein.rotate(tranform)
-    # rotate 90 deg around y-axis
-    R_matrix = np.zeros((3,3))
-    R_matrix[0][2] = 1 
-    R_matrix[1][1] = 1 
-    R_matrix[2][0] = -1
-    protein.rotate(R_matrix)
+    if align_bool:
+        CA = u.select_atoms("protein and name CA")
+        I = CA.moment_of_inertia()
+        print('moment_of_inertia', I)
+        # https://pythoninchemistry.org/ch40208/comp_chem_methods/moments_of_inertia.html
+        eigenval , eigenvec = np.linalg.eig(I)
+        tranform = np.linalg.inv(eigenvec)
+        # rotate such that principal axis are aligned to Cartesian axis
+        protein.rotate(tranform)
+        # rotate 90 deg around y-axis
+        R_matrix = np.zeros((3,3))
+        R_matrix[0][2] = 1 
+        R_matrix[1][1] = 1 
+        R_matrix[2][0] = -1
+        protein.rotate(R_matrix)
     protein.write(p + pdb_name + '_aligned_z.pdb')
 
 def hole_analysis(name, path, end_radius=20, sel='protein'):
@@ -54,7 +55,7 @@ def hole_analysis(name, path, end_radius=20, sel='protein'):
     tmpdir = path #+ 'tmpdir/'
     conf = path + name
     top = conf
-    sys = MDAnalysis.Universe(top, conf) 
+    sys = MDAnalysis.Universe(top, conf, topology_format='pdb', format='pdb') 
     ha2 = hole2.HoleAnalysis(
                                 sys, select=sel,
                                 cpoint='center_of_geometry',
@@ -65,6 +66,7 @@ def hole_analysis(name, path, end_radius=20, sel='protein'):
                                 #sphpdb=path+name+'.sph',
                                 end_radius=end_radius,
 				                #keep_files=True
+                                cvect=[0,0,1],
 				)
     ha2.run(random_seed=31415)
     try:
@@ -84,8 +86,8 @@ def hole_analysis(name, path, end_radius=20, sel='protein'):
 #                  num_circle=24, TMD_higher=0,  TMD_lower=0, end_radius=15):
     
 def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_radius=15,
-            save='', title='', sel='protein', legend_outside=False, 
-            plot_lines=True, f_size=18):
+            title='', sel='protein', legend_outside=False, 
+            plot_lines=True, f_size=18, align_bool=True):
     """
     Perform hole analysis on one or more PDB files and plot the results.
 
@@ -110,6 +112,9 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
     legend_outside : bool, optional
         If True, place the legend outside of the plot. Default is False.
 
+    align_bool: bool, optional
+        If True, place align the largest principal component to z-axis. Default is True.
+
     Returns
     -------
     fig : matplotlib figure
@@ -122,7 +127,7 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
     """
     
     for i in range(len(names)):
-         align_to_z(p=path, pdb_name=names[i][:-4])
+         align_to_z(p=path, pdb_name=names[i][:-4], align_bool=align_bool)
          names[i] = names[i][:-4] + '_aligned_z.pdb' 
     ### hole analysis ###
     aligned_path = path
@@ -162,7 +167,7 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
     else:
         ax.legend(prop={'size': f_size}, loc='upper left') # loc='upper center'
         fig.tight_layout()
-    fig.savefig(path + save[:-1] +'HOLE_pathwayprofile.png', bbox_inches='tight')
+    #fig.savefig(path + save +'_HOLE_pathwayprofile.png', bbox_inches='tight')
     #df.to_csv(outpath + '/Pathway_HOLE_comparison_pdb.csv', sep=',', index=False, header=True)
     plt.show()
     ### visualise pathway ###
@@ -179,7 +184,8 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
                     #sph_process=sph_proc,
                     sphpdb_file=path+name[:-4]+".sph",
                     end_radius=end_radius,
-                    keep_files=True
+                    keep_files=True,
+                    cvect=[0,0,1],
             )
         #except:
         #    print('ERROR with', name, 'no SPH file generated')

@@ -45,6 +45,16 @@ end_radius = st.text_input(label=r'end_radius in $\AA$', value='15', max_chars=3
 end_radius = int(end_radius)
 st.write('The current end_radius is', end_radius, r'$\AA$')
 
+string1 = 'Set to False if the protein is already aligned (pore should be parallel to z-axis)'
+align_bool = st.text_input(label='Align the largest prinicpal component to z-axis before pathway calculations (default: True)', value='True', max_chars=5,
+              help=string1)
+if align_bool == 'True':
+    align_bool = True
+    st.write('The largest principal component of the uploaded protein will be aligned to the z-axis.')
+else:
+    align_bool = False
+    st.write('The uploaded protein will not be aligned.')
+
 st.subheader("Plotting options")
 fig_format = st.text_input(label='Format to download pathway figure', value='png', max_chars=4,
               help='default: png, other options: jpeg, tiff, eps, pdf, ...')
@@ -82,12 +92,12 @@ if uploaded_files:
         #st.write("Filename: ", uploaded_file.name)
         labels.append(uploaded_file.name[:-4])
         names.append(uploaded_file.name)
-        names_aligned.append(uploaded_file.name[:4]+'_aligned_z.pdb')
+        names_aligned.append(uploaded_file.name[:-4]+'_aligned_z.pdb')
         with open(uploaded_file.name,"wb") as f:
             f.write(uploaded_file.getbuffer())
-    #st.write('Uploaded', names)
-    fig , df = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, save='Uploaded', title=title,
-                                            legend_outside=True, plot_lines=plot_lines, f_size=f_size)
+    #st.write('Uploaded: names_aligned', names_aligned)
+    fig , df = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, title=title,
+                                            legend_outside=True, plot_lines=plot_lines, f_size=f_size, align_bool=align_bool)
     st.pyplot(fig)
     path_save = ''
     st.write("Pathway visualisation for ", names[0])
@@ -151,7 +161,7 @@ else:
     fig ,csv = hole_analysis.analysis(names, labels=labels, path=path_save, 
                              end_radius=end_radius, 
                        #TMD_lower=59, TMD_higher=97,
-                        save='', title=titles[0], 
+                       title=titles[0], 
                        legend_outside=True,
                        plot_lines=plot_lines,
                        f_size=f_size

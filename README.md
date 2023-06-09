@@ -10,6 +10,8 @@ pinned: false
 license: mit
 ---
 
+[Try out this protoype on HugginFace without installing anything](https://huggingface.co/spaces/DSeiferth/PoreFinding_pdb)
+
 # What does this package add?
 - Pore finding with new features: 
 - Capture pore asymmetry.

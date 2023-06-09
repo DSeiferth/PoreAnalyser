@@ -6,7 +6,7 @@ import MDAnalysis
 from stmol import showmol
 import py3Dmol
 import numpy as np
-from visualization import write_pdb_with_pore_surface, plt_ellipsoid_pathway, pathway_visu, st_write_ellipsoid, write_pdb_with_ellipsoid_surface, example_xy_plane
+from visualization import write_pdb_with_pore_surface, plt_ellipsoid_pathway, pathway_visu, st_write_ellipsoid, write_pdb_with_ellipsoid_surface, example_xy_plane, compare_volume
 from download_files import download_output, download_Ellipsoid_output
 
 try:
@@ -97,13 +97,13 @@ if uploaded_files:
             f.write(uploaded_file.getbuffer())
     #st.write('Uploaded: names_aligned', names_aligned)
     fig , df = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, title=title,
-                                            legend_outside=True, plot_lines=plot_lines, f_size=f_size, align_bool=align_bool)
+                                            legend_outside=False, plot_lines=plot_lines, f_size=f_size, align_bool=align_bool)
     st.pyplot(fig)
     path_save = ''
     st.write("Pathway visualisation for ", names[0])
     write_pdb_with_pore_surface(path=path_save, name=names[0], end_radius=end_radius, num_circle = 24)
     xyzview = pathway_visu(path=path_save, name=names[0])
-    showmol(xyzview, height=800, width=800)
+    showmol(xyzview, height=500, width=710)
 
     st.subheader("Download HOLE output files")
     df.to_csv('hole_pathway_profile.csv',sep=',')
@@ -133,7 +133,12 @@ if uploaded_files:
     write_pdb_with_ellipsoid_surface(p='', pdbname=names_aligned[0], 
                                      fname=names_aligned[0]+'_pathway_ellipse.txt', num_circle = 24)
     xyzview = pathway_visu(path='', name=names_aligned[0], f_end='_ellipsoid.pdb')
-    showmol(xyzview, height=800, width=800)
+    showmol(xyzview, height=500, width=710)
+
+    ### compare volumes ###
+    res = np.loadtxt(names_aligned[0][:-4] + '.pdb_pathway_ellipse.txt', 
+                 comments='#', delimiter=',')
+    compare_volume(res, digit=1)
 
     ### Download Ellipsoid output###
     st.subheader("Download files for pathway with ellipsoidal probe particle")
@@ -149,7 +154,7 @@ else:
     titles = [r'$\alpha$$\beta$ Heteromeric Glycine Receptor']
 
     labels = [
-        'GlyR-Stry', 
+        '', #'GlyR-Stry', 
         #'GlyR-Gly',
         #'GlyR-Gly-Ivm'
             ]
@@ -162,7 +167,7 @@ else:
                              end_radius=end_radius, 
                        #TMD_lower=59, TMD_higher=97,
                        title=titles[0], 
-                       legend_outside=True,
+                       legend_outside=False,
                        plot_lines=plot_lines,
                        f_size=f_size
                        )
@@ -172,7 +177,7 @@ else:
     # https://github.com/napoles-uach/stmol
     # https://william-dawson.github.io/using-py3dmol.html
     xyzview = pathway_visu(path=path_save, name=names[0])
-    showmol(xyzview, height=800, width=800)
+    showmol(xyzview, height=500, width=710)
 
     ### Ellipsoidal probe particle ###
     st_write_ellipsoid()
@@ -188,11 +193,16 @@ else:
     write_pdb_with_ellipsoid_surface(p='pdb_models/', pdbname='7tu9_aligned_z.pdb',
                                      fname='7tu9_aligned_z.pdb_pathway_ellipse.txt', num_circle = 24)
     xyzview = pathway_visu(path='pdb_models/', name='7tu9_aligned_z.pdb', f_end='_ellipsoid.pdb')
-    showmol(xyzview, height=800, width=800)
+    showmol(xyzview, height=500, width=710)
+
+    ### compare volumes ###
+    res = np.loadtxt('pdb_models/7tu9_aligned_z.pdb_pathway_ellipse.txt', 
+                 comments='#', delimiter=',')
+    compare_volume(res, digit=1)
 
 
 #st.write(os.listdir())
-
+st.subheader("References")
 st.write("Smart, O.S., Neduvelil, J.G., Wang, X., Wallace, B.A., Sansom, M.S.P., 1996. HOLE: A program for the analysis of the pore dimensions of ion channel structural models. Journal of Molecular Graphics 14, 354–360. https://doi.org/10.1016/S0263-7855(97)00009-X")
 st.write("Gowers, R., Linke, M., Barnoud, J., Reddy, T., Melo, M., Seyler, S., Domański, J., Dotson, D., Buchoux, S., Kenney, I., Beckstein, O., 2016. MDAnalysis: A Python Package for the Rapid Analysis of Molecular Dynamics Simulations. Presented at the Python in Science Conference, Austin, Texas, pp. 98–105. https://doi.org/10.25080/Majora-629e541a-00e")
 

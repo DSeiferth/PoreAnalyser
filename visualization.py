@@ -8,6 +8,26 @@ import sys
 sys.path.insert(1, 'ProbeParticleEllipsoid/')
 from ellipse_lib import atom, ellipse
 
+def compare_volume(res, digit):
+    df2 = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
+    z = np.array( df2['z' ] )
+    a = np.array( df2['a' ] )
+    b = np.array( df2['b' ] )
+    dV_ellipse = 0
+    dV_sphere = 0
+    for i in range(1, len(z)-1):
+        mid_z = (z[i]-z[i-1])/2 + (z[i+1]-z[i])/2
+        dV_ellipse += mid_z*np.pi*a[i]*b[i]
+        dV_sphere += mid_z*np.pi*b[i]*b[i]
+    print('dV_sphere', round(dV_sphere,digit), 'Å^3')
+    print('dV_ellipse', round(dV_ellipse,digit), 'Å^3')
+    ratio = dV_ellipse/dV_sphere
+    print('ratio', round(ratio,digit))
+    st.subheader("Comparing pathway with spherical and ellipsoidal probe particles")
+    st.write('Volume of the pathway with spherical probe particle: ',round(dV_sphere,digit) ,r'$\AA^3$')
+    st.write('Volume of the pathway with ellipsoidal probe particle: ',round(dV_ellipse,digit) ,r'$\AA^3$')
+    st.write('Ratio of the volumes:', round(ratio,digit))
+
 def write_pdb_with_pore_surface(path='', name='', end_radius=15, num_circle = 24):
     conf = path + name[:-4] + '.sph'
     top = conf
@@ -147,7 +167,7 @@ def plt_ellipsoid_pathway(df_res, f_size=22, title='', end_radius=15):
 def pathway_visu(path, name, f_end='_circle.pdb'):
     with open(path+name) as ifile:
             system = "".join([x for x in ifile])
-    xyzview = py3Dmol.view(height=800, width=800,) 
+    xyzview = py3Dmol.view(height=500, width=710,) 
     xyzview.addModelsAsFrames(system)
     xyzview.setStyle({'model': -1}, {"cartoon": {'color': 'spectrum'}})
     with open(path+name + f_end) as ifile:
@@ -155,6 +175,12 @@ def pathway_visu(path, name, f_end='_circle.pdb'):
     xyzview.addModelsAsFrames(sph2)
     xyzview.addSurface(py3Dmol.SES,{'opacity':0.9,'color':'lightblue'}, {'model': -1})
     xyzview.zoomTo()
+    xyzview.rotate(90,'y',0)
+    xyzview.render()
+    uri = xyzview.pngURI()
+    print('pngURI', uri)
+    #png =  xyzview.png() # AssertionError: Must instantiate viewer before generating image.
+    #print('png', png)
     return xyzview
 
 def st_write_ellipsoid():

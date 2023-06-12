@@ -7,6 +7,7 @@ import streamlit as st
 import sys
 sys.path.insert(1, 'ProbeParticleEllipsoid/')
 from ellipse_lib import atom, ellipse
+import nglview as nv
 
 def compare_volume(res, digit):
     df2 = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
@@ -164,8 +165,17 @@ def plt_ellipsoid_pathway(df_res, f_size=22, title='', end_radius=15):
     #plt.show()
     return fig
 
-def pathway_visu(path, name, f_end='_circle.pdb'):
-    with open(path+name) as ifile:
+def pathway_visu(path, name, f_end='_circle.pdb', clipping=100):
+    ### clipping ###
+    conf = path+name
+    top = conf
+    u = MDAnalysis.Universe(top, conf, topology_format='pdb', format='pdb')
+    protein = u.select_atoms('protein')
+    COM  = protein.center_of_mass()
+    sel = u.select_atoms('prop x < '+str(COM[0]+clipping) + ' and prop x > '+str(COM[0]-clipping))
+    sel.write(path+name+str(int(clipping))+'.pdb' )
+
+    with open(path+name+str(int(clipping))+'.pdb' ) as ifile:
             system = "".join([x for x in ifile])
     xyzview = py3Dmol.view(height=500, width=710,) 
     xyzview.addModelsAsFrames(system)

@@ -165,12 +165,12 @@ def plt_ellipsoid_pathway(df_res, f_size=22, title='', end_radius=15):
     #plt.show()
     return fig
 
-def pathway_visu(path, name, f_end='_circle.pdb', clipping=100):
+def pathway_visu(path, name, f_end='_circle.pdb', clipping=100, pathway_sel='protein'):
     ### clipping ###
     conf = path+name
     top = conf
     u = MDAnalysis.Universe(top, conf, topology_format='pdb', format='pdb')
-    protein = u.select_atoms('protein')
+    protein = u.select_atoms(pathway_sel)
     COM  = protein.center_of_mass()
     sel = u.select_atoms('prop x < '+str(COM[0]+clipping) + ' and prop x > '+str(COM[0]-clipping))
     sel.write(path+name+str(int(clipping))+'.pdb' )
@@ -179,7 +179,8 @@ def pathway_visu(path, name, f_end='_circle.pdb', clipping=100):
             system = "".join([x for x in ifile])
     xyzview = py3Dmol.view(height=500, width=710,) 
     xyzview.addModelsAsFrames(system)
-    xyzview.setStyle({'model': -1}, {"cartoon": {'color': 'spectrum'}})
+    if 'protein' in pathway_sel: 
+        xyzview.setStyle({'model': -1}, {"cartoon": {'color': 'spectrum'}})
     with open(path+name + f_end) as ifile:
         sph2 = "".join([x for x in ifile])
     xyzview.addModelsAsFrames(sph2)
@@ -192,6 +193,26 @@ def pathway_visu(path, name, f_end='_circle.pdb', clipping=100):
     #png =  xyzview.png() # AssertionError: Must instantiate viewer before generating image.
     #print('png', png)
     return xyzview
+
+def render_visu(path, name, f_end='_circle.pdb',outname=''):
+    u = MDAnalysis.Universe(path+name, topology_format='pdb', format='pdb')
+    u2 = MDAnalysis.Universe(path+name + f_end, topology_format='pdb', format='pdb')
+    v = nv.show_mdanalysis(u.atoms)
+
+    v.clear_representations(component=0)
+    v.add_representation('cartoon', color='blue', component=0)
+    v.add_trajectory(u2.atoms)
+    v.add_surface(component=1,
+                probeRadius=0.1, surfaceType='ms')
+    v._remote_call("setSize", target="Widget", args=["1200px", "800px"])
+    v.control.spin([0, 1, 0], 3.1415/2)
+    v.center()
+    im1 = v.render_image()
+    #v.download_image('nglview'+outname)
+    #v
+    with open('nglview'+outname+'.png', 'wb') as fh:
+        fh.write(im1.value) 
+    print('renderd', im1)
 
 def st_write_ellipsoid():
     st.subheader("Path finding with ellipsoidal probe particle")

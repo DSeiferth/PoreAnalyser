@@ -4,21 +4,21 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from MDAnalysis.analysis import hole2
 
-
-hole_exe = 'hole2//hole'
-sph_proc = 'hole2/sph_process'
+bla = '/biggin/b198/orie4254/Documents/PoreFinding_pdb/'
+hole_exe = bla+'hole2/hole'
+sph_proc = bla+'hole2/sph_process'
 f_size = 18
 
 import warnings; warnings.simplefilter('ignore')
 
-def align_to_z(p, pdb_name, align_bool=True):
+def align_to_z(p, pdb_name, align_bool=True, sel="protein"):
     """
     rotate the principal axes of the molecule to align with Cartesian coordinate system
     """
     conf =  p + pdb_name + '.pdb'
     top = conf
     u = MDAnalysis.Universe(top, conf, topology_format='pdb', format='pdb')
-    protein = u.select_atoms("protein")
+    protein = u.select_atoms(sel)
     if align_bool:
         CA = u.select_atoms("protein and name CA")
         I = CA.moment_of_inertia()
@@ -127,7 +127,7 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
     """
     
     for i in range(len(names)):
-         align_to_z(p=path, pdb_name=names[i][:-4], align_bool=align_bool)
+         align_to_z(p=path, pdb_name=names[i][:-4], align_bool=align_bool, sel=sel)
          names[i] = names[i][:-4] + '_aligned_z.pdb' 
     ### hole analysis ###
     aligned_path = path
@@ -173,20 +173,21 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
     ### visualise pathway ###
     pathways = []
     for count, name in enumerate(names):
-        #try:
+        try:
             print(name, '### visualise pathway ###')
             print('pdbfile=path+name', path+name)
+            print("sphpdb_file=path+name[:-4]+'.sph'", path+name[:-4]+".sph",)
             ha2 =  hole2.hole(
                     pdbfile=path+name ,#+'.pdb',
                     #cpoint='center_of_geometry',
                     executable=hole_exe,
                     #tmpdir=path,
-                    #sph_process=sph_proc,
-                    sphpdb_file=path+name[:-4]+".sph",
+                    #sph_process=sph_proc, #hole() got an unexpected keyword argument 'sph_process'
+                    sphpdb_file=aligned_path+name[:-4]+".sph",
                     end_radius=end_radius,
                     keep_files=True,
                     cvect=[0,0,1],
             )
-        #except:
-        #    print('ERROR with', name, 'no SPH file generated')
+        except:
+            print('ERROR with', name, 'no SPH file generated')
     return fig, df

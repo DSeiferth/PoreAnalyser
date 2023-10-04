@@ -55,8 +55,9 @@ def penalty_overlap_4dim(x, args):
         #print(score)
         return score
     
-def neighbor_vec(universe, probe, probe1, n_xy_fac, out=0, call=0):
-    protein = universe.select_atoms('protein')
+def neighbor_vec(universe, probe, probe1, n_xy_fac, out=0, call=0, pathway_sel='protein'):
+    protein = universe.select_atoms(pathway_sel)
+    print('number of atoms to find pathway', len(protein))
     start_neighbors = time.time()
     n_xy = n_xy_fac*probe.r 
     if out: print('n_xy', n_xy, 'probe.r', probe.r)
@@ -90,7 +91,7 @@ def neighbor_vec(universe, probe, probe1, n_xy_fac, out=0, call=0):
         if out: print('DECREASE n_xy_fac')
         call += 1
         return neighbor_vec(universe, probe, probe1, 0.75*n_xy_fac,
-                                              call=call, out=out)
+                                              call=call, out=out, pathway_sel=pathway_sel)
         print('number of neighbors with R>0' ,len(a_vec), 'n_xy_fac', 0.75*n_xy_fac)
     elif len(a_vec)<30 and call<4:
         #out = 1
@@ -98,7 +99,7 @@ def neighbor_vec(universe, probe, probe1, n_xy_fac, out=0, call=0):
             print('INCREASE n_xy_fac')
         call += 1 
         return neighbor_vec(universe, probe, probe1, 1.25*n_xy_fac,
-                                              call=call, out=out)
+                                              call=call, out=out, pathway_sel=pathway_sel)
         if out: print('number of neighbors with R>0' ,len(a_vec), 'n_xy_fac', 1.25*n_xy_fac)
         #return -1, -1
     elif len(a_vec)<30 and call>4:
@@ -112,7 +113,8 @@ def insert_ellipse(index, dataframe, universe,
                    out=0, plt_path='', rmax=50, 
                    show=0, label=0, n_xy_fac=1.6,
                    timing = 0,
-                   f_size = 22
+                   f_size = 22,
+                   pathway_sel='protein',
                   ):
     """
     Inserts an ellipse into a plot with specified parameters.
@@ -164,7 +166,7 @@ def insert_ellipse(index, dataframe, universe,
     initial_radius = dataframe['r'].loc[index]
 
     ### neighbor vector ###
-    a_vec, neighbour_labels, n_xy = neighbor_vec(universe, probe, probe1, n_xy_fac, out=out)
+    a_vec, neighbour_labels, n_xy = neighbor_vec(universe, probe, probe1, n_xy_fac, out=out, pathway_sel=pathway_sel)
     assert len(a_vec)>2, "in function 'insert_ellipse': len(a_vec)<2="+str(len(a_vec))
 
     fig, ax = plt.subplots()
@@ -311,7 +313,9 @@ def insert_ellipse(index, dataframe, universe,
     return p2, z_slice
 
 def insert_ellipse_async(index, dataframe, universe, out=0, plt_path='', rmax=50, 
-                         show=0, label=0, n_xy_fac=1.6,num_processes=None, timeout=20, f_size=22):
+                         show=0, label=0, n_xy_fac=1.6,num_processes=None, timeout=20, f_size=22,
+                         pathway_sel='protein',
+                         ):
     result_queue = multiprocessing.Queue()  # Queue to store the result
     processed_indices = multiprocessing.Manager().list()  # Shared list to track processed indices
     process_times = multiprocessing.Manager().list()  # Shared list to store process times
@@ -325,7 +329,7 @@ def insert_ellipse_async(index, dataframe, universe, out=0, plt_path='', rmax=50
             return  # Skip already processed indices
         start_time = time.time()  # Start time of the process
         result = insert_ellipse(index, dataframe, universe, out, plt_path, rmax,
-                                show, label, n_xy_fac, f_size=f_size)
+                                show, label, n_xy_fac, f_size=f_size, pathway_sel=pathway_sel)
         elapsed_time = time.time() - start_time  # Elapsed time of the process
         result_queue.put(result)  # Store the result in the queue
         processed_indices.append(index)  # Track the processed index
@@ -375,7 +379,8 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
                       start_index = 50,
                       f_size = 22,
                       out = 0,
-                      n_xy_fac = 1.6
+                      n_xy_fac = 1.6,
+                      pathway_sel='protein',
 
                      ):
     """Generate ellipsoids to represent the pore path of a biomolecule.
@@ -505,7 +510,8 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
         results = insert_ellipse_async(index=vec, dataframe=df2, universe=mer, 
                                        out=out, plt_path=p+pdb_name+'_pathway_slices/',
                                        num_processes=num_processes, timeout=timeout,
-                                       n_xy_fac=n_xy_fac
+                                       n_xy_fac=n_xy_fac,
+                                       pathway_sel=pathway_sel
                                       )   
         #print(results)
         
@@ -524,17 +530,19 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
         start_time = time.time()
         for i in vec:
             #print(df2.iloc[i])
-            try:
+            #try:
                 print('try', i ,df2['resid'].loc[i])
                 e, z = insert_ellipse(index=i, dataframe=df2, universe=mer, 
                                       out=0, show=1,
                                     plt_path=p+pdb_name+'_pathway_slices/',
-                                    R_N=25)
+                                    pathway_sel=pathway_sel,
+                                    #R_N=25
+                                    )
                 position_center = str(e.cx) + ', ' +  str(e.cy) + ', ' + str(z) + ', '
                 param = str(e.a) + ', ' +  str(e.b) + ', ' + str(e.theta) + '\n'
                 f.write(position_center + param)
-            except:
-                failed.append(i)
+            #except:
+            #    failed.append(i)
         print("--- %s seconds --- for insert_ellipse with one worker (not parallel)" % (time.time() - start_time))
     print('failed slices', failed)
     f.close()

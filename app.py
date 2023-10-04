@@ -6,7 +6,7 @@ import MDAnalysis
 from stmol import showmol
 import py3Dmol
 import numpy as np
-from visualization import write_pdb_with_pore_surface, plt_ellipsoid_pathway, pathway_visu, st_write_ellipsoid, write_pdb_with_ellipsoid_surface, example_xy_plane, compare_volume
+from visualization import write_pdb_with_pore_surface, plt_ellipsoid_pathway, pathway_visu, st_write_ellipsoid, write_pdb_with_ellipsoid_surface, example_xy_plane, compare_volume, render_visu
 from download_files import download_output, download_Ellipsoid_output
 
 try:
@@ -54,6 +54,9 @@ if align_bool == 'True':
 else:
     align_bool = False
     st.write('The uploaded protein will not be aligned.')
+string1 = "If uploaded file is no protein use for instance 'resname UNK'"
+pathway_sel = st.text_input(label='Selection to perform HOLE analysis on (default: protein)', value='protein', 
+              help=string1)
 
 st.subheader("Plotting options")
 fig_format = st.text_input(label='Format to download pathway figure', value='png', max_chars=4,
@@ -97,12 +100,14 @@ if uploaded_files:
             f.write(uploaded_file.getbuffer())
     #st.write('Uploaded: names_aligned', names_aligned)
     fig , df = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, title=title,
-                                            legend_outside=False, plot_lines=plot_lines, f_size=f_size, align_bool=align_bool)
+                                            legend_outside=False, plot_lines=plot_lines, f_size=f_size, align_bool=align_bool, 
+                                            sel=pathway_sel
+                                            )
     st.pyplot(fig)
     path_save = ''
     st.write("Pathway visualisation for ", names[0])
     write_pdb_with_pore_surface(path=path_save, name=names[0], end_radius=end_radius, num_circle = 24)
-    xyzview = pathway_visu(path=path_save, name=names[0])
+    xyzview = pathway_visu(path=path_save, name=names[0], pathway_sel=pathway_sel)
     showmol(xyzview, height=500, width=710)
 
     st.subheader("Download HOLE output files")
@@ -117,11 +122,12 @@ if uploaded_files:
     ellipsoid_pathway(p=path_save, 
                         pdb_name = names_aligned[0], 
                         sph_name = names_aligned[0][:-4], 
-                        slice_dz=4, parallel=True, 
+                        slice_dz=4, parallel=True, #True, 
                         num_processes=None, timeout=6, 
                         start_index = 1, end_radius=end_radius-1,
                         out = 0,
-                        n_xy_fac = 1.6
+                        n_xy_fac = 3,#1.6,
+                        pathway_sel=pathway_sel,
                     )
     res = np.loadtxt(path_save + names_aligned[0]+ '_pathway_ellipse.txt', 
                     comments='#', delimiter=',')
@@ -132,7 +138,7 @@ if uploaded_files:
     ### visualization fo ellipsoidal surface ###
     write_pdb_with_ellipsoid_surface(p='', pdbname=names_aligned[0], 
                                      fname=names_aligned[0]+'_pathway_ellipse.txt', num_circle = 24)
-    xyzview = pathway_visu(path='', name=names_aligned[0], f_end='_ellipsoid.pdb')
+    xyzview = pathway_visu(path='', name=names_aligned[0], f_end='_ellipsoid.pdb', pathway_sel=pathway_sel,)
     showmol(xyzview, height=500, width=710)
 
     ### compare volumes ###
@@ -178,6 +184,7 @@ else:
     # https://william-dawson.github.io/using-py3dmol.html
     xyzview = pathway_visu(path=path_save, name=names[0])
     showmol(xyzview, height=500, width=710)
+    render_visu(path='pdb_models/', name='7tu9_aligned_z.pdb')
 
     ### Ellipsoidal probe particle ###
     st_write_ellipsoid()
@@ -194,6 +201,7 @@ else:
                                      fname='7tu9_aligned_z.pdb_pathway_ellipse.txt', num_circle = 24)
     xyzview = pathway_visu(path='pdb_models/', name='7tu9_aligned_z.pdb', f_end='_ellipsoid.pdb')
     showmol(xyzview, height=500, width=710)
+    render_visu(path='pdb_models/', name='7tu9_aligned_z.pdb', f_end='_ellipsoid.pdb', outname='_ellipsoid')
 
     ### compare volumes ###
     res = np.loadtxt('pdb_models/7tu9_aligned_z.pdb_pathway_ellipse.txt', 

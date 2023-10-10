@@ -115,6 +115,7 @@ def insert_ellipse(index, dataframe, universe,
                    timing = 0,
                    f_size = 22,
                    pathway_sel='protein',
+                   opt_method='nelder-mead',
                   ):
     """
     Inserts an ellipse into a plot with specified parameters.
@@ -222,8 +223,8 @@ def insert_ellipse(index, dataframe, universe,
     bnds = ((0, n_xy), (-np.pi, np.pi), (p0.cx-dx, p0.cx+dx), (p0.cy-dx, p0.cy+dx))
     start_opt1 = time.time()
     result = minimize(penalty_overlap_4dim, pt, 
-                      args = [p0.b, a_vec],
-                      method='nelder-mead',
+                      args = [0.9*p0.b, a_vec], ### set smaller radius to 90% to allow for more flexibility
+                      method=opt_method,
                       bounds=bnds,
                       #constraints=constr,
                       options = opt
@@ -256,8 +257,8 @@ def insert_ellipse(index, dataframe, universe,
           }
     start_opt2 = time.time()
     result = minimize(penalty_overlap_4dim, pt, 
-                      args = [p1.b, a_vec],
-                      method='nelder-mead',
+                      args = [0.95*p1.b, a_vec], ### set smaller radius to 90% to allow for more flexibility
+                      method=opt_method,
                       bounds=bnds,
                       #constraints=constr,
                       options = opt
@@ -314,8 +315,7 @@ def insert_ellipse(index, dataframe, universe,
 
 def insert_ellipse_async(index, dataframe, universe, out=0, plt_path='', rmax=50, 
                          show=0, label=0, n_xy_fac=1.6,num_processes=None, timeout=20, f_size=22,
-                         pathway_sel='protein',
-                         ):
+                         pathway_sel='protein', opt_method='nelder-mead'):
     result_queue = multiprocessing.Queue()  # Queue to store the result
     processed_indices = multiprocessing.Manager().list()  # Shared list to track processed indices
     process_times = multiprocessing.Manager().list()  # Shared list to store process times
@@ -329,7 +329,7 @@ def insert_ellipse_async(index, dataframe, universe, out=0, plt_path='', rmax=50
             return  # Skip already processed indices
         start_time = time.time()  # Start time of the process
         result = insert_ellipse(index, dataframe, universe, out, plt_path, rmax,
-                                show, label, n_xy_fac, f_size=f_size, pathway_sel=pathway_sel)
+                                show, label, n_xy_fac, f_size=f_size, pathway_sel=pathway_sel, opt_method=opt_method)
         elapsed_time = time.time() - start_time  # Elapsed time of the process
         result_queue.put(result)  # Store the result in the queue
         processed_indices.append(index)  # Track the processed index
@@ -381,6 +381,7 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
                       out = 0,
                       n_xy_fac = 1.6,
                       pathway_sel='protein',
+                      opt_method='nelder-mead',
 
                      ):
     """Generate ellipsoids to represent the pore path of a biomolecule.
@@ -511,7 +512,7 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
                                        out=out, plt_path=p+pdb_name+'_pathway_slices/',
                                        num_processes=num_processes, timeout=timeout,
                                        n_xy_fac=n_xy_fac,
-                                       pathway_sel=pathway_sel
+                                       pathway_sel=pathway_sel, opt_method=opt_method
                                       )   
         #print(results)
         
@@ -536,6 +537,7 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
                                       out=0, show=1,
                                     plt_path=p+pdb_name+'_pathway_slices/',
                                     pathway_sel=pathway_sel,
+                                    opt_method=opt_method,
                                     #R_N=25
                                     )
                 position_center = str(e.cx) + ', ' +  str(e.cy) + ', ' + str(z) + ', '

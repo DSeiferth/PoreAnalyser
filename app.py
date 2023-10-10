@@ -74,9 +74,6 @@ title = st.text_input(label='Write a title for your plot', value='', help='Title
 f_size = st.text_input(label='Font size for figure', value='22', help='default=22')
 f_size = int(f_size)
 
-st.subheader("Upload pdb file(s)")
-uploaded_files = st.file_uploader("Choose a file", label_visibility="visible",  accept_multiple_files=True )
-
 st.subheader("Pathfinding with a spherical probe particle (HOLE)")
 string1 = "HOLE is a program that allows the analysis and visualisation of the pore dimensions of the holes "
 string2 = "through molecular structures of ion channels (Smart et al., 1996)."
@@ -85,7 +82,23 @@ string1 = "Here, we use the MDAnalysis interface for HOLE to analyse an ion chan
 string2 = "The original HOLE documentation can be found here: https://www.holeprogram.org"
 st.write(string1+string2)
 
-st.write('First, we align the principal axis to the z-axis.')
+st.subheader("Pathfinding with an ellipsoidal probe particle")
+
+string1 = "Choose a optimization method for growing the ellipsoidal probe particle, maximising the pore radius. "
+opt_method = st.text_input(label='Minimization method (default: nelder-mead, alternatives: Powell, ...)', value='nelder-mead', 
+              help=string1)
+st.write('You have chosen: ', opt_method)
+
+str0 = 'General procedure to grow an ellipsoidal probe particle based on a spherical probe particle:\n'
+str1 = 'Loop through all spherical probe particles:\n'
+str2 = 'a) Ellipsoid initialized with spherical probe particle parameters from HOLE output.\n'
+str3 = 'b) First Nelder-Mead 4-dim optimization to insert ellipsoid with smaller bounds for parameters [x, y, r1, θ ].\n'
+str4 = 'c) Second optimization with larger boundaries for parameters to further increase ellipsoid. The loop takes around 60s to complete...'
+st.write(str0+str1+str2+str3+str4)
+
+
+st.subheader("Upload pdb file(s)")
+uploaded_files = st.file_uploader("Choose a file", label_visibility="visible",  accept_multiple_files=True )
 
 labels = []
 names = []
@@ -99,6 +112,7 @@ if uploaded_files:
         with open(uploaded_file.name,"wb") as f:
             f.write(uploaded_file.getbuffer())
     #st.write('Uploaded: names_aligned', names_aligned)
+    if align_bool: st.write('First, we align the principal axis to the z-axis.')
     fig , df = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, title=title,
                                             legend_outside=False, plot_lines=plot_lines, f_size=f_size, align_bool=align_bool, 
                                             sel=pathway_sel
@@ -128,9 +142,11 @@ if uploaded_files:
                         out = 0,
                         n_xy_fac = 3,#1.6,
                         pathway_sel=pathway_sel,
+                        opt_method=opt_method,
                     )
     res = np.loadtxt(path_save + names_aligned[0]+ '_pathway_ellipse.txt', 
                     comments='#', delimiter=',')
+    print('res.shape',res.shape)
     df_res = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
     df_res.sort_values('z', inplace=True)
     fig = plt_ellipsoid_pathway(df_res, f_size=f_size, title=title, end_radius=end_radius)
@@ -156,6 +172,7 @@ if uploaded_files:
 else:
     st.markdown("Example application with 7tu9")
     st.write("Example Filename: ", "pdb_models/7tu9.pdb")
+    if align_bool: st.write('First, we align the principal axis to the z-axis.')
     path_save = 'pdb_models/'
     titles = [r'$\alpha$$\beta$ Heteromeric Glycine Receptor']
 

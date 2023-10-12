@@ -57,7 +57,7 @@ def penalty_overlap_4dim(x, args):
     
 def neighbor_vec(universe, probe, probe1, n_xy_fac, out=0, call=0, pathway_sel='protein'):
     protein = universe.select_atoms(pathway_sel)
-    print('number of atoms to find pathway', len(protein))
+    if out: print('number of atoms to find pathway', len(protein))
     start_neighbors = time.time()
     n_xy = n_xy_fac*probe.r 
     if out: print('n_xy', n_xy, 'probe.r', probe.r)
@@ -170,6 +170,13 @@ def insert_ellipse(index, dataframe, universe,
     a_vec, neighbour_labels, n_xy = neighbor_vec(universe, probe, probe1, n_xy_fac, out=out, pathway_sel=pathway_sel)
     assert len(a_vec)>2, "in function 'insert_ellipse': len(a_vec)<2="+str(len(a_vec))
 
+    ### does HOLE have overlap already ????
+    r = probe.r 
+    while penalty_overlap_4dim([r, 0, probe.x, probe.y], [r, a_vec]) > 0:
+        print('PROBE overlap', r, '->', 0.9*r, 'z', probe.z )
+        r = 0.95*r
+    probe.r = r
+
     fig, ax = plt.subplots()
     plt.gca().set_aspect('equal', adjustable='box')
     
@@ -206,72 +213,122 @@ def insert_ellipse(index, dataframe, universe,
     #      'probe radius=', probe.r)
 
     ### Nelder mead optimisation ###
+    def optimisation_ellipsoid(ax, p0, a_vec, dx, rad_fac, pt, opt, bnds, timing, opt_method, col='green' ):
+        start_opt1 = time.time()
+        result = minimize(penalty_overlap_4dim, pt, 
+                        args = [rad_fac*p0.b, a_vec], ### set smaller radius to 90% to allow for more flexibility
+                        method=opt_method,
+                        bounds=bnds,
+                        #constraints=constr,
+                        options = opt
+                        #tol=1e-10
+                        )
+        end = time.time()
+        if timing: print("TIME(start_opt1)=",end - start_opt1)
+
+        sol = result['x']
+        if out: print(result) #result
+        p1 = ellipse(a=sol[0], b=p0.b, theta=sol[1],
+                     cx=sol[2], cy=sol[3], 
+                     #cx= p0.cx, cy= p0.cy
+                     )
+        x1, y1 = p1.draw()
+        ax.plot(p1.cx, p1.cy, '-x', color=col)
+        if result['fun'] > 0:
+            print('ERROR: overlap', result['fun'])
+            ax.plot(x1, y1, '--', color=col)
+            return p0 #-1, -1
+        else:
+            ax.plot(x1, y1, color=col)
+            if out: print('4d optimisation small variation of center (r, theta, x, y)', sol)
+        return p1
+
     # https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.NonlinearConstraint.html#scipy.optimize.NonlinearConstraint
     ### 4d with small variation ###
     dx = 0.1*p0.a ### boundary for center of ellipse ###
-    pt = [p0.a, 0,  p0.cx, p0.cy]
-    opt = {'maxiter': 800, # Maximum allowed number of iterations and function evaluations. Will default to N*200, where N is the number of variables
-           #'xatol': 0.00001, # Absolute error in xopt between iterations that is acceptable for convergence.
-           #'fatol': 0.00001, # Absolute error in func(xopt) between iterations that is acceptable for convergence.
-           'adaptive': True, #Adapt algorithm parameters to dimensionality of problem. Useful for high-dimensional minimization 
-           'initial_simplex':[pt, [p0.a+0.1, np.pi/4, p0.cx, p0.cy], 
-                              [p0.a+0.11, np.pi/2, p0.cx, p0.cy],
-                              [p0.a+0.12, np.pi/4, p0.cx+dx/2, p0.cy+dx/2],
-                              [p0.a+0.13, np.pi/2, p0.cx-dx/2, p0.cy-dx/2]]
-          }
+    #rad_fac = 0.8 # set radius to 95% of HOLE output to allow for more flexibility 
+
+    opt = {}
+    if 'nelder' in opt_method:
+        #'xatol': 0.00001, # Absolute error in xopt between iterations that is acceptable for convergence.
+        #'fatol': 0.00001, # Absolute error in func(xopt) between iterations that is acceptable for convergence.
+        rad_fac = [0.9, 0.99]
+        dr = 0.15 # for second optimisation
+        opt['maxiter'] = 800 # Maximum allowed number of iterations and function evaluations. Will default to N*200, where N is the number of variables
+        opt['adaptive'] = True # Adapt algorithm parameters to dimensionality of problem. Useful for high-dimensional minimization 
+        opt_init = 'initial_simplex'
+    elif 'powell' in opt_method:
+        rad_fac = [0.8, 0.9]
+        dr = 1
+        opt_init = 'direc'
+        opt['maxiter'] = 4*1000 # Will default to N*1000, where N is the number of variables
+    else:
+        opt_init = ''
+    pt = [rad_fac[0]*p0.a, 0,  p0.cx, p0.cy] # starting point =  HOLE output
     # (p0.a, rmax)
     bnds = ((0, n_xy), (-np.pi, np.pi), (p0.cx-dx, p0.cx+dx), (p0.cy-dx, p0.cy+dx))
-    start_opt1 = time.time()
-    result = minimize(penalty_overlap_4dim, pt, 
-                      args = [0.9*p0.b, a_vec], ### set smaller radius to 90% to allow for more flexibility
-                      method=opt_method,
-                      bounds=bnds,
-                      #constraints=constr,
-                      options = opt
-                      #tol=1e-10
-                     )
-    end = time.time()
-    if timing: print("TIME(start_opt1)=",end - start_opt1)
 
-    sol = result['x']
-    if result['fun'] > 0:
-        print('ERROR: overlap', result['fun'])
-        return -1, -1
-    if out: print(result)
-    if out: print('4d optimisation small variation of center (r, theta, x, y)', sol) #result
-    p1 = ellipse(a=sol[0], b=p0.b, theta=sol[1], cx= p0.cx, cy= p0.cy)
-    x1, y1 = p1.draw()
-    ax.plot(x1, y1, color='green')
-    ax.plot(p1.cx, p1.cy, '-x', color='green')
+    opt_HOLE = opt.copy()
+    opt_HOLE[opt_init] = [pt, [p0.a+0.1, np.pi/4, p0.cx, p0.cy], 
+                                [p0.a+0.11, np.pi/2, p0.cx, p0.cy],
+                                [p0.a+0.12, np.pi/4, p0.cx+dx/2, p0.cy+dx/2],
+                                [p0.a+0.13, np.pi/2, p0.cx-dx/2, p0.cy-dx/2]]
+    
+    p1_HOLE = optimisation_ellipsoid(ax=ax, p0=p0, a_vec=a_vec, dx=dx, rad_fac=rad_fac[0], 
+                                pt=pt, opt=opt_HOLE, bnds=bnds, timing=timing, opt_method=opt_method,
+                                 col='green' )
+    
+
+    COG = [0,0]
+    len_a_vec = len(a_vec)
+    for a in a_vec:
+        COG[0] += a.x
+        COG[1] += a.y
+    COG[0] = COG[0]/len_a_vec
+    COG[1] = COG[1]/len_a_vec
+    print('COG', COG, p0.cx, p0.cy )
+    p0_COG = ellipse(a=probe.r, b=probe.r, theta=0, cx=COG[0], cy=COG[1])
+    pt_COG = [rad_fac[0]*p0.a, 0,  COG[0], COG[1] ]
+
+    opt_COG = opt.copy()
+    opt_COG[opt_init] = [pt_COG, [p0_COG.a+0.13, -np.pi/4, p0_COG.cx, p0_COG.cy], 
+                                [p0_COG.a+0.12, np.pi/2, p0_COG.cx, p0_COG.cy],
+                                [p0_COG.a+0.11, -np.pi/4, p0_COG.cx+dx/2, p0_COG.cy+dx/2],
+                                [p0_COG.a+0.10, np.pi/2, p0_COG.cx-dx/2, p0_COG.cy-dx/2]]
+
+    p1_COG = optimisation_ellipsoid(ax, p0_COG, a_vec, dx, rad_fac[0], pt_COG, opt_COG, bnds, timing, opt_method,
+                                 col='yellow' )
+    print('p1_HOLE',p1_HOLE.a)
+    print('p1_COG', p1_COG.a)
+    # comparing COG and HOLE starting point increases ratio from 2.0 to 2.3 for CNT 10x50 ratio 1/2
+    # rad_fac 0.9 and 0.95
+    if p1_COG.a > p1_HOLE.a:
+        p1 = p1_COG
+    else:
+        p1 = p1_HOLE
 
     ### 4d optimisation works better without initial simplex ###
-    dx = 0.5*p1.a # 3 ### boundary for center of ellipse ###
-    bnds = ((p1.a, n_xy), (-np.pi, np.pi), (p0.cx-dx, p0.cx+dx), (p0.cy-dx, p0.cy+dx))
-    pt = [p1.a, p1.theta, p1.cx, p1.cy ] #p0.cx, p0.cy -1,-1
-    opt = {'maxiter': 800, # Maximum allowed number of iterations and function evaluations. Will default to N*200, where N is the number of variables
-           'adaptive': True, #Adapt algorithm parameters to dimensionality of problem. Useful for high-dimensional minimization 
-           #'initial_simplex':[pt, [p1.a+0.1,  p1.theta+np.pi/4, p1.cx, p1.cy], 
-           #                   [p1.a+0.15,  p1.theta+np.pi/2, p1.cx, p1.cy],
-           #                   [p1.a+0.2,  p1.theta+np.pi/6, p1.cx, p1.cy],
-           #                   [p1.a+0.25,  p1.theta+np.pi/3, p1.cx, p1.cy]]
-          }
-    start_opt2 = time.time()
-    result = minimize(penalty_overlap_4dim, pt, 
-                      args = [0.95*p1.b, a_vec], ### set smaller radius to 90% to allow for more flexibility
-                      method=opt_method,
-                      bounds=bnds,
-                      #constraints=constr,
-                      options = opt
-                      #tol=1e-10
-                     )
-    end = time.time()
-    if timing:  print("TIME(start_opt2)=",end - start_opt2)
-    sol = result['x']
-    if out: print('4d optimisation large variation of center (r, theta, x, y)', sol)
+    vec_long_axis = np.array([p1.cx-p0.cx, p1.cy-p0.cy]) # TO DO: theta
+    ### claculate vector along long axis ###
 
-    p2 = ellipse(a=sol[0], b=p0.b, theta=sol[1], cx=sol[2], cy=sol[3])
-    x2, y2 = p2.draw()
-    ax.plot(p2.cx, p2.cy, '-x', color='brown')
+
+    dx = 0.5*p1.a # 3 ### boundary for center of ellipse ###
+    bnds =  ((p1.a, n_xy), (-np.pi, np.pi), (p0.cx-dx, p0.cx+dx), (p0.cy-dx, p0.cy+dx))
+    #rad_fac = 0.9 # set radius to 97% of previous optimisation to allow for more flexibility 
+    pt = [rad_fac[1]*p1.a, p1.theta, p1.cx, p1.cy ] #p0.cx, p0.cy -1,-1
+    axis1 = [p1.a*np.cos(p1.theta), p1.a*np.sin(p1.theta)]
+    axis2 = [-p1.b*np.sin(p1.theta), p1.b*np.cos(p1.theta)]
+    opt2 = opt.copy()
+    opt2[opt_init] = [pt, 
+                             [rad_fac[1]*p1.a, p1.theta, p1.cx+dr/p1.a*axis1[0], p1.cy+dr/p1.a*axis1[1]],
+                             [rad_fac[1]*p1.a, p1.theta, p1.cx-dr/p1.a*axis1[0], p1.cy-dr/p1.a*axis1[1]],
+                             [rad_fac[1]*p1.a, p1.theta, p1.cx+dr/p1.b*axis2[0], p1.cy+dr/p1.b*axis2[1]],
+                             [rad_fac[1]*p1.a, p1.theta, p1.cx-dr/p1.b*axis2[0], p1.cy-dr/p1.b*axis2[1]],
+                            ]
+    p2 = optimisation_ellipsoid(ax=ax, p0=p1, a_vec=a_vec, dx=dx, rad_fac=rad_fac[1], 
+                                pt=pt, opt=opt2, bnds=bnds, timing=timing , opt_method=opt_method,
+                                col='brown')
+
     ax.set_xlabel(r"x ($\AA$)", fontsize=f_size)
     ax.set_ylabel(r"y ($\AA$)", fontsize=f_size)
     ax.tick_params(axis='both', which='major', labelsize=f_size)
@@ -282,16 +339,16 @@ def insert_ellipse(index, dataframe, universe,
     if dist_prev > max(p0.b, 7) or p2.a/p1.a > 1.5:
         print('ATTENTION', 'dist_prev > p0.b', dist_prev , p0.b, 'at z=',z_slice, '\n')
         p2 = p1
-        ax.plot(x2, y2, '--',color='brown')
-    elif len(a_vec) < 30:
+        #ax.plot(x2, y2, '--',color='brown')
+    if len(a_vec) < 30:
         p2 = p1
         print('ATTENTION', 'number of neighbors low', len(a_vec), 'at z=',z_slice, '\n')
-        ax.plot(x2, y2, '--',color='brown')
+        #ax.plot(x2, y2, '--',color='brown')
         if p1.a > 3*p0.a:
             print('ERROR: 1st opimisation p1.a', p1.a, '>3*p0.a, p0.a=',p0.a,  'at z=',z_slice, '\n' )
             return -1, -1
-    else:
-        ax.plot(x2, y2, color='brown')
+    #else:
+        #ax.plot(x2, y2, color='brown')
     
     if label: 
         xlim = ax.get_xlim()

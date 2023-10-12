@@ -162,6 +162,12 @@ if uploaded_files:
                  comments='#', delimiter=',')
     compare_volume(res, digit=1)
 
+    ### compare mean and standard deviation of two radii ###
+    a = df_res['a']
+    b = df_res['b']
+    st.write('Mean and standard deviation of larger radius:',np.mean(a), np.std(a))
+    st.write('Mean and standard deviation of smaller radius:', np.mean(b), np.std(b))
+
     ### Download Ellipsoid output###
     st.subheader("Download files for pathway with ellipsoidal probe particle")
     fn ="ellipsoid_pathway_profile."+fig_format

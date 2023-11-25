@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from MDAnalysis.analysis import hole2
 
-bla = '' #/biggin/b198/orie4254/Documents/PoreFinding_pdb/'
+#bla = '/biggin/b198/orie4254/Documents/PoreFinding_pdb/' # when loading module
+bla = '' # for using streamlit app
 hole_exe = bla+'hole2/hole'
 sph_proc = bla+'hole2/sph_process'
 f_size = 18
@@ -177,6 +178,7 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
             print(name, '### visualise pathway ###')
             print('pdbfile=path+name', path+name)
             print("sphpdb_file=path+name[:-4]+'.sph'", path+name[:-4]+".sph",)
+            print(aligned_path+name[:-4]+".sph")
             ha2 =  hole2.hole(
                     pdbfile=path+name ,#+'.pdb',
                     #cpoint='center_of_geometry',

@@ -165,8 +165,8 @@ if uploaded_files:
     ### compare mean and standard deviation of two radii ###
     a = df_res['a']
     b = df_res['b']
-    st.write('Mean and standard deviation of larger radius:',np.mean(a), np.std(a))
-    st.write('Mean and standard deviation of smaller radius:', np.mean(b), np.std(b))
+    st.write('Median',np.mean(a),'Mean and standard dev. of larger radius:',np.mean(a), np.std(a), 'min', min(a), 'max' , max(a) )
+    st.write('Median',np.mean(b),'Mean and standard dev.of smaller radius:', np.mean(b), np.std(b), 'min', min(b), 'max' , max(b) )
 
     ### Download Ellipsoid output###
     st.subheader("Download files for pathway with ellipsoidal probe particle")

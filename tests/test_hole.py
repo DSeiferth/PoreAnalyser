@@ -1,7 +1,7 @@
 import unittest
 #import PoreFinding_pdb as pf 
 import sys
-sys.path.append('../')
+#sys.path.append('../')
 import hole_analysis as hole_analysis
 import numpy as np
 

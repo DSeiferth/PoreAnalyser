@@ -14,14 +14,25 @@ import os
 
 def penalty_overlap_4dim(x, args):
     '''
-    x: 4-dim vec
-    0) radius to expand 
-    1) angle
-    2)-3) position of centre
-    args: 
-    0) constant radius
-    1) vec with surroundings vdw-spheres
-    3) stop_loop=True
+    Parameters:
+    - x (list): A 4-dimensional vector representing the parameters of the ellipse.
+        - x[0]: Radius to expand.
+        - x[1]: Angle of rotation.
+        - x[2]: x-coordinate of the center.
+        - x[3]: y-coordinate of the center.
+    - args (tuple): A tuple of arguments.
+        - args[0]: Constant radius used in the creation of the ellipse.
+        - args[1]: List of Sphere objects representing the surroundings of the ellipse.
+        - args[2] (optional): Boolean flag indicating whether to stop the loop upon detecting an overlap. Default is True.
+            - if True: return a high penalty if any overlap is detected.
+            - if False: return the absolute value of the minimum distance between the ellipse and the spheres if we have an overlap.
+    Returns:
+    float: The penalty score based on the conditions specified.
+
+    Notes:
+    This function creates an Ellipse object using the input parameters and evaluates the overlap penalty with a set of vdW spheres.
+    The penalty is calculated based on the minimum distance between the ellipse and the spheres. If the stop_loop flag is set to True,
+    the function returns a high (positive) penalty if any overlap is detected. 
     '''
     e1 = ellipse(a=x[0], b=args[0], theta=x[1], cx=x[2], cy=x[3])
     a_vec = args[1]
@@ -56,6 +67,34 @@ def penalty_overlap_4dim(x, args):
         return score
     
 def neighbor_vec(universe, probe, probe1, n_xy_fac, out=0, call=0, pathway_sel='protein'):
+    """
+    Identify neighboring atoms within a specified spatial range around a probe in a molecular system.
+
+    Parameters:
+    - universe (MDAnalysis.universe): The molecular dynamics universe representing the system.
+    - probe (Sphere): A Sphere object representing the central probe.
+    - probe1 (MDAnalysis AtomGroup): AtomGroup representing the probe atoms from initial HOLE run (resname SPH).
+    - n_xy_fac (float): The factor used to determine the spatial range in the xy-plane around the probe.
+    - out (int, optional): An integer flag indicating whether to print debugging information. Default is 0 (no printing).
+    - call (int, optional): An integer indicating the recursive call level. Default is 0.
+    - pathway_sel (str, optional): The selection string to identify the pathway in the molecular system. Default is 'protein'.
+
+    Returns:
+    tuple: A tuple containing:
+        - list: A list of Atom objects representing neighboring atoms within the specified range.
+        - list: A list of strings representing labels for the neighboring atoms.
+        - float: The spatial range (n_xy) used for the neighbor search.
+
+    Notes:
+    This function identifies neighboring atoms around a central probe within the specified spatial range.
+    The spatial range is determined in the xy-plane based on the probe's radius and the given factor (n_xy_fac).
+    The selection is performed within the specified pathway (default is 'protein').
+
+    If the number of neighboring atoms is too large (greater than 150) and the recursive call level is less than 4,
+    the function reduces the spatial range (n_xy_fac) and makes a recursive call to refine the selection.
+    If the number of neighboring atoms is too small (less than 30) and the recursive call level is less than 4,
+    the function increases the spatial range and makes a recursive call to expand the selection.
+    """ 
     protein = universe.select_atoms(pathway_sel)
     if out: print('number of atoms to find pathway', len(protein))
     start_neighbors = time.time()

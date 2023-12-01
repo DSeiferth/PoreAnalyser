@@ -36,6 +36,26 @@ class ellipse:
         return x1, y1
     
 def distance_ellipse(semi_major, semi_minor, p):
+    """
+    Calculate the closest point on an ellipse to a given point in 2D space.
+
+    Parameters:
+    - semi_major (float): Length of the semi-major axis of the ellipse.
+    - semi_minor (float): Length of the semi-minor axis of the ellipse.
+    - p (tuple): A tuple representing the coordinates (x, y) of the point in 2D space.
+
+    Returns:
+    tuple: A tuple representing the coordinates (x, y) of the closest point on the ellipse to the given point.
+
+    Reference:
+    This function is based on the method described in the following blog post:
+    "A simple method for distance to ellipse"
+    https://blog.chatfield.io/simple-method-for-distance-to-ellipse/
+
+    Example:
+    >>> distance_ellipse(3.0, 2.0, (1.0, 1.0))
+    (1.2487110341841325, 1.8185123044348084)
+    """
     ### https://blog.chatfield.io/simple-method-for-distance-to-ellipse/ ###
     px = abs(p[0])
     py = abs(p[1])
@@ -70,6 +90,38 @@ def distance_ellipse(semi_major, semi_minor, p):
     return (math.copysign(x, p[0]), math.copysign(y, p[1]))
 
 def dist_ellipse_vdwSphere(ellipse, sphere, plot=0):
+    """
+    Calculate the distance between an ellipse and a sphere, considering the van der Waals (vdW) radius of the sphere.
+
+    Parameters:
+    - ellipse (Ellipse): An Ellipse object representing the ellipse in 2D space.
+    - sphere (Sphere): A Sphere object representing the sphere in 2D space, with attributes x, y (center coordinates) and r (radius).
+    - plot (int, optional): An integer flag indicating whether to plot the result. Default is 0 (no plot).
+
+    Returns:
+    float: The distance between the ellipse and the sphere, taking into account the van der Waals radius.
+
+    Notes:
+    The function first checks if the center of the sphere is inside the ellipse. If so, the distance is considered as the negative of the sphere's radius.
+
+    The distance is calculated by transforming the coordinates of the sphere to the ellipse's local coordinate system, finding the closest point on the ellipse,
+    and then transforming the closest point back to the global coordinate system. The distance is the difference between the transformed closest point and the sphere's center,
+    considering the sphere's radius.
+
+    The van der Waals (vdW) radius of the sphere is taken into account when calculating the distance.
+
+    Example 1:
+    >>> ellipse = e_lib.ellipse(a=3.0, b=2.0, cx=0.0, cy=0.0, theta=0.0)
+    >>> sphere = e_lib.atom(x=1.0, y=1.0, r=0.5)
+    >>>  e_lib.dist_ellipse_vdwSphere(ellipse, sphere, plot=0)
+    -0.5 # distance between the ellipse and the sphere
+
+    Example 2:
+    >>> ellipse = e_lib.ellipse(a=3.0, b=2.0, cx=5.0, cy=5.0, theta=0.0)
+    >>> sphere = e_lib.atom(x=1.0, y=1.0, r=0.5)
+    >>> e_lib.dist_ellipse_vdwSphere(ellipse, sphere, plot=0)
+    2.6950072040653335
+    """
     ### test if center in ellispse ###
     if ellipse.on_ellipse(sphere.x,sphere.y):
         #print('vdw center in ellipse')

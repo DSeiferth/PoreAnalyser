@@ -6,11 +6,10 @@ import matplotlib.pyplot as plt
 try:
     import multiprocessing 
     print("Number of processors: ", multiprocessing.cpu_count())
-    #st.write("Number of processors: ", multiprocessing.cpu_count())
     parallel = True
 except:
     parallel = False
-    st.write("Could not import multiprocessing library, => multiprocessing disabled")
+    print("Could not import multiprocessing library, => multiprocessing disabled")
 import sys
 sys.path.append('ProbeParticleEllipsoid/')
 from ellipsoid_optimisation import ellipsoid_pathway

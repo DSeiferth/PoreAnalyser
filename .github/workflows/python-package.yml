@@ -37,6 +37,11 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Set execute permissions
       run: chmod +x hole2/hole
+    - name: Debugging Output
+      run: |
+        ls -la /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/hole2/
+        echo "Current directory: $(pwd)"
+        ./home/runner/work/PoreFinding_pdb/PoreFinding_pdb/hole2/hole
     - name: Test with unittest
       run: |
         python -m unittest 

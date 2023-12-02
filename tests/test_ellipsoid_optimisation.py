@@ -1,13 +1,11 @@
 import unittest
-#import PoreFinding_pdb as pf 
 import numpy as np
 import sys
+import MDAnalysis
+import pandas as pd
 sys.path.append('ProbeParticleEllipsoid/')
 import ellipsoid_optimisation as e_opt 
 import ellipse_lib as e_lib
-
-import MDAnalysis
-import pandas as pd
 
 
 class penalty_overlap_4dim_Test(unittest.TestCase):
@@ -19,45 +17,46 @@ class penalty_overlap_4dim_Test(unittest.TestCase):
         Tests penalty_overlap_4dim function.
         """
         # Create test data
-        a_vec = [e_lib.atom(x=3.8,y=4.8,r=2), e_lib.atom(-1,-3,r=2.7), 
-                 e_lib.atom(-4,4,r=1), e_lib.atom(7,2,r=1), 
-                 e_lib.atom(7.9,-1,r=1.5), e_lib.atom(-3,1,r=1), 
-                 e_lib.atom(-0.0,4.8,r=1.3), e_lib.atom(3,-2.9,r=1.0)]
-        probe = e_lib.atom(2,1,r=2)
+        a_vec = [e_lib.atom(x=3.8, y=4.8, r=2), e_lib.atom(-1, -3, r=2.7), 
+                 e_lib.atom(-4, 4, r=1), e_lib.atom(7, 2, r=1), 
+                 e_lib.atom(7.9, -1, r=1.5), e_lib.atom(-3, 1, r=1), 
+                 e_lib.atom(-0.0, 4.8, r=1.3), e_lib.atom(3, -2.9, r=1.0)]
+        probe = e_lib.atom(2, 1, r=2)
         # Test function for no overlap
         x = [probe.r, 0, probe.x, probe.y]
         args = [probe.r, a_vec, True]
         penalty = e_opt.penalty_overlap_4dim(x, args)
         # Test results for no overlap
-        self.assertEqual(penalty, -probe.r ) # no  overlap => penalty is negative radius
+        self.assertEqual(penalty, -probe.r)  # no  overlap => penalty is negative radius
 
-        ### overlap with stop_Loop ###
+        # ## overlap with stop_Loop ###
         x = [3, 0, probe.x, probe.y]
         args = [probe.r, a_vec, True]
         penalty = e_opt.penalty_overlap_4dim(x, args)
-        self.assertEqual(penalty, 1000000000.0 )
+        self.assertEqual(penalty, 1000000000.0)
 
-        ### overlap with stop_Loop=False  ###
+        # ## overlap with stop_Loop=False  ###
         x = [3, 0, probe.x, probe.y]
-        args = [probe.r, a_vec, False ]
+        args = [probe.r, a_vec, False]
         penalty = e_opt.penalty_overlap_4dim(x, args)
-        self.assertEqual(penalty, 0.01671842700018855 )
+        self.assertEqual(penalty, 0.01671842700018855)
+
 
 class neighbor_vec_Test(unittest.TestCase):
     def test_neighbor_vec(self):
         """
         Tests neighbor_vec function.
         """
-        ### load data from GlyR model ###
+        # ## load data from GlyR model ###
         p = 'pdb_models/'
         name = '7tu9a_aligned_z'
         end_radius = 20
         
         conf = p + name + '.sph'
         top = conf
-        sph = MDAnalysis.Universe(top, conf, topology_format='pdb', format='pdb') # tpr_resid_from_one=True
+        sph = MDAnalysis.Universe(top, conf, topology_format='pdb', format='pdb')
 
-        conf =  p + name + '.pdb' 
+        conf = p + name + '.pdb' 
         top = conf
         u = MDAnalysis.Universe(top, conf, topology_format='pdb', format='pdb')
 
@@ -77,7 +76,6 @@ class neighbor_vec_Test(unittest.TestCase):
         y_coordinates = np.array(y_coordinates)
         z_coordinates = np.array(z_coordinates)
 
-
         ind_sort = np.argsort(z_coordinates)
         x_coordinates = x_coordinates[ind_sort]
         y_coordinates = y_coordinates[ind_sort]
@@ -85,12 +83,11 @@ class neighbor_vec_Test(unittest.TestCase):
         radii = radii[ind_sort]
         resids = resids[ind_sort]
 
-
-        d = {'x': x_coordinates, 'y': y_coordinates,'z': z_coordinates, 'r': radii, 'resid': resids}
+        d = {'x': x_coordinates, 'y': y_coordinates, 'z': z_coordinates, 'r': radii, 'resid': resids}
         df = pd.DataFrame(data=d)
-        df2 = df[(df['r']<end_radius) ]
+        df2 = df[(df['r'] < end_radius)]
 
-        ### prepare input for function ###
+        # ## prepare input for function ###
         dataframe = df2
         index = 500
         universe = mer
@@ -102,16 +99,16 @@ class neighbor_vec_Test(unittest.TestCase):
                         z=dataframe['z'].loc[index],
                         r=dataframe['r'].loc[index])
             
-        n_xy_fac=1.6
+        n_xy_fac = 1.6
         out = 0 
         pathway_sel = 'protein'
 
         a_vec, neighbour_labels, n_xy = e_opt.neighbor_vec(universe, probe, probe1, n_xy_fac, 
                                                         out=out, pathway_sel=pathway_sel)
         
-        self.assertEqual(len(a_vec), 53 )
-        self.assertEqual(len(neighbour_labels), 53 )
-        self.assertEqual(neighbour_labels[0], 'SER 294', )
+        self.assertEqual(len(a_vec), 53)
+        self.assertEqual(len(neighbour_labels), 53)
+        self.assertEqual(neighbour_labels[0], 'SER 294')
         self.assertEqual(n_xy,  9.843750298023224)
 
         self.assertEqual(a_vec[0].r, 0.8043274957461098)

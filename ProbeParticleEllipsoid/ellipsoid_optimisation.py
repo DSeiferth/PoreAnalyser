@@ -12,6 +12,7 @@ import multiprocessing
 import time
 import os
 
+
 def penalty_overlap_4dim(x, args):
     '''
     Parameters:
@@ -37,7 +38,7 @@ def penalty_overlap_4dim(x, args):
     e1 = ellipse(a=x[0], b=args[0], theta=x[1], cx=x[2], cy=x[3])
     a_vec = args[1]
     if len(args)!=3:
-        stop_loop=True 
+        stop_loop = True 
     else:
         stop_loop = args[2]
     #print('ellipse: a', e1.a, 'b', e1.b, 'theta', e1.theta, 'center', e1.cx, e1.cy)
@@ -46,7 +47,7 @@ def penalty_overlap_4dim(x, args):
     for i, atom in enumerate(a_vec):
         dist[i] = dist_ellipse_vdwSphere(ellipse=e1, sphere=atom)
         if stop_loop: ### make overlap costly and avoid calculating minimum ###
-            if dist[i]<0 : ### overlap ###
+            if dist[i] < 0: ### overlap ###
                 return 1e9 #abs(dist[i]) 
         else: ### calculate minimum distance ###
             if i == 0 :
@@ -65,7 +66,8 @@ def penalty_overlap_4dim(x, args):
             score = - x[0]   ### negative score == larger radius ###
         #print(score)
         return score
-    
+
+
 def neighbor_vec(universe, probe, probe1, n_xy_fac, out=0, call=0, pathway_sel='protein'):
     """
     Identify neighboring atoms within a specified spatial range around a probe in a molecular system.
@@ -120,27 +122,25 @@ def neighbor_vec(universe, probe, probe1, n_xy_fac, out=0, call=0, pathway_sel='
         R0 = assign_radius(n.type)
         z0 = n.position[2]
         R_projected = np.sqrt(R0*R0 - (z0-z_slice)*(z0-z_slice))
-        if R_projected>0:
+        if R_projected > 0:
             a_vec.append(atom(n.position[0],n.position[1], r=R_projected ))
             neighbour_labels.append(n.resname + ' ' + str(n.resid)) # + ' ' + n.type
             neighbour_resnum_resid.append(n.resname + ' ' + str(n.resid))
             neighbour_string = neighbour_string + n.resname + ' ' + str(n.resid) + ' ' + n.type + '\n'
     if out: print('number of neighbors with R>0' ,len(a_vec), 'n_xy_fac', n_xy_fac)
-    if len(a_vec)>150 and call<4:
+    if len(a_vec) > 150 and call < 4:
         if out: print('DECREASE n_xy_fac')
         call += 1
         return neighbor_vec(universe, probe, probe1, 0.75*n_xy_fac,
                                               call=call, out=out, pathway_sel=pathway_sel)
         print('number of neighbors with R>0' ,len(a_vec), 'n_xy_fac', 0.75*n_xy_fac)
     elif len(a_vec)<30 and call<4:
-        #out = 1
         if out: 
             print('INCREASE n_xy_fac')
         call += 1 
         return neighbor_vec(universe, probe, probe1, 1.25*n_xy_fac,
                                               call=call, out=out, pathway_sel=pathway_sel)
         if out: print('number of neighbors with R>0' ,len(a_vec), 'n_xy_fac', 1.25*n_xy_fac)
-        #return -1, -1
     elif len(a_vec)<30 and call>4:
         n_xy_fac = 1.5
         n_xy = n_xy_fac*probe.r 
@@ -148,11 +148,12 @@ def neighbor_vec(universe, probe, probe1, n_xy_fac, out=0, call=0, pathway_sel='
         return a_vec, neighbour_labels, n_xy
     return a_vec, neighbour_labels, n_xy
 
+
 def insert_ellipse(index, dataframe, universe, 
                    out=0, plt_path='', rmax=50, 
                    show=0, label=0, n_xy_fac=1.6,
-                   timing = 0,
-                   f_size = 22,
+                   timing=0,
+                   f_size=22,
                    pathway_sel='protein',
                    opt_method='nelder-mead',
                   ):
@@ -203,7 +204,7 @@ def insert_ellipse(index, dataframe, universe,
 
     z_slice = probe1.positions[0][2]
     #Radius = min( 10*dataframe['r'].loc[index], R_N)
-    initial_radius = dataframe['r'].loc[index]
+    #initial_radius = dataframe['r'].loc[index]
 
     ### neighbor vector ###
     a_vec, neighbour_labels, n_xy = neighbor_vec(universe, probe, probe1, n_xy_fac, out=out, pathway_sel=pathway_sel)
@@ -393,10 +394,10 @@ def insert_ellipse(index, dataframe, universe,
         xlim = ax.get_xlim()
         ylim = ax.get_ylim()
         plt.subplots_adjust(right=0.35)
-        neighbour_resnum_resid = np.unique(neighbour_resnum_resid)
+        # neighbour_resnum_resid = np.unique(neighbour_resnum_resid)
         string = ''
-        for info in neighbour_resnum_resid:
-            string = string + info +'\n'
+        # for info in neighbour_resnum_resid:
+        #    string = string + info +'\n'
         #ax.text(xlim[1],ylim[0],  neighbour_string, fontsize=8) #verticalalignment='top'
         ax.text(1.015*xlim[1],ylim[0],  string, fontsize=12)
     
@@ -408,6 +409,7 @@ def insert_ellipse(index, dataframe, universe,
     end = time.time()
     if timing: print("TIME(insert_ellipse)=",end - start, '\n')
     return p2, z_slice
+
 
 def insert_ellipse_async(index, dataframe, universe, out=0, plt_path='', rmax=50, 
                          show=0, label=0, n_xy_fac=1.6,num_processes=None, timeout=20, f_size=22,
@@ -465,17 +467,17 @@ def insert_ellipse_async(index, dataframe, universe, out=0, plt_path='', rmax=50
           'std', np.std(times_list))
     return results
 
+
 def ellipsoid_pathway(p, pdb_name, sph_name, 
                       slice_dz=1,
                       parallel=False,
-                      end_radius = 15,
-                      
+                      end_radius=15,                    
                       num_processes=None, 
                       timeout=20,
-                      start_index = 50,
-                      f_size = 22,
-                      out = 0,
-                      n_xy_fac = 1.6,
+                      start_index=50,
+                      f_size=22,
+                      out=0,
+                      n_xy_fac=1.6,
                       pathway_sel='protein',
                       opt_method='nelder-mead',
 
@@ -556,7 +558,6 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
     y_coordinates = np.array(y_coordinates)
     z_coordinates = np.array(z_coordinates)
 
-
     ind_sort = np.argsort(z_coordinates)
     print('len(ind_sort), len(x_coordinates)', len(ind_sort), len(x_coordinates))
     x_coordinates = x_coordinates[ind_sort]
@@ -566,7 +567,6 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
     radii = radii[ind_sort]
     resids = resids[ind_sort]
 
-
     d = {'x': x_coordinates, 'y': y_coordinates,'z': z_coordinates, 'r': radii, 'resid': resids}
     df = pd.DataFrame(data=d)
     df2 = df[(df['r']<end_radius) ]
@@ -575,7 +575,6 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
     print('df2.index',df2.index)
     print('len(df)',len(df), 'len(df2)', len(df2))
 
-
     fig, ax = plt.subplots()
     ax.set_ylim([0, end_radius])
     plt.plot(df2['z'], df2['r'])
@@ -583,7 +582,6 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
     plt.xlabel(r"Pore coordinate $\zeta$ ($\AA$)", fontsize=f_size)
 
     ax.tick_params(axis='both', which='major', labelsize=f_size)
-    #ax.legend(prop={'size': 11}) # loc='upper center'
     fig.tight_layout()
     plt.show()
 
@@ -610,7 +608,7 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
                                        n_xy_fac=n_xy_fac,
                                        pathway_sel=pathway_sel, opt_method=opt_method
                                       )   
-        #print(results)
+        # print(results)
         
         print("--- %s seconds --- for pool.starmap_async" % (time.time() - start_time))
         start_time = time.time()
@@ -626,8 +624,8 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
     else:
         start_time = time.time()
         for i in vec:
-            #print(df2.iloc[i])
-            #try:
+            # print(df2.iloc[i])
+            # try:
                 print('try', i ,df2['resid'].loc[i])
                 e, z = insert_ellipse(index=i, dataframe=df2, universe=mer, 
                                       out=0, show=1,
@@ -639,7 +637,7 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
                 position_center = str(e.cx) + ', ' +  str(e.cy) + ', ' + str(z) + ', '
                 param = str(e.a) + ', ' +  str(e.b) + ', ' + str(e.theta) + '\n'
                 f.write(position_center + param)
-            #except:
+            # except:
             #    failed.append(i)
         print("--- %s seconds --- for insert_ellipse with one worker (not parallel)" % (time.time() - start_time))
     print('failed slices', failed)

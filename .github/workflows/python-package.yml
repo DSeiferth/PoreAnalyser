@@ -41,16 +41,18 @@ jobs:
       run: |
         echo "ls -la /home/runner/work/PoreFinding_pdb/"
         ls -la /home/runner/work/PoreFinding_pdb/
-        echo ""
+        echo "ls -la /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/"
         ls -la /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/
-        echo ""
+        echo "ls -la /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/hole2/"
         ls -la /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/hole2/
         echo "pwd"
         pwd 
         echo "Current directory: $(pwd)"
-        echo "hole2/./hole"
-        hole2/./hole
-        /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/hole2/hole
+    - name: Run hole2
+      run: |
+        # echo "hole2/./hole"
+        # hole2/./hole
+        ./home/runner/work/PoreFinding_pdb/PoreFinding_pdb/hole2/hole
     - name: Test with unittest
       run: |
         python -m unittest 

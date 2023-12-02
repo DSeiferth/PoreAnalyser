@@ -145,7 +145,7 @@ def dist_ellipse_vdwSphere(ellipse, sphere, plot=0):
     closest_r = rot.dot(closest)
     closest_rt = closest_r + center
     #print('closest_rt', closest_rt)
-    if plot: ax.plot(closest_rt[0], closest_rt[1], '-x', color='black')
+    if plot: plt.plot(closest_rt[0], closest_rt[1], '-x', color='black')
     
     ### overlap if radius larger than radius ### 
     return np.linalg.norm(closest_rt-point) - sphere.r

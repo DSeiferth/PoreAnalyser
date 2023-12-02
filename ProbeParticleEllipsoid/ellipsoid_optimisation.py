@@ -226,7 +226,7 @@ def insert_ellipse(index, dataframe, universe,
     ax.plot(probe.x,probe.y, '-x', color='blue')
     ### vdw particles ###
     start_neighbors_loop = time.time()
-    #prev = neighbour_labels[0]
+    prev = neighbour_labels[0]
     for count, a in enumerate(a_vec):
         vdw = ellipse(a=a.r, b=a.r, theta=0, cx=a.x, cy=a.y)
         x0, y0 = vdw.draw()

@@ -39,7 +39,10 @@ jobs:
       run: chmod +x hole2/hole
     - name: Debugging Output
       run: |
+        ls -la /home/runner/work/PoreFinding_pdb/
+        ls -la /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/
         ls -la /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/hole2/
+        pwd 
         echo "Current directory: $(pwd)"
         ./home/runner/work/PoreFinding_pdb/PoreFinding_pdb/hole2/hole
     - name: Test with unittest

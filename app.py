@@ -136,7 +136,7 @@ if uploaded_files:
     ellipsoid_pathway(p=path_save, 
                         pdb_name = names_aligned[0], 
                         sph_name = names_aligned[0][:-4], 
-                        slice_dz=4, parallel=True, #True, 
+                        slice_dz=4, parallel=parallel, #True, 
                         num_processes=None, timeout=6, 
                         start_index = 1, end_radius=end_radius-1,
                         out = 0,

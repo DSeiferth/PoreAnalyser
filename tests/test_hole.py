@@ -22,3 +22,8 @@ class HoleTest(unittest.TestCase):
 # OSError: [Errno 8] Exec format error: '/home/runner/work/PoreFinding_pdb/PoreFinding_pdb/hole2/hole'
 # File "/home/runner/work/PoreFinding_pdb/PoreFinding_pdb/tests/test_hole.py", line 18, in test_hole_analysis
 #    midpoints2, means2 = hole_analysis.hole_analysis(name, path, end_radius=20, sel='protein')
+
+# locally: file hole2/hole
+# hole2/hole: ELF 64-bit LSB executable, x86-64, version 1 (GNU/Linux), statically linked, for GNU/Linux 2.6.24, BuildID[sha1]=b539a1449b8ef241cbfe3c560c6c25963eea2725, not stripped
+# on github workflow:
+# 

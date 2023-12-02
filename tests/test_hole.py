@@ -1,9 +1,7 @@
 import unittest
-#import PoreFinding_pdb as pf 
-import sys
-#sys.path.append('../')
 import hole_analysis as hole_analysis
 import numpy as np
+
 
 class HoleTest(unittest.TestCase):
     """
@@ -20,3 +18,7 @@ class HoleTest(unittest.TestCase):
         self.assertEqual(len(midpoints2), len(means2))
         self.assertIsInstance(midpoints2, np.ndarray)
         self.assertIsInstance(means2, np.ndarray)
+
+# OSError: [Errno 8] Exec format error: '/home/runner/work/PoreFinding_pdb/PoreFinding_pdb/hole2/hole'
+# File "/home/runner/work/PoreFinding_pdb/PoreFinding_pdb/tests/test_hole.py", line 18, in test_hole_analysis
+#    midpoints2, means2 = hole_analysis.hole_analysis(name, path, end_radius=20, sel='protein')

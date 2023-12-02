@@ -5,7 +5,7 @@ import pandas as pd
 from MDAnalysis.analysis import hole2
 
 #bla = '/biggin/b198/orie4254/Documents/PoreFinding_pdb/' # when loading module
-bla = '' # for using streamlit app
+bla = './' # for using streamlit app
 hole_exe = bla+'hole2/hole'
 sph_proc = bla+'hole2/sph_process'
 f_size = 18

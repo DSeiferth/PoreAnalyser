@@ -15,8 +15,8 @@ class HoleTest(unittest.TestCase):
         """
         path = 'pdb_models/'
         name = '7tvi.pdb'
-        #midpoints2, means2 = hole_analysis.hole_analysis(name, path, end_radius=20, sel='protein')
+        midpoints2, means2 = hole_analysis.hole_analysis(name, path, end_radius=20, sel='protein')
 
-        #self.assertEqual(len(midpoints2), len(means2))
-        #self.assertIsInstance(midpoints2, np.ndarray)
-        #self.assertIsInstance(means2, np.ndarray)
+        self.assertEqual(len(midpoints2), len(means2))
+        self.assertIsInstance(midpoints2, np.ndarray)
+        self.assertIsInstance(means2, np.ndarray)

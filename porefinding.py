@@ -43,7 +43,7 @@ class PoreAnalysis():
         """
         spherical probe particle
         """
-        fig , df = hole_analysis.analysis(names, labels=self.labels, 
+        fig , df = hole_analysis.analysis(self.pdb_array, labels=self.labels, 
                                           path='', end_radius=self.end_radius, 
                                           title=title,
                                           legend_outside=legend_outside, plot_lines=plot_lines, 
@@ -66,7 +66,7 @@ class PoreAnalysis():
                         pathway_sel=self.pathway_sel,
                         opt_method=self.opt_method,
                     )
-        res = np.loadtxt(self.path_save + names_aligned[0]+ '_pathway_ellipse.txt', 
+        res = np.loadtxt(self.path_save + self.names_aligned[index_model]+ '_pathway_ellipse.txt', 
                     comments='#', delimiter=',')
         df_res = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
         df_res.sort_values('z', inplace=True)

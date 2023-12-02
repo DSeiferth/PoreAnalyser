@@ -48,8 +48,8 @@ jobs:
         echo "pwd"
         pwd 
         echo "Current directory: $(pwd)"
-        echo "hole2/hole"
-        hole2/hole
+        echo "hole2/./hole"
+        hole2/./hole
         /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/hole2/hole
     - name: Test with unittest
       run: |

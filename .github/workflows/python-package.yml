@@ -48,11 +48,11 @@ jobs:
         echo "pwd"
         pwd 
         echo "Current directory: $(pwd)"
-    - name: Run hole2
-      run: |
-        # echo "hole2/./hole"
-        # hole2/./hole
-        ./home/runner/work/PoreFinding_pdb/PoreFinding_pdb/hole2/hole
+    #- name: Run hole2
+    #  run: |
+    #    # echo "hole2/./hole"
+    #    # hole2/./hole
+    #    ./home/runner/work/PoreFinding_pdb/PoreFinding_pdb/hole2/hole
     - name: Test with unittest
       run: |
         python -m unittest 

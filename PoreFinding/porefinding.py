@@ -1,3 +1,8 @@
+import os
+bla = os.getcwd() + '/PoreFinding/'
+print(bla)
+import sys
+sys.path.append(bla)
 import hole_analysis as hole_analysis
 import MDAnalysis
 import numpy as np
@@ -10,8 +15,7 @@ try:
 except:
     parallel = False
     print("Could not import multiprocessing library, => multiprocessing disabled")
-import sys
-sys.path.append('ProbeParticleEllipsoid/')
+sys.path.append(bla+'ProbeParticleEllipsoid/')
 from ellipsoid_optimisation import ellipsoid_pathway
 
 class PoreAnalysis():
@@ -27,7 +31,8 @@ class PoreAnalysis():
         labels = []
         names_aligned = []
         for ele in pdb_array:
-            labels.append(ele[:-4])
+            splits = ele.split('/')[-1]
+            labels.append(splits[:-4])
             names_aligned.append(ele[:-4]+'_aligned_z.pdb')
         self.labels = labels
         self.names_aligned = names_aligned

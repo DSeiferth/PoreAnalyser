@@ -6,9 +6,12 @@ from MDAnalysis.analysis import hole2
 
 #bla = '/biggin/b198/orie4254/Documents/PoreFinding_pdb/' # when loading module
 import os
-bla = os.getcwd() + '/'
+#bla = os.getcwd() + '/' # # when running app
+bla = os.getcwd() + '/' +'PoreFinding/' # when running locally
+print(bla)
 #bla = './' # for using streamlit app
 hole_exe = bla+'hole2/hole'
+print('hole_exe', hole_exe)
 sph_proc = bla+'hole2/sph_process'
 f_size = 18
 
@@ -58,6 +61,7 @@ def hole_analysis(name, path, end_radius=20, sel='protein'):
     tmpdir = path #+ 'tmpdir/'
     conf = path + name
     top = conf
+    print('hole_analysis', conf)
     sys = MDAnalysis.Universe(top, conf, topology_format='pdb', format='pdb') 
     ha2 = hole2.HoleAnalysis(
                                 sys, select=sel,
@@ -185,7 +189,7 @@ def analysis(names,labels, path='/biggin/b198/orie4254/Documents/CHAP/', end_rad
                     pdbfile=path+name ,#+'.pdb',
                     #cpoint='center_of_geometry',
                     executable=hole_exe,
-                    #tmpdir=path,
+                    tmpdir=path,
                     #sph_process=sph_proc, #hole() got an unexpected keyword argument 'sph_process'
                     sphpdb_file=aligned_path+name[:-4]+".sph",
                     end_radius=end_radius,

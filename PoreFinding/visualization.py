@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 import py3Dmol
 import streamlit as st
 import sys
-sys.path.insert(1, 'ProbeParticleEllipsoid/')
+#sys.path.insert(1, 'ProbeParticleEllipsoid/')
+sys.path.append('PoreFinding/ProbeParticleEllipsoid/')
 from ellipse_lib import atom, ellipse
 import nglview as nv
 

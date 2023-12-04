@@ -18,3 +18,5 @@ __version__ = "0.0.1"
 __author__ = 'David Seiferth'
 
 from .hole_analysis import hole_analysis
+
+import numpy as np

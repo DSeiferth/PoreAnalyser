@@ -18,6 +18,9 @@ DTP_Poster/*
 *txt
 CaseStudies/*
 
+old/*
+PoreFinding.egg-info/*
 YMF_poster/*
 output/*
 poreFinding_Ellipsoid_output_5o8f/*
+build/

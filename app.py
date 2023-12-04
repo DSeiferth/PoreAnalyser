@@ -1,4 +1,6 @@
 import streamlit as st
+import sys
+sys.path.append('PoreFinding/')
 import hole_analysis as hole_analysis
 import os
 import io
@@ -17,8 +19,7 @@ try:
 except:
     parallel = False
     st.write("Could not import multiprocessing library, => multiprocessing disabled")
-import sys
-sys.path.append('ProbeParticleEllipsoid/')
+sys.path.append('PoreFinding/ProbeParticleEllipsoid/')
 from ellipsoid_optimisation import ellipsoid_pathway
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -144,6 +145,7 @@ if uploaded_files:
                         pathway_sel=pathway_sel,
                         opt_method=opt_method,
                     )
+    print(path_save + names_aligned[0]+ '_pathway_ellipse.txt')
     res = np.loadtxt(path_save + names_aligned[0]+ '_pathway_ellipse.txt', 
                     comments='#', delimiter=',')
     print('res.shape',res.shape)
@@ -179,7 +181,7 @@ else:
     st.markdown("Example application with 7tu9")
     st.write("Example Filename: ", "pdb_models/7tu9.pdb")
     if align_bool: st.write('First, we align the principal axis to the z-axis.')
-    path_save = 'pdb_models/'
+    path_save = 'PoreFinding/pdb_models/'
     titles = [r'$\alpha$$\beta$ Heteromeric Glycine Receptor']
 
     labels = [
@@ -207,27 +209,27 @@ else:
     # https://william-dawson.github.io/using-py3dmol.html
     xyzview = pathway_visu(path=path_save, name=names[0])
     showmol(xyzview, height=500, width=710)
-    render_visu(path='pdb_models/', name='7tu9_aligned_z.pdb')
+    render_visu(path='PoreFinding/pdb_models/', name='7tu9_aligned_z.pdb')
 
     ### Ellipsoidal probe particle ###
     st_write_ellipsoid()
     fig_example = example_xy_plane(f_size=f_size)
     st.pyplot(fig_example)
 
-    res = np.loadtxt('pdb_models/7tu9_aligned_z.pdb_pathway_ellipse.txt', 
+    res = np.loadtxt('PoreFinding/pdb_models/7tu9_aligned_z.pdb_pathway_ellipse.txt', 
                  comments='#', delimiter=',')
     df_res = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
     df_res.sort_values('z', inplace=True)
     fig = plt_ellipsoid_pathway(df_res, f_size=f_size, title=title, end_radius=end_radius)
     st.pyplot(fig)
-    write_pdb_with_ellipsoid_surface(p='pdb_models/', pdbname='7tu9_aligned_z.pdb',
+    write_pdb_with_ellipsoid_surface(p='PoreFinding/pdb_models/', pdbname='7tu9_aligned_z.pdb',
                                      fname='7tu9_aligned_z.pdb_pathway_ellipse.txt', num_circle = 24)
-    xyzview = pathway_visu(path='pdb_models/', name='7tu9_aligned_z.pdb', f_end='_ellipsoid.pdb')
+    xyzview = pathway_visu(path='PoreFinding/pdb_models/', name='7tu9_aligned_z.pdb', f_end='_ellipsoid.pdb')
     showmol(xyzview, height=500, width=710)
-    render_visu(path='pdb_models/', name='7tu9_aligned_z.pdb', f_end='_ellipsoid.pdb', outname='_ellipsoid')
+    render_visu(path='PoreFinding/pdb_models/', name='7tu9_aligned_z.pdb', f_end='_ellipsoid.pdb', outname='_ellipsoid')
 
     ### compare volumes ###
-    res = np.loadtxt('pdb_models/7tu9_aligned_z.pdb_pathway_ellipse.txt', 
+    res = np.loadtxt('PoreFinding/pdb_models/7tu9_aligned_z.pdb_pathway_ellipse.txt', 
                  comments='#', delimiter=',')
     compare_volume(res, digit=1)
 

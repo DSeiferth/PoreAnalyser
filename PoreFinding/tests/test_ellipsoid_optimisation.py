@@ -6,6 +6,8 @@ import pandas as pd
 sys.path.append('ProbeParticleEllipsoid/')
 import ellipsoid_optimisation as e_opt 
 import ellipse_lib as e_lib
+import os
+bla = os.getcwd() + '/' +'PoreFinding/' # when running locally
 
 
 class penalty_overlap_4dim_Test(unittest.TestCase):
@@ -48,7 +50,7 @@ class neighbor_vec_Test(unittest.TestCase):
         Tests neighbor_vec function.
         """
         # ## load data from GlyR model ###
-        p = 'pdb_models/'
+        p = bla+'pdb_models/'
         name = '7tu9a_aligned_z'
         end_radius = 20
         

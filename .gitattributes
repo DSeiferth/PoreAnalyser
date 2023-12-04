@@ -1,3 +1,6 @@
 #hole2/hole filter=lfs diff=lfs merge=lfs -text
 #hole2/sph_process filter=lfs diff=lfs merge=lfs -text
 #hole2/sos_triangle filter=lfs diff=lfs merge=lfs -text
+PoreFinding/hole2/hole filter=lfs diff=lfs merge=lfs -text
+PoreFinding/hole2/sos_triangle filter=lfs diff=lfs merge=lfs -text
+PoreFinding/hole2/sph_process filter=lfs diff=lfs merge=lfs -text

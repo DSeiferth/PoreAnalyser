@@ -8,6 +8,7 @@
 *.pdb_circle.pdb
 __pycache__/*
 */__pycache__/*
+*pyc
 ProbeParticleEllipsoid/__pycache__/*
 *.rad
 *zip

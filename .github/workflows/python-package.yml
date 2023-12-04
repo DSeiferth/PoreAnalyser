@@ -39,18 +39,18 @@ jobs:
       run: chmod +x PoreFinding/hole2/hole
     - name: Debugging Output
       run: |
-        echo "ls -la /home/runner/work/PoreFinding_pdb/"
-        ls -la /home/runner/work/PoreFinding_pdb/
-        echo "ls -la /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/"
-        ls -la /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/
-        echo "ls -la /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/PoreFinding/hole2/"
-        ls -la /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/PoreFinding/hole2/
+        echo "ls -la /home/runner/work/PoreFinding/"
+        ls -la /home/runner/work/PoreFinding/
+        echo "ls -la /home/runner/work/PoreFinding/PoreFinding/"
+        ls -la /home/runner/work/PoreFinding/PoreFinding/
+        echo "ls -la /home/runner/work/PoreFinding/PoreFinding/PoreFinding/hole2/"
+        ls -la /home/runner/work/PoreFinding/PoreFinding/PoreFinding/hole2/
         echo "pwd"
         pwd 
         echo "Current directory: $(pwd)"
     - name: Check Architecture Compatibility
       run: |
-          file /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/PoreFinding/hole2/hole
+          file /home/runner/work/PoreFinding/PoreFinding/PoreFinding/hole2/hole
     #- name: Run hole2
     #  run: |
     #    # echo "hole2/./hole"

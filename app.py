@@ -153,7 +153,7 @@ if uploaded_files:
     df_res.sort_values('z', inplace=True)
     fig = plt_ellipsoid_pathway(df_res, f_size=f_size, title=title, end_radius=end_radius)
     st.pyplot(fig)
-    ### visualization fo ellipsoidal surface ###
+    ### visualization for ellipsoidal surface ###
     write_pdb_with_ellipsoid_surface(p='', pdbname=names_aligned[0], 
                                      fname=names_aligned[0]+'_pathway_ellipse.txt', num_circle = 24)
     xyzview = pathway_visu(path='', name=names_aligned[0], f_end='_ellipsoid.pdb', pathway_sel=pathway_sel,)

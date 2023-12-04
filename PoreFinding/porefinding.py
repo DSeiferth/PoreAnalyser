@@ -4,6 +4,7 @@ print(bla)
 import sys
 sys.path.append(bla)
 import hole_analysis as hole_analysis
+from visualization import write_pdb_with_pore_surface, plt_ellipsoid_pathway, pathway_visu, st_write_ellipsoid, write_pdb_with_ellipsoid_surface, example_xy_plane, compare_volume, render_visu
 import MDAnalysis
 import numpy as np
 import pandas as pd
@@ -22,6 +23,7 @@ class PoreAnalysis():
     def __init__(self, pdb_array, opt_method='nelder-mead',
                  align_bool=True, end_radius=15, pathway_sel='protein',
                  path_save = '', 
+                 num_circle=24, clipping=100,
                  ):
         self.pdb_array = pdb_array
         self.align_bool = align_bool
@@ -39,6 +41,9 @@ class PoreAnalysis():
 
         self.opt_method = opt_method
 
+        self.num_circle = num_circle  # for point cloud visualization of pore surface
+        self.clipping = clipping # 3d visualisation of pore surface
+
         self.hole_fig = None 
         self.hole_df = None 
 
@@ -48,7 +53,7 @@ class PoreAnalysis():
         """
         spherical probe particle
         """
-        fig , df = hole_analysis.analysis(self.pdb_array, labels=self.labels, 
+        fig, df = hole_analysis.analysis(self.pdb_array, labels=self.labels, 
                                           path='', end_radius=self.end_radius, 
                                           title=title,
                                           legend_outside=legend_outside, plot_lines=plot_lines, 
@@ -57,6 +62,9 @@ class PoreAnalysis():
                                             )
         self.hole_fig = fig
         self.hole_df = df 
+        for i in range(len(self.pdb_array)):
+            write_pdb_with_pore_surface(path=self.path_save, name=self.names_aligned[i], 
+                                        end_radius=self.end_radius, num_circle = self.num_circle)
     
     def ellipsoid_analysis(self, index_model=0, 
                            plot_lines=True, legend_outside=False, title='', f_size=15):
@@ -76,4 +84,24 @@ class PoreAnalysis():
         df_res = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
         df_res.sort_values('z', inplace=True)
 
-        self.ellipsoid_dfs[self.names_aligned[index_model][:-4]] = df_res
+        self.ellipsoid_dfs[self.labels[index_model]] = df_res
+
+        write_pdb_with_ellipsoid_surface(p='', pdbname=self.names_aligned[index_model], 
+                                     fname=self.names_aligned[0]+'_pathway_ellipse.txt', num_circle = self.num_circle)
+
+    def plt_pathway_ellipsoid(self, index_model=0, title='', f_size=15):
+        df_res = self.ellipsoid_dfs[self.labels[index_model]]
+        fig = plt_ellipsoid_pathway(df_res, f_size=f_size, title=title, end_radius=self.end_radius)
+        return fig 
+    
+    def pathway_visualisation(self, index_model=0, f_end='_circle.pdb'):
+        xyzview = pathway_visu(path='', name=self.names_aligned[index_model], 
+                               f_end=f_end, pathway_sel=self.pathway_sel,
+                               clipping=self.clipping,
+                               )
+        # f_end='_ellipsoid.pdb' f_end='_circle.pdb'
+        return xyzview
+    
+    def pathway_rendering(self, index_model=0, f_end='_circle.pdb', outname='out'):
+        render_visu(path='', name=self.names_aligned[index_model], 
+                    f_end=f_end, outname=outname, streamlit=False)

@@ -36,7 +36,7 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Set execute permissions
-      run: chmod +x hole2/hole
+      run: chmod +x PoreFinding/hole2/hole
     - name: Debugging Output
       run: |
         echo "ls -la /home/runner/work/PoreFinding_pdb/"

@@ -1,6 +1,8 @@
 import unittest
 import hole_analysis as hole_analysis
 import numpy as np
+import os
+bla = os.getcwd() + '/' +'PoreFinding/' # when running locally
 
 
 class HoleTest(unittest.TestCase):
@@ -11,7 +13,7 @@ class HoleTest(unittest.TestCase):
         """
         Tests hole_analysis function.
         """
-        path = 'pdb_models/'
+        path = bla+'pdb_models/'
         name = '7tvi.pdb'
         midpoints2, means2 = hole_analysis.hole_analysis(name, path, end_radius=20, sel='protein')
 

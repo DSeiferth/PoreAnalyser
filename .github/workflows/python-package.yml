@@ -5,7 +5,7 @@ name: PoreFinding_Ellipsoid # PoreFinding_pdb
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "reorder" ]
   pull_request:
     branches: [ "main" ]
 
@@ -36,21 +36,21 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Set execute permissions
-      run: chmod +x hole2/hole
+      run: chmod +x PoreFinding/hole2/hole
     - name: Debugging Output
       run: |
         echo "ls -la /home/runner/work/PoreFinding_pdb/"
         ls -la /home/runner/work/PoreFinding_pdb/
         echo "ls -la /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/"
         ls -la /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/
-        echo "ls -la /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/hole2/"
-        ls -la /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/hole2/
+        echo "ls -la /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/PoreFinding/hole2/"
+        ls -la /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/PoreFinding/hole2/
         echo "pwd"
         pwd 
         echo "Current directory: $(pwd)"
     - name: Check Architecture Compatibility
       run: |
-          file /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/hole2/hole
+          file /home/runner/work/PoreFinding_pdb/PoreFinding_pdb/PoreFinding/hole2/hole
     #- name: Run hole2
     #  run: |
     #    # echo "hole2/./hole"

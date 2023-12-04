@@ -533,9 +533,16 @@ def ellipsoid_pathway(p, pdb_name, sph_name,
     """
     start = time.time()
     print(pdb_name, sph_name)
-    conf = p + sph_name + '.sph'
-    top = conf
-    sph = MDAnalysis.Universe(top, conf, topology_format='pdb', format='pdb') # tpr_resid_from_one=True
+    try:
+        conf = p + sph_name + '.sph'
+        top = conf
+        sph = MDAnalysis.Universe(top, conf, topology_format='pdb', format='pdb') # tpr_resid_from_one=True
+    except:
+        print(' ERROR could not find SPH file', p + sph_name + '.sph')
+        conf = 'hole000.sph'
+        top = conf
+        sph = MDAnalysis.Universe(top, conf, topology_format='pdb', format='pdb') # tpr_resid_from_one=True
+    
 
     conf =  p + pdb_name 
     top = conf

@@ -3,6 +3,26 @@ import math
 import matplotlib.pyplot as plt
 
 class atom:
+    """
+    Class representing a 3D atom with coordinates (x, y, z) and a radius (r).
+
+    Parameters:
+    - x (float): x-coordinate of the atom.
+    - y (float): y-coordinate of the atom.
+    - z (float, optional): z-coordinate of the atom. Default is 0.
+    - r (float, optional): Radius of the atom. Default is 1.
+
+    Attributes:
+    - x (float): x-coordinate of the atom.
+    - y (float): y-coordinate of the atom.
+    - z (float): z-coordinate of the atom.
+    - r (float): Radius of the atom.
+
+    Example:
+    >>> my_atom = Atom(x=1.0, y=2.0, z=0.0, r=1.5)
+    >>> print(my_atom.x, my_atom.y, my_atom.z, my_atom.r)
+    1.0 2.0 0.0 1.5
+    """
     def __init__(self, x, y, z=0, r=1):
         self.x = x
         self.y = y
@@ -10,6 +30,28 @@ class atom:
         self.r = r
 
 class ellipse:
+    """
+    Class representing a 2D ellipse with parameters (a, b, cx, cy, cz, r, theta).
+
+    Parameters / Attributes:
+    - a (float): Length of the semi-major axis.
+    - b (float): Length of the semi-minor axis (radius to grow).
+    - cx (float): x-coordinate of the center.
+    - cy (float): y-coordinate of the center.
+    - cz (float, optional): z-coordinate of the center. Default is 0.
+    - r (float, optional): Radius of the ellipse. Default is 1.
+    - theta (float, optional): Angle of rotation in radians. Default is 0.
+
+    Methods:
+    - on_ellipse(x, y): Check if a point (x, y) is on the ellipse.
+    - draw(res=0.01): Generate coordinates of the ellipse for plotting.
+
+    Example:
+    >>> my_ellipse = Ellipse(a=3.0, b=2.0, cx=0.0, cy=0.0, theta=0.0)
+    >>> print(my_ellipse.on_ellipse(1.0, 1.0))
+    True
+    >>> x_coords, y_coords = my_ellipse.draw(res=0.01)
+    """
     def __init__(self, a, b, cx, cy, cz=0, r=1, theta=0):
         self.a = a
         self.b = b ### radius to grow ###

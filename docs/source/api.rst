@@ -13,11 +13,4 @@ Auxiliary functions
 HOLE analysis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: PoreFinding.hole_analysis
-   :members:
-   
-visualization
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: PoreFinding.visualization
-   :members:

@@ -37,8 +37,10 @@ epub_show_urls = 'footnote'
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../..'))
+sys.path.insert(1, os.path.abspath('../../PoreFinding'))
+sys.path.insert(2, os.path.abspath('../../PoreFinding/ProbeParticleEllipsoid'))
 
-#import PoreFinding
+import PoreFinding
 #Traceback (most recent call last):
 #  File "/home/docs/checkouts/readthedocs.org/user_builds/porefinding/envs/latest/lib/python3.10/site-packages/sphinx/config.py", line 356, in eval_config_file
 #    exec(code, namespace)  # NoQA: S102

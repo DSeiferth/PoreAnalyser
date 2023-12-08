@@ -6,28 +6,27 @@ Usage
 Installation
 ------------
 
-To use Lumache, first install it using pip:
+To use PoreFinding, first install it using pip:
 
 .. code-block:: console
 
-   (.venv) $ pip install lumache
+   (.venv) $ pip install PoreFinding
 
-Creating recipes
+Creating Pore profiles
 ----------------
 
-To retrieve a list of random ingredients,
-you can use the ``lumache.get_random_ingredients()`` function:
+To analyse ion channel pores, you can initialise ``PoreFinding.PoreAnalysis()`` class
+with an array of pdb structures that you want to analyse.
 
-.. autofunction:: lumache.get_random_ingredients
-
-The ``kind`` parameter should be either ``"meat"``, ``"fish"``,
-or ``"veggies"``. Otherwise, :py:func:`lumache.get_random_ingredients`
-will raise an exception.
-
-.. autoexception:: lumache.InvalidKindError
 
 For example:
 
->>> import lumache
->>> lumache.get_random_ingredients()
-['shells', 'gorgonzola', 'parsley']
+>>> import PoreFinding as pf
+>>> p = 'PoreFinding/pdb_models/'
+>>> pdb_array = [p+'8fe1.pdb']
+>>> c = pf.PoreAnalysis(pdb_array, num_circle=20,)
+>>> c.hole_analysis(plot_lines=True, legend_outside=False, title='', f_size=15, )
+>>> c.hole_df 
+>>> c.pathway_visualisation(index_model=0, f_end='_circle.pdb')
+>>> c.ellipsoid_analysis(index_model=0)
+>>> c.pathway_visualisation(0, f_end='_ellipsoid.pdb')

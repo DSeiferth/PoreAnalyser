@@ -1,5 +1,10 @@
-Python API Documentation
-========================
+API
+===
+
+.. autosummary::
+   :toctree: generated
+
+   PoreFinding
    
 .. autoclass:: PoreFinding.PoreAnalysis
    :members:

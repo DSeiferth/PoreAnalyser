@@ -1,9 +1,3 @@
-PoreFinding
-==============================
-
-[//]: # (Badges)
-[![Documentation Status](https://readthedocs.org/projects/porefinding/badge/?version=latest)](https://porefinding.readthedocs.io/en/latest/?badge=latest)
-
 ---
 title: PoreFinding_pdb
 emoji: 📊
@@ -15,6 +9,12 @@ app_file: app.py
 pinned: false
 license: mit
 ---
+
+PoreFinding
+==============================
+
+[//]: # (Badges)
+[![Documentation Status](https://readthedocs.org/projects/porefinding/badge/?version=latest)](https://porefinding.readthedocs.io/en/latest/?badge=latest)
 
 [Try out this protoype on HugginFace without installing anything](https://huggingface.co/spaces/DSeiferth/PoreFinding_pdb)
 

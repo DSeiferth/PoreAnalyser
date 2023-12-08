@@ -30,10 +30,10 @@ st.title("Extending the capabilities of the HOLE Package for Annotation of Ion C
 
 str1 = 'Over the last two decades, advances in structural biology along with recent artificial intelligence–driven structure prediction '
 str2 = 'algorithms, such as AlphaFold, have revealed a plethora of 3-D ion channel and nanopore structures in different conformational states. '
-str3 = 'However, in nearly every case, these structures still require functional annotation.'
-str4 = 'Different tools, such as HOLE and CHAP, allow the analysis of the physical dimensions of the pore running through an ion channel.'  
+str3 = 'However, in nearly every case, these structures still require functional annotation. '
+str4 = 'Different tools, such as HOLE and CHAP, allow the analysis of the physical dimensions of the pore running through an ion channel. '
 str5 = 'Here, we present an interactive web-page that allows users to calculate the pore profile of any input structure. '
-str6 = 'Based on the well-established HOLE programme, we add a new feature to capture pore asymmetry by using an ellipsoidal probe particle.'
+str6 = 'Based on the well-established HOLE programme, we add a new feature to capture pore asymmetry by using an ellipsoidal probe particle. '
 st.write(str1+str2+str3+str4+str5+str6)
 
 st.subheader("Pathway Finding Settings")
@@ -58,6 +58,14 @@ else:
 string1 = "If uploaded file is no protein use for instance 'resname UNK'"
 pathway_sel = st.text_input(label='Selection to perform HOLE analysis on (default: protein)', value='protein', 
               help=string1)
+
+string1 = 'Set to True if you want to run the pore finding algorithm with an ellipsoidal probe particle (runtime ~1min).'
+plt_ellipsoid = st.text_input(label='Run additional pore finding algorithm with ellipsoidal probe particle (default: True)', value='True', 
+              help=string1)
+if plt_ellipsoid == 'True':
+    plt_ellipsoid = True
+else:
+    plt_ellipsoid = False
 
 st.subheader("Plotting options")
 fig_format = st.text_input(label='Format to download pathway figure', value='png', max_chars=4,
@@ -133,48 +141,51 @@ if uploaded_files:
     download_output(names_aligned[0][:-4], fn, df, fig, fig_format, path_save, names )
 
     ### Elipsoid ###
-    st_write_ellipsoid()
-    ellipsoid_pathway(p=path_save, 
-                        pdb_name = names_aligned[0], 
-                        sph_name = names_aligned[0][:-4], 
-                        slice_dz=4, parallel=parallel, #True, 
-                        num_processes=None, timeout=6, 
-                        start_index = 1, end_radius=end_radius-1,
-                        out = 0,
-                        n_xy_fac = 3,#1.6,
-                        pathway_sel=pathway_sel,
-                        opt_method=opt_method,
-                    )
-    print(path_save + names_aligned[0]+ '_pathway_ellipse.txt')
-    res = np.loadtxt(path_save + names_aligned[0]+ '_pathway_ellipse.txt', 
+    if plt_ellipsoid:
+        st_write_ellipsoid()
+        ellipsoid_pathway(p=path_save, 
+                            pdb_name = names_aligned[0], 
+                            sph_name = names_aligned[0][:-4], 
+                            slice_dz=4, parallel=parallel, #True, 
+                            num_processes=None, timeout=6, 
+                            start_index = 1, end_radius=end_radius-1,
+                            out = 0,
+                            n_xy_fac = 3,#1.6,
+                            pathway_sel=pathway_sel,
+                            opt_method=opt_method,
+                        )
+        print(path_save + names_aligned[0]+ '_pathway_ellipse.txt')
+        res = np.loadtxt(path_save + names_aligned[0]+ '_pathway_ellipse.txt', 
+                        comments='#', delimiter=',')
+        print('res.shape',res.shape)
+        df_res = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
+        df_res.sort_values('z', inplace=True)
+        fig = plt_ellipsoid_pathway(df_res, f_size=f_size, title=title, end_radius=end_radius)
+        st.pyplot(fig)
+        ### visualization for ellipsoidal surface ###
+        write_pdb_with_ellipsoid_surface(p='', pdbname=names_aligned[0], 
+                                        fname=names_aligned[0]+'_pathway_ellipse.txt', num_circle = 24)
+        xyzview = pathway_visu(path='', name=names_aligned[0], f_end='_ellipsoid.pdb', pathway_sel=pathway_sel,)
+        showmol(xyzview, height=500, width=710)
+
+        ### compare volumes ###
+        res = np.loadtxt(names_aligned[0][:-4] + '.pdb_pathway_ellipse.txt', 
                     comments='#', delimiter=',')
-    print('res.shape',res.shape)
-    df_res = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
-    df_res.sort_values('z', inplace=True)
-    fig = plt_ellipsoid_pathway(df_res, f_size=f_size, title=title, end_radius=end_radius)
-    st.pyplot(fig)
-    ### visualization for ellipsoidal surface ###
-    write_pdb_with_ellipsoid_surface(p='', pdbname=names_aligned[0], 
-                                     fname=names_aligned[0]+'_pathway_ellipse.txt', num_circle = 24)
-    xyzview = pathway_visu(path='', name=names_aligned[0], f_end='_ellipsoid.pdb', pathway_sel=pathway_sel,)
-    showmol(xyzview, height=500, width=710)
+        compare_volume(res, digit=1)
 
-    ### compare volumes ###
-    res = np.loadtxt(names_aligned[0][:-4] + '.pdb_pathway_ellipse.txt', 
-                 comments='#', delimiter=',')
-    compare_volume(res, digit=1)
+        ### compare mean and standard deviation of two radii ###
+        a = df_res['a']
+        b = df_res['b']
+        st.write('Median',np.mean(a),'Mean and standard dev. of larger radius:',np.mean(a), np.std(a), 'min', min(a), 'max' , max(a) )
+        st.write('Median',np.mean(b),'Mean and standard dev.of smaller radius:', np.mean(b), np.std(b), 'min', min(b), 'max' , max(b) )
 
-    ### compare mean and standard deviation of two radii ###
-    a = df_res['a']
-    b = df_res['b']
-    st.write('Median',np.mean(a),'Mean and standard dev. of larger radius:',np.mean(a), np.std(a), 'min', min(a), 'max' , max(a) )
-    st.write('Median',np.mean(b),'Mean and standard dev.of smaller radius:', np.mean(b), np.std(b), 'min', min(b), 'max' , max(b) )
-
-    ### Download Ellipsoid output###
-    st.subheader("Download files for pathway with ellipsoidal probe particle")
-    fn ="ellipsoid_pathway_profile."+fig_format
-    fig.savefig(fn, format=fig_format, bbox_inches='tight')
-    download_Ellipsoid_output(names_aligned[0][:-4], fn, path_save,  )
+        ### Download Ellipsoid output###
+        st.subheader("Download files for pathway with ellipsoidal probe particle")
+        fn ="ellipsoid_pathway_profile."+fig_format
+        fig.savefig(fn, format=fig_format, bbox_inches='tight')
+        download_Ellipsoid_output(names_aligned[0][:-4], fn, path_save,  )
+    else:
+        st.write('Ellipsoid pathway calculation not activated. To activate set plt_ellipsoid = True')
 
     #st.write('ERROR with', names)
 else:

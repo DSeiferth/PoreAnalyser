@@ -11,6 +11,21 @@ from ellipse_lib import atom, ellipse
 import nglview as nv
 
 def compare_volume(res, digit):
+    """
+    Compare volumes of a pathway with spherical and ellipsoidal probe particles.
+
+    Parameters:
+    - res (list): List of lists containing coordinates and parameters of the pathway.
+                  Each inner list should have the format ['x', 'y', 'z', 'a', 'b', 'theta'].
+    - digit (int): Number of decimal places to round the volume and ratio calculations.
+
+    Returns:
+    None
+
+    This function computes the volumes of a pathway with spherical and ellipsoidal probe particles
+    based on the provided coordinates and parameters. It then calculates the ratio of the volumes
+    and prints and displays the results using Streamlit.
+    """
     df2 = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
     z = np.array( df2['z' ] )
     a = np.array( df2['a' ] )
@@ -37,6 +52,16 @@ def write_pdb_with_pore_surface(path='', name='', end_radius=15, num_circle = 24
     radii = sph.atoms.occupancies
     resids = sph.atoms.resids
     sel = sph.select_atoms('resid '+str(min(resids[radii < end_radius ])) +':'+ str(max(resids[radii < end_radius ])) )
+
+    coordinates = []
+    for count, atom in enumerate(sel):
+        probe1 = sph.select_atoms('resname SPH and resid '+str(atom.resid))
+        r = radii[np.where(resids==atom.resid)[0][0] ]
+        for i in range(0,num_circle):
+            p = probe1.positions[0] + r * np.array([np.cos(2*np.pi*i/num_circle), np.sin(2*np.pi*i/num_circle),0])
+            coordinates.append(p)
+    coord_array = np.array(coordinates)
+
     n_residues = len(sel)
     n_atoms = num_circle * len(sel)
     ### create resindex list ###
@@ -53,20 +78,87 @@ def write_pdb_with_pore_surface(path='', name='', end_radius=15, num_circle = 24
     sol2.add_TopologyAttr('name', ['point']*n_residues*num_circle)
     sol2.add_TopologyAttr('resname', ['Pathway']*n_residues)
     sol2.add_TopologyAttr('resid', list(range(1, n_residues+1)))
+    sol2.atoms.positions = coord_array
+    sel = sol2.select_atoms('name *')
+    print('number of points in cloud', len(sel))
+    sel.write(path + name + '_circle.pdb')
+
+def write_pdb_with_pore_surface_resulution(path='', name='', end_radius=15, num_circle = 24):
+    """
+    not in production yet !!!
+    """
+    conf = path + name[:-4] + '.sph'
+    top = conf
+    sph = MDAnalysis.Universe(top, conf, topology_format='pdb', format='pdb') # tpr_resid_from_one=True
+    radii = sph.atoms.occupancies
+    resids = sph.atoms.resids
+    sel = sph.select_atoms('resid '+str(min(resids[radii < end_radius ])) +':'+ str(max(resids[radii < end_radius ])) )
+
     coordinates = []
     for count, atom in enumerate(sel):
         probe1 = sph.select_atoms('resname SPH and resid '+str(atom.resid))
         r = radii[np.where(resids==atom.resid)[0][0] ]
-        for i in range(0,num_circle):
-            p = probe1.positions[0] + r * np.array([np.cos(2*np.pi*i/num_circle), np.sin(2*np.pi*i/num_circle),0])
+        resolution = 2
+        num_circle2 = int(2*np.pi*r / resolution)
+        for i in range(0,num_circle2):
+            p = probe1.positions[0] + r * np.array([np.cos(2*np.pi*i/num_circle2), np.sin(2*np.pi*i/num_circle2),0])
             coordinates.append(p)
     coord_array = np.array(coordinates)
-    #assert coord_array.shape == (n_atoms, 1)
+    n_atoms = len(coord_array)
+
+    ### create universe for point cloud ###
+    n_residues = 2
+    ### create resindex list ###
+    resindices = np.repeat(1, n_atoms) ### all the same residue 
+    assert len(resindices) == n_atoms
+    ### all water molecules belong to 1 segment ###
+    segindices = [0] * n_residues
+    sol2 = MDAnalysis.Universe.empty(n_atoms,
+                                n_residues=n_residues,
+                                atom_resindex=resindices,
+                                residue_segindex=segindices,
+                                trajectory=True) # necessary for adding coordinates
+    sol2.add_TopologyAttr('name', ['point']*n_atoms)
+    sol2.add_TopologyAttr('resname', ['Pathway']*n_residues)
+    sol2.add_TopologyAttr('resid', list(range(1, n_residues+1)))
+    ### write point cloud in pdb format ###
     sol2.atoms.positions = coord_array
     sel = sol2.select_atoms('name *')
+    print('number of points in cloud', len(sel))
     sel.write(path + name + '_circle.pdb')
 
 def write_pdb_with_ellipsoid_surface(p, pdbname ,fname,  num_circle = 24):
+    """
+    Generate a PDB file with ellipsoidal surfaces based on provided ellipsoid parameters.
+
+    Parameters:
+    - p (str): Path to the directory containing the ellipsoid output file and where the output files will be saved.
+    - pdbname (str): Prefix for the output file names.
+    - fname (str): Name of the ellipsoid output file (CSV format).
+    - num_circle (int): Number of points used to represent each circle when drawing ellipsoids.
+
+    Returns:
+    None
+
+    This function reads ellipsoid parameters from a CSV file, generates ellipsoidal surfaces,
+    and writes the result in PDB format. Additionally, it creates a VMD script to visualize the
+    surfaces and saves it as a separate file.
+
+    Note:
+    - The ellipsoid parameters are expected to be in a CSV file with columns: ['x', 'y', 'z', 'a', 'b', 'theta'].
+    - The generated VMD script is saved as 'pdbname_pathway_ellipse.vmd'.
+    - The generated PDB file is saved as 'pdbname_ellipsoid.pdb'.
+
+    Example:
+    ```python
+    # Example usage
+    pathway_dir = "/path/to/your/directory/"
+    ellipsoid_file = "ellipsoid_parameters.csv"
+    output_prefix = "output_prefix"
+    num_circle_points = 24
+    write_pdb_with_ellipsoid_surface(pathway_dir, output_prefix, ellipsoid_file, num_circle_points)
+    ```
+    """
     ### load ellipsoid output file ###
     df = pd.read_csv(p+fname, skiprows=1, header=0, 
                      names=['x', 'y', 'z', 'a', 'b', 'theta'])
@@ -104,6 +196,8 @@ def write_pdb_with_ellipsoid_surface(p, pdbname ,fname,  num_circle = 24):
             large_dist_prev += 1
         else:
             e = ellipse(a=larger[i], b=smaller[i], theta=theta[i], cx=x[i], cy=y[i])
+            #resolution = 3
+            #num_circle = int(2*np.pi*smaller[i] / resolution)
             x_vec, y_vec = e.draw(res = 2*np.pi/ num_circle )
 
             if smaller[i]<1.15:
@@ -119,6 +213,7 @@ def write_pdb_with_ellipsoid_surface(p, pdbname ,fname,  num_circle = 24):
                 f.write(string)
     f.close()        
     n_atoms = len(coordinates)  
+    print('n_atoms', n_atoms)
 
     ### create universe for point cloud ###
     n_residues = len(x) - large_dist_prev

@@ -2,9 +2,7 @@ PoreFinding
 ==============================
 
 [//]: # (Badges)
-[![pytest](https://github.com/simonlichtinger/PyMEMENTO/actions/workflows/run_pytest.yml/badge.svg)](https://github.com/simonlichtinger/PyMEMENTO/actions/workflows/run_pytest.yml)
 [![Documentation Status](https://readthedocs.org/projects/porefinding/badge/?version=latest)](https://porefinding.readthedocs.io/en/latest/?badge=latest)
-![Tests](https://github.com/github/docs/actions/workflows/python-package.yml/badge.svg)
 
 ---
 title: PoreFinding_pdb

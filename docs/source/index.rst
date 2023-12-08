@@ -1,7 +1,7 @@
 Welcome to PoreFinding's documentation!
 ===================================
 
-**PoreFinding** (/lu'make/) is a Python library for analysing (ion channel) 
+**PoreFinding** is a Python library for analysing (ion channel) 
 pore profiles. 
 Over the last two decades, advances in structural biology along with recent artificial intelligence–driven structure prediction algorithms, such as AlphaFold, have revealed a plethora of 3-D ion channel and nanopore structures in different conformational states. However, in nearly every case, these structures still require functional annotation. Different tools, such as HOLE and CHAP, allow the analysis of the physical dimensions of the pore running through an ion channel. Here, we present a package that allows users to calculate the pore profile of any input structure. Based on the well-established HOLE programme, we add a new feature to capture pore asymmetry by using an ellipsoidal probe particle.
 
@@ -23,3 +23,6 @@ Contents
 
    usage
    api
+   
+.. automodule:: package_name.module
+   :members:

@@ -24,5 +24,3 @@ Contents
    usage
    api
    
-.. automodule:: package_name.module
-   :members:

@@ -3,7 +3,9 @@ from setuptools import setup
 setup(
     name='PoreFinding',
     version='0.0.1',    
-    description='A example Python package',
+    description='A Python package for analysing (ion channel) pore profiles',
+    long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     url='https://huggingface.co/spaces/DSeiferth/PoreFinding_pdb',
     author='David Seiferth',
     author_email='david.seiferth@oriel.ox.ac.uk',

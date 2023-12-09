@@ -5,7 +5,7 @@ name: PoreFinding_Ellipsoid # PoreFinding_pdb
 
 on:
   push:
-    branches: [ "main", "reorder", "main_exe" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 

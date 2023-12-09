@@ -1,6 +1,5 @@
 ---
-title: PoreFinding_pdb
-emoji: 📊
+title: PoreFinding
 colorFrom: red
 colorTo: green
 sdk: streamlit
@@ -20,13 +19,13 @@ PoreFinding
 
 Recent advances in structural biology have led to a growing number of ion channel structures featuring heteromeric subunit assembly, exemplified by synaptic Glycine receptors ([GlyRs](https://www.nature.com/articles/s41467-023-37106-7)) and α4β2 nicotinic receptors. These structures exhibit inherent pore asymmetry, which has raised questions about the role of asymmetry in ion channel function.  Furthermore, molecular dynamics simulations performed on symmetrical homomeric channels often lead to thermal distortion that means conformations of the resulting ensemble are also asymmetrical. We introduce an algorithm that employs ellipsoidal probe particles, enabling a more comprehensive characterization of pore asymmetries. A constriction is more asymmetric for a larger difference between the smaller and larger radius of the ellipsoidal probe particle. 
 
-# Existing tools for pore pathfinding
+#### Existing tools for pore pathfinding
 - [HOLE](https://www.holeprogram.org/) uses Monte Carlo simulated annealing procedure to find the best route for a sphere with variable radius to squeeze through the channel.
 - The Channel Annotation Package [CHAP](https://github.com/channotation/chap) combines  calculations of the pore radius, the hydrophobicity of a pore and water density in the pore to predict hydrophobic gates in ion channels.
 - Other tools, such as MOLEonline and CAVER, do not use a probe based algorithm for path finding. Cavities are identified using Voronoi diagrams and molecular surfaces.
 
-# What does this package add?
-- dding new features to pore-path-finding tools to capture pore asymmetry.
+#### What does this package add?
+- Adding new features to pore-path-finding tools to capture pore asymmetry.
 - Capture pore asymmetry.
   - Asymmetry of crystal/cryoEM structures due to heterogeneous subunit composition.
   - From crystal structure broken in simulations.
@@ -44,7 +43,10 @@ Recent advances in structural biology have led to a growing number of ion channe
     c) Second optimization with larger boundaries for parameters to further increase ellipsoid. The loop takes around 60s to complete...
 5. Plot pathway and render pore surface. 
 
-# Links to documentation
+### Installation
+To do...
+
+### Links to documentation
 You can either upload your proteins of interest to the [webservice](https://huggingface.co/spaces/DSeiferth/PoreFinding_pdb) hosted on hugginface
 or you can [install](https://porefinding.readthedocs.io/en/latest/usage.html#installation) the PoreFinding python package on your machine. 
 If you decide to use the webservice, you can download all output files and visualisation scripts to produce high quality figures. 

@@ -6,7 +6,12 @@ Usage
 Installation
 ------------
 
-To use PoreFinding, first install it using pip:
+.. code-block:: console
+
+   $ git clone https://github.com/DSeiferth/PoreFinding.git
+   (.venv) $ pip install .
+
+To use PoreFinding, first install it using pip (not yet...):
 
 .. code-block:: console
 

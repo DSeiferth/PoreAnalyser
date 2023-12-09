@@ -10,6 +10,7 @@ readme = {file = "README.md", content-type = "text/markdown"}
 description = "PoreFinding package based on HOLE and MDAnalysis"
 version = "0.0.1"
 requires-python = ">=3.6"
+dependencies = {file = ["requirements.txt"]}
 
 [project.scripts]
 porefinding = "porefinding:main"

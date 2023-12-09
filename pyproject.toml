@@ -10,12 +10,27 @@ readme = {file = "README.md", content-type = "text/markdown"}
 description = "PoreFinding package based on HOLE and MDAnalysis"
 version = "0.0.1"
 requires-python = ">=3.6"
-dependencies = {file = ["requirements.txt"]}
+dependencies = [
+'numpy >=1.0, <1.23.0',
+'MDAnalysis >=2.0, <3.0',
+'matplotlib>=0.1',
+'pandas>=1.3',
+'streamlit>=1.0',
+'stmol==0.0.9',
+'py3Dmol',
+'ipyspeck==0.6.1',
+'ipywidgets==7.6.3',
+'scipy',
+'altair<5',
+'nglview',
+'ipython_genutils==0.2.0',
+]
 
 [project.scripts]
 porefinding = "porefinding:main"
 
 [tool.flit.sdist]
-include = ["LICENSE"]
+include = ["LICENSE", "requirements.txt"]
+
 
 

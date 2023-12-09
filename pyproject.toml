@@ -9,3 +9,23 @@ license = {file = "LICENSE"}
 description = "PoreFinding package based on HOLE and MDAnalysis"
 version = "0.0.1"
 
+[tool.flit.metadata]
+requires-python = ">=3.6"
+
+[tool.flit.scripts]
+porefinding = "porefinding:main"
+
+[tool.flit.sdist]
+include = ["LICENSE"]
+
+# Add long_description here
+[tool.flit.metadata]
+long_description = """
+    PoreFinding package based on HOLE and MDAnalysis
+    Your detailed long description goes here.
+    It can span multiple lines and include formatting.
+"""
+
+# Specify the content type for the long_description
+[tool.flit.metadata]
+long_description_content_type = "text/plain"

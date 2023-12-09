@@ -18,56 +18,41 @@ PoreFinding
 
 [Try out this protoype on HugginFace without installing anything](https://huggingface.co/spaces/DSeiferth/PoreFinding_pdb)
 
+Recent advances in structural biology have led to a growing number of ion channel structures featuring heteromeric subunit assembly, exemplified by synaptic Glycine receptors ([GlyRs](https://www.nature.com/articles/s41467-023-37106-7)) and α4β2 nicotinic receptors. These structures exhibit inherent pore asymmetry, which has raised questions about the role of asymmetry in ion channel function.  Furthermore, molecular dynamics simulations performed on symmetrical homomeric channels often lead to thermal distortion that means conformations of the resulting ensemble are also asymmetrical. We introduce an algorithm that employs ellipsoidal probe particles, enabling a more comprehensive characterization of pore asymmetries. A constriction is more asymmetric for a larger difference between the smaller and larger radius of the ellipsoidal probe particle. 
+
+# Existing tools for pore pathfinding
+- [HOLE](https://www.holeprogram.org/) uses Monte Carlo simulated annealing procedure to find the best route for a sphere with variable radius to squeeze through the channel.
+- The Channel Annotation Package [CHAP](https://github.com/channotation/chap) combines  calculations of the pore radius, the hydrophobicity of a pore and water density in the pore to predict hydrophobic gates in ion channels.
+- Other tools, such as MOLEonline and CAVER, do not use a probe based algorithm for path finding. Cavities are identified using Voronoi diagrams and molecular surfaces.
+
 # What does this package add?
-- Pore finding with new features: 
+- dding new features to pore-path-finding tools to capture pore asymmetry.
 - Capture pore asymmetry.
   - Asymmetry of crystal/cryoEM structures due to heterogeneous subunit composition.
-  - from crystal structure broken in simulations.
-- Making a tool accessible without installation or download of any package.
+  - From crystal structure broken in simulations.
+- Making software tools accessible to the community via an interactive web-service. No installation needed when using the web-page. For python users, we publish an easy-to-install python package. 
 
 
 # Path finding with ellipsoidal probe particle
 
 1. Align principal axis to z-axis
-2. Load HOLE output file with positions and radii of probes.
-3. Loop through all spherical probe particles: 
+2. HOLE analysis with spherical probe particle.
+3. Load HOLE output file with positions and radii of probes.
+4. Loop through all spherical probe particles: 
     a) Ellipsoid initialized with spherical probe particle parameters from HOLE output. 
     b) First Nelder-Mead 4-dim optimization to insert ellipsoid with smaller bounds for parameters [x, y, r1, θ ]. 
     c) Second optimization with larger boundaries for parameters to further increase ellipsoid. The loop takes around 60s to complete...
+5. Plot pathway and render pore surface. 
 
-# Conent and Usage of (zipped) HOLE output files
-example: pdb_name = '7tu9_aligned_z.pdb'
-- pdb files
-  - pdb_name: uploaded pdb file (aligned to z-axis)
-  - pdb_name + '_circle.pdb': point cloud for pore surface
-- vmd files
-  - pdb_name + ".vmd": vmd surface for uploaded pdb file
-  - "visualise_pathway_hole.tcl": vmd script for plotting the pore surface; the script can be used in the following way: "vmd -e visualise_pathway_hole.tcl -args  7tu9_aligned_z.pdb 7tu9_aligned_z.vmd"
-- other files
-  - "hole_pathway_profile.csv": A DataFrame containing the results of the hole analysis, with the following columns:
-    - 'Label z [A]': the z-coordinate of each point along the pore axis.
-    - 'Label Radius [A]': the radius of the pore at each point.
-    - 'Label' corresponds to the labels provided in the `labels` parameter in the hole_analysis.analysis() function.
-  - "README.md"
-  - "hole.out": HOLE output
-  - "hole_pathway_profile."+fig_format: pathway profile figure in desired format
+# Links to documentation
+You can either upload your proteins of interest to the [webservice](https://huggingface.co/spaces/DSeiferth/PoreFinding_pdb) hosted on hugginface
+or you can [install](https://porefinding.readthedocs.io/en/latest/usage.html#installation) the PoreFinding python package on your machine. 
+If you decide to use the webservice, you can download all output files and visualisation scripts to produce high quality figures. 
+More information about the [output files](https://porefinding.readthedocs.io/en/latest/webservice.html) can be found in the documentation. 
 
-# Conent and Usage of (zipped) output files for pathfinding with an ellipsoidal probe particle
-example: pdb_name = 7tu9_aligned_z
-- vmd files
-  - pdb_name+'.pdb_pathway_ellipse.vmd'
-  - "visualise_pathway_hole.tcl"
-  - the script can be used in the following way: "vmd -e visualise_pathway_hole.tcl -args  7tu9_aligned_z.pdb 7tu9_aligned_z.pdb_pathway_ellipse.vmd.vmd"
-- pdb files 
-  - pdb_name + '.pdb_ellipsoid.pdb'
-  - pdb_name+'.pdb'
-- other files
-  - "README.md"
-  - pdb_name + '.pdb_pathway_ellipse.txt': A DataFrame containing the results of the pathfinding analysis, with the following columns:
-    - "x", "y", "z": position of ellipsoid center
-    - "a", "b": larger and smaller radius of the ellipsoid
-    - "theta": orientation of ellipsoid
-  - figure plotting the spherical HOLE radius and the larger radius of the ellipsoid
+To render 3d representations of the pore surface, you can use a variety of software ranging from py3Dmol, VMD to UCSF Chimera.
+See [Visualisation tools](https://porefinding.readthedocs.io/en/latest/visualisation.html).
+
 
 ## Notes
 

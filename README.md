@@ -44,7 +44,8 @@ Recent advances in structural biology have led to a growing number of ion channe
 5. Plot pathway and render pore surface. 
 
 ### Installation
-To do...
+PoreFinding may be installed as the latest release from PyPI ( pip install PoreFinding ) or in the development version from this github repository. 
+Detailed [installation instructions](https://porefinding.readthedocs.io/en/latest/usage.html#installation) can be found in the documentation.
 
 ### Links to documentation
 You can either upload your proteins of interest to the [webservice](https://huggingface.co/spaces/DSeiferth/PoreFinding_pdb) hosted on hugginface

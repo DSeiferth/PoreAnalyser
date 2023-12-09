@@ -35,3 +35,11 @@ For example:
 >>> c.pathway_visualisation(index_model=0, f_end='_circle.pdb')
 >>> c.ellipsoid_analysis(index_model=0)
 >>> c.pathway_visualisation(0, f_end='_ellipsoid.pdb')
+
+Running Streamlit app locally
+------------------------------
+After having installed PoreFinding locally, you can run the streamlit app yourself:
+
+.. code-block:: console
+
+   (.venv) $ streamlit run app.py

@@ -5,4 +5,4 @@ build-backend = "flit_core.buildapi"
 [project]
 name = "PoreFinding"
 authors = [{name = "David Seiferth", email = "david.seiferth@oriel.ox.ac.uk"}]
-dynamic = ["version", "description"]
+dynamic = ["version", "description", "dependencies", "classifiers"]

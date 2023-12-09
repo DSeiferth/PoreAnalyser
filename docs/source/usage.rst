@@ -6,16 +6,18 @@ Usage
 Installation
 ------------
 
-.. code-block:: console
-
-   $ git clone https://github.com/DSeiferth/PoreFinding.git
-   (.venv) $ pip install .
-
-To use PoreFinding, first install it using pip (not yet...):
+To use PoreFinding, first install it using pip:
 
 .. code-block:: console
 
    (.venv) $ pip install PoreFinding
+   
+Using a virtual environment is recommended:
+.. code-block:: console
+
+   $ conda create -n PoreFinding python=3.9 -y
+   $ conda activate PoreFinding
+   (PoreFinding) $ pip install PoreFinding
 
 Creating Pore profiles
 ----------------

@@ -6,3 +6,7 @@ build-backend = "flit_core.buildapi"
 name = "PoreFinding"
 authors = [{name = "David Seiferth", email = "david.seiferth@oriel.ox.ac.uk"}]
 dynamic = ["version", "description"]
+license = "LGPL-2.1-or-later"
+description = "PoreFinding package based on HOLE and MDAnalysis"
+version = "0.0.1"
+

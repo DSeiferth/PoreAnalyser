@@ -27,5 +27,7 @@ Contents
 .. toctree::
 
    usage
+   webservice
+   visualisation
    api
    

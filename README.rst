@@ -1,9 +1,8 @@
-Template for the Read the Docs tutorial
+PoreFinding
 =======================================
 
-This GitHub template includes fictional Python library
-with some basic Sphinx docs.
+PoreFinding package based on HOLE and MDAnalysis
 
-Read the tutorial here:
+Read the documentation here:
 
-https://docs.readthedocs.io/en/stable/tutorial/
+https://porefinding.readthedocs.io/en/latest/index.html

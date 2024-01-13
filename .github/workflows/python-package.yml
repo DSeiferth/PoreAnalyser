@@ -61,5 +61,5 @@ jobs:
         python -m unittest 
     - name: Debug Info
       run: |
-        echo "Current Version: $(python -c "import your_package; print(your_package.__version__)")"
+        echo "Current Version: $(python -c "import PoreFinding as pf; print(pf.__version__)")"
 

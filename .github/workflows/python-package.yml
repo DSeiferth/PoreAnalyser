@@ -59,3 +59,7 @@ jobs:
     - name: Test with unittest
       run: |
         python -m unittest 
+    - name: Debug Info
+      run: |
+        echo "Current Version: $(python -c "import your_package; print(your_package.__version__)")"
+

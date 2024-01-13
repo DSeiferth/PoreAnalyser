@@ -6,7 +6,10 @@ import py3Dmol
 import streamlit as st
 import sys
 #sys.path.insert(1, 'ProbeParticleEllipsoid/')
-sys.path.append('PoreFinding/ProbeParticleEllipsoid/')
+#sys.path.append('PoreFinding/ProbeParticleEllipsoid/')
+import os
+bla = os.path.realpath(__file__)[:-16] 
+sys.path.append(bla+'ProbeParticleEllipsoid/')
 from ellipse_lib import atom, ellipse
 import nglview as nv
 

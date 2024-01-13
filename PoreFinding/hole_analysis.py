@@ -7,8 +7,9 @@ from MDAnalysis.analysis import hole2
 #bla = '/biggin/b198/orie4254/Documents/PoreFinding_pdb/' # when loading module
 import os
 #bla = os.getcwd() + '/' # # when running app
-bla = os.getcwd() + '/' +'PoreFinding/' # when running locally
-print(bla)
+#bla = os.getcwd() + '/' +'PoreFinding/' # when running locally
+bla = os.path.realpath(__file__)[:-16] 
+print('path hole_analysis',bla)
 #bla = './' # for using streamlit app
 hole_exe = bla+'hole2/hole'
 print('hole_exe', hole_exe)

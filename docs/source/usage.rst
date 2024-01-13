@@ -13,6 +13,7 @@ To use PoreFinding, first install it using pip:
    (.venv) $ pip install PoreFinding
    
 Using a virtual environment is recommended:
+
 .. code-block:: console
 
    $ conda create -n PoreFinding python=3.9 -y

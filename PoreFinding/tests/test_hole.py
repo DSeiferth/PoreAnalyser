@@ -2,7 +2,7 @@ import unittest
 import hole_analysis as hole_analysis
 import numpy as np
 import os
-bla = os.getcwd() + '/' # +'PoreFinding/' # when running locally
+bla = os.getcwd() + '/'  +'PoreFinding/' # when running locally
 
 
 class HoleTest(unittest.TestCase):

@@ -4,9 +4,9 @@ API
 .. autosummary::
    :toctree: generated
 
-   PoreFinding
+   PoreFinder
    
-.. autoclass:: PoreFinding.PoreAnalysis
+.. autoclass:: PoreFinder.PoreAnalysis
    :members:
 
 
@@ -18,17 +18,17 @@ Auxiliary functions
 HOLE analysis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: PoreFinding.hole_analysis
+.. automodule:: PoreFinder.hole_analysis
    :members:
    
 Ellipsoid library 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: PoreFinding.ProbeParticleEllipsoid.ellipse_lib
+.. automodule:: PoreFinder.ProbeParticleEllipsoid.ellipse_lib
    :members:
    
 Optimisation with ellipsoidal probe particle 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: PoreFinding.ProbeParticleEllipsoid.ellipsoid_optimisation
+.. automodule:: PoreFinder.ProbeParticleEllipsoid.ellipsoid_optimisation
    :members:

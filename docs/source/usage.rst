@@ -24,7 +24,7 @@ Using a virtual environment is recommended:
 Creating Pore profiles
 ----------------
 
-To analyse ion channel pores, you can initialise ``PoreFinding.PoreAnalysis()`` class
+To analyse ion channel pores, you can initialise ``PoreFinder.PoreAnalysis()`` class
 with an array of pdb structures that you want to analyse.
 
 

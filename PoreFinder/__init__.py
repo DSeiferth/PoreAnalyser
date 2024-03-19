@@ -5,7 +5,7 @@ Library for Pathfinding with an ellipsoidal probe particle
 #from .version_info import VERSION_INT, VERSION  # noqa
 
 # Import main classes
-from .porefinding import PoreAnalysis
+from .porefinder import PoreAnalysis
 #import sys
 #from .hole_analysis import hole_analysis 
 #sys.path.append('ProbeParticleEllipsoid/')

@@ -10,15 +10,16 @@ To use PoreFinding, first install it using pip:
 
 .. code-block:: console
 
-   (.venv) $ pip install PoreFinding
+   (.venv) $ pip install PoreFinder
    
+The PoreFinder package has been tested with python versions 3.9, 3.10 and 3.11.
 Using a virtual environment is recommended:
 
 .. code-block:: console
 
-   $ conda create -n PoreFinding python=3.9 -y
-   $ conda activate PoreFinding
-   (PoreFinding) $ pip install PoreFinding
+   $ conda create -n PoreFinder python=3.9 -y
+   $ conda activate PoreFinder
+   (PoreFinder) $ pip install PoreFinder
 
 Creating Pore profiles
 ----------------
@@ -29,8 +30,8 @@ with an array of pdb structures that you want to analyse.
 
 For example:
 
->>> import PoreFinding as pf
->>> p = 'PoreFinding/pdb_models/'
+>>> import PoreFinder as pf
+>>> p = 'PoreFinder/pdb_models/'
 >>> pdb_array = [p+'8fe1.pdb']
 >>> c = pf.PoreAnalysis(pdb_array, num_circle=20,)
 >>> c.hole_analysis(plot_lines=True, legend_outside=False, title='', f_size=15, )

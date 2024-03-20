@@ -7,7 +7,7 @@ sys.path.append('ProbeParticleEllipsoid/')
 import ellipsoid_optimisation as e_opt 
 import ellipse_lib as e_lib
 import os
-bla = os.getcwd() + '/' +'PoreFinding/' # when running locally
+bla = os.getcwd() + '/' +'PoreFinder/' # when running locally
 
 
 class penalty_overlap_4dim_Test(unittest.TestCase):

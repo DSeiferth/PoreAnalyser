@@ -51,7 +51,7 @@ class neighbor_vec_Test(unittest.TestCase):
         """
         # ## load data from GlyR model ###
         p = bla+'pdb_models/'
-        name = '7tu9_aligned_z'
+        name = 'test_7tu9_aligned_z'
         end_radius = 20
         
         conf = p + name + '.sph'
@@ -108,11 +108,11 @@ class neighbor_vec_Test(unittest.TestCase):
         a_vec, neighbour_labels, n_xy = e_opt.neighbor_vec(universe, probe, probe1, n_xy_fac, 
                                                         out=out, pathway_sel=pathway_sel)
         
-        self.assertEqual(len(a_vec), 53)
-        self.assertEqual(len(neighbour_labels), 53)
+        self.assertEqual(len(a_vec), 50)
+        self.assertEqual(len(neighbour_labels), 50)
         self.assertEqual(neighbour_labels[0], 'SER 294')
-        self.assertEqual(n_xy,  9.843750298023224)
+        self.assertEqual(n_xy, 10.15625 )
 
-        self.assertEqual(a_vec[0].r, 0.8043274957461098)
-        self.assertEqual(a_vec[10].r, 1.0744644649730715)
-        self.assertEqual(a_vec[40].r, 1.0978996511995094)
+        self.assertEqual(a_vec[0].r, 1.1284209732286377 )
+        self.assertEqual(a_vec[10].r, 1.310291834203602 )
+        self.assertEqual(a_vec[40].r, 0.3332456537007631  )

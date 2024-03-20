@@ -51,7 +51,7 @@ class neighbor_vec_Test(unittest.TestCase):
         """
         # ## load data from GlyR model ###
         p = bla+'pdb_models/'
-        name = '7tu9a_aligned_z'
+        name = '7tu9_aligned_z'
         end_radius = 20
         
         conf = p + name + '.sph'

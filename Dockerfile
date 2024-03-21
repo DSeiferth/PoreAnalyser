@@ -26,7 +26,7 @@ WORKDIR /app
 
 # Copy the requirements.txt file into the container
 # COPY requirements.txt .
-COPY entrypoint.sh /app/entrypoint.sh
+#COPY entrypoint.sh /app/entrypoint.sh
 COPY app.py /app/app.py
 COPY PoreAnalyser /app/PoreAnalyser
 COPY visualise_pathway_hole.tcl /app/visualise_pathway_hole.tcl

@@ -3,14 +3,14 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../..'))
-sys.path.insert(1, os.path.abspath('../../PoreFinder'))
-sys.path.insert(2, os.path.abspath('../../PoreFinder/ProbeParticleEllipsoid'))
+sys.path.insert(1, os.path.abspath('../../PoreAnalyser'))
+sys.path.insert(2, os.path.abspath('../../PoreAnalyser/ProbeParticleEllipsoid'))
 
-import PoreFinder
+import PoreAnalyser
 
 # -- Project information
 
-project = 'PoreFinder'
+project = 'PoreAnalyser'
 copyright = '2023, Seiferth'
 author = 'David Seiferth'
 

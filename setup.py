@@ -1,16 +1,16 @@
 from setuptools import setup
 
 setup(
-    name='PoreFinder', #'PoreFinding',
+    name='PoreAnalyser', #'PoreFinding',
     version='0.0.3',    
     description='A Python package for analysing (ion channel) pore profiles',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    url='https://huggingface.co/spaces/DSeiferth/PoreFinder',
+    url='https://huggingface.co/spaces/DSeiferth/PoreAnalyser',
     author='David Seiferth',
     author_email='david.seiferth@oriel.ox.ac.uk',
     #license='BSD 2-clause',
-    packages=['PoreFinder'],
+    packages=['PoreAnalyser'],
     install_requires=[
         'numpy>=1.0',  # 1.22.0
         'MDAnalysis>=2.0,<3.0', #2.0.0

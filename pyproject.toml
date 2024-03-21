@@ -3,7 +3,7 @@ requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name = "PoreFinder"
+name = "PoreAnalyser"
 authors = [{name = "David Seiferth", email = "david.seiferth@oriel.ox.ac.uk"}]
 license = {file = "LICENSE"}
 readme = {file = "README.md", content-type = "text/markdown"}
@@ -27,7 +27,7 @@ dependencies = [
 ]
 
 [project.scripts]
-porefinder = "porefinder:main"
+poreanalyser = "poreanalyser:main"
 
 [tool.flit.sdist]
 include = ["LICENSE", "requirements.txt"]

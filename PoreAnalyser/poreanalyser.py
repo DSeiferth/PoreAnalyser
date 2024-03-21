@@ -1,6 +1,6 @@
 import os
 #bla = os.getcwd() + '/PoreFinding/'
-bla = os.path.realpath(__file__)[:-14] 
+bla = os.path.realpath(__file__) #[:-14] 
 print(bla)
 import sys
 sys.path.append(bla)

@@ -1,5 +1,5 @@
 ---
-title: PoreFinding
+title: PoreAnalyser
 colorFrom: red
 colorTo: green
 sdk: streamlit
@@ -9,7 +9,7 @@ pinned: false
 license: mit
 ---
 
-PoreFinding
+PoreAnalyser
 ==============================
 
 [//]: # (Badges)
@@ -57,13 +57,6 @@ To render 3d representations of the pore surface, you can use a variety of softw
 See [Visualisation tools](https://porefinding.readthedocs.io/en/latest/visualisation.html).
 
 
-## Notes
-
-[Hugging Face Spaces](https://huggingface.co/docs/hub/spaces) work as `git` repositories. To keep everything on GitHub but publish on Hugging Face, add the Hugging Face Space repository as a remote repository:
-
-```bash
-git remote add hf https://huggingface.co/spaces/DSeiferth/PoreFinding_pdb
-```
 ## Acknowledgements
 * Rocco Meli for pointing out streamlit and hugginface
 * SBCB community for discussion

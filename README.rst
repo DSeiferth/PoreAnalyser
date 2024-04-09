@@ -1,7 +1,7 @@
-PoreFinder
+PoreAnalyser
 =======================================
 
-PoreFinder package based on HOLE and MDAnalysis
+PoreAnalyser package based on HOLE and MDAnalysis
 
 Read the documentation here:
 

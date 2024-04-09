@@ -371,3 +371,11 @@ def example_xy_plane(f_size):
     plt.gca().set_aspect('equal', adjustable='box')
     fig.tight_layout()
     return fig
+
+def st_write_conductance_estimation(hole1, pf1, hole_c, pf1_c, fig, digits=1 ):
+    st.subheader("Conductance estimation with cylindrical approximation")
+    st.pyplot(fig)
+    st.write('Conductance with conductivity model based on HOLE profile (spherical probe particle) g = ',round(hole_c,digits),' pS')
+    st.write('Conductance with conductivity model based on PoreAnalyser profile (ellipsoidal probe particle) g = ',round(pf1_c,digits),' pS')
+    st.write('Conductance with bulk conductivity based on HOLE profile (spherical probe particle) g = ',round(hole1,digits),' pS')
+    st.write('Conductance with bulk conductivity based on PoreAnalyser profile (ellipsoidal probe particle) g = ',round(pf1,digits),' pS')

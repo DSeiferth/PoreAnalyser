@@ -34,6 +34,14 @@ class PoreAnalysis():
     - path_save (str, optional): Path to save analysis results. Default is ''.
     - num_circle (int, optional): Number of circles for point cloud visualization of pore surface. Default is 24.
     - clipping (int, optional): Clipping value for 3D visualization of pore surface. Default is 100.
+    Parameters for condutance estimation:
+    - D_cation (float, optional): Diffusion coefficient of the cation. Default is 1.8e-9 m^2/s (value for potassium).
+    - D_anion (float, optional): Diffusion coefficient of the anion. Default is 2.032e-9 m^2/s (value for chloride).
+    - popt (list, optional): Parameters for the conductivity model. Default is [1.40674664, 1.25040698].
+        - popt[0] (float): Scaling parameter of radius for the conductivity model (dimension 1/Angstrom).
+        - popt[1] (float): Shift parameter of the sigmoid function for the conductivity model (dimenionless).
+    - temp (int, optional): Temperature in Kelvin. Default is 300.
+    - c_m (float, optional): Concentration in mol/l. Default is 0.15.
 
     Attributes:
     - pdb_array (list): List of file paths to the input PDB models.
@@ -49,6 +57,8 @@ class PoreAnalysis():
     - hole_fig (matplotlib.figure.Figure): Figure object for the hole analysis.
     - hole_df (pandas.DataFrame): DataFrame containing hole analysis results.
     - ellipsoid_dfs (dict): Dictionary containing ellipsoid analysis results for each model.
+    - popt (list): Parameters for the conductivity model.
+    - bulk conductivity (float): Bulk conductivity of the system.
 
     Methods:
     - hole_analysis: Perform hole analysis on the set of PDB models.
@@ -56,6 +66,7 @@ class PoreAnalysis():
     - plt_pathway_ellipsoid: Plot ellipsoid analysis results for a specific model.
     - pathway_visualisation: Visualize the pathway for a specific model.
     - pathway_rendering: Render the pathway for a specific model.
+    - conductance_estimation: Estimate the conductance of the pore using a conductivity model.
 
     Example:
     >>> pdb_models = ['model1.pdb', 'model2.pdb']
@@ -65,11 +76,15 @@ class PoreAnalysis():
     >>> pore_analysis.plt_pathway_ellipsoid(index_model=0)
     >>> pore_analysis.pathway_visualisation(index_model=0)
     >>> pore_analysis.pathway_rendering(index_model=0)
+    >>> pore_analysis.conductance_estimation(index_model=0)
     """
     def __init__(self, pdb_array, opt_method='nelder-mead',
                  align_bool=True, end_radius=15, pathway_sel='protein',
                  path_save = '', 
                  num_circle=24, clipping=100,
+                 D_cation=1.8e-9, D_anion=2.032e-9,
+                 popt = [1.40674664, 1.25040698], 
+                 temp=300, c_m=0.15
                  ):
         self.pdb_array = pdb_array
         self.align_bool = align_bool
@@ -94,6 +109,21 @@ class PoreAnalysis():
         self.hole_df = None 
 
         self.ellipsoid_dfs = {}
+
+        ### conductance estimation ###
+        self.popt = popt
+        e = 1.6022*1e-19 # C
+        J2kcal = 1/4184 # 1 kcalth = 4184 J
+        kT = 1.380*1e-23 *temp #* J2kcal# J/K
+        # mobility
+        mu_Na = D_cation/kT
+        mu_Cl = D_anion/kT
+        # concentration
+        l2m3 = 0.001
+        mol = 6.022*1e23 # particles
+        c = c_m *1/l2m3 *mol # mol/ m^3
+        self.bulk_conductivity = e*e*(mu_Na+mu_Cl)*c
+        print('bulk_conductivity', self.bulk_conductivity)
 
     def hole_analysis(self, plot_lines=True, legend_outside=False, title='', f_size=15):
         """
@@ -233,56 +263,59 @@ class PoreAnalysis():
         render_visu(path='', name=self.names_aligned[index_model], 
                     f_end=f_end, outname=outname, streamlit=False)
         
-    def conductance_estimation(self, ):
+    def conductance_estimation(self, index_model=0, f_size=15):
         """
         Estimate the conductance of the pore using a conductivity model.
         Parameters:
-        D_K = 1.8*1e-9 #m^2/s
-        D_Cl = 2.032*1e-9 #m^2/s
-        popt = [1.40674664, 1.25040698]
-        temp in Kelvin
-        c_m in mol/l 
+        - index_model (int, optional): Index of the model in the pdb_array. Default is 0.
+        - f_size (int, optional): Font size for the plot. Default is 15.
+
+        Returns:
+        tuple: Tuple containing the conductance values in pS for the pore.
+        1. conductance with bulk conductivity and spherical probe particle (hole)
+        2. conductance with bulk conductivity and ellipsoid probe particle (PoreAnalyser)
+        3. conductance with conductivity model and spherical probe particle (hole)
+        4. conductance with conductivity model and ellipsoid probe particle (PoreAnalyser)
+        5. fig : matplotlib.figure.Figure: Figure object for the plot (resistance vs z)
         """
-        D_cation=1.8e-9
-        D_anion=2.032e-9
-        popt = [1.40674664, 1.25040698]
-        temp=300
-        c_m=0.15
-
-        e = 1.6022*1e-19 # C
-
-        #T = 300 # Kelvin
-        J2kcal = 1/4184 # 1 kcalth = 4184 J
-        kT = 1.380*1e-23 *temp #* J2kcal# J/K
-
-        # diffusion (Balme 25deg)
-        D_Na = 1.334*1e-9 #m^2/s
-        D_K = 1.8*1e-9 #m^2/s
-        D_Cl = 2.032*1e-9 #m^2/s
-        # mobility
-        print('D_cation', D_cation, type(D_cation), 'kT', kT, type(kT)) 
-        mu_Na = D_cation/kT
-        mu_Cl = D_anion/kT
-
-        # concentration
-        l2m3 = 0.001
-        mol = 6.022*1e23 # particles
-        c = c_m *1/l2m3 *mol # mol/ m^3
-        bulk_conductivity = e*e*(mu_Na+mu_Cl)*c
-        print('bulk_conductivity', bulk_conductivity)
         pS = 1e-12
-        for system in self.labels:
-            print(system)
-            res1 = np.loadtxt(self.path_save+system+'_aligned_z.pdb_pathway_ellipse.txt', 
+        system = self.labels[index_model]
+        print(system)
+        res1 = np.loadtxt(self.path_save+system+'_aligned_z.pdb_pathway_ellipse.txt', 
                                 comments='#', delimiter=',')
-            df_res1 = pd.DataFrame(data=res1, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
-            df_res1.sort_values('z', inplace=True)
+        df_res1 = pd.DataFrame(data=res1, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
+        df_res1.sort_values('z', inplace=True)
 
-            hole1, R = conduct.bullk_conduct(z=df_res1['z'],a=df_res1['b'], b=df_res1['b'],conduct=bulk_conductivity)
-            pf1, R_pf_bulk = conduct.bullk_conduct(z=df_res1['z'],a=df_res1['a'],b=df_res1['b'],conduct=bulk_conductivity)
-            hole_c, R_hole_c, facs_hole = conduct.no_bulk_conduct(z=df_res1['z'],a=df_res1['b'],b=df_res1['b'], plot=False, popt=popt, conduct=bulk_conductivity) 
-            pf1_c, R_pf_c, facs_pf = conduct.no_bulk_conduct(z=df_res1.z,a=df_res1.a,b=df_res1.b, plot=False, popt=popt, conduct=bulk_conductivity)
+        hole1, R = conduct.bullk_conduct(z=df_res1['z'],a=df_res1['b'], b=df_res1['b'],conduct=self.bulk_conductivity)
+        pf1, R_pf_bulk = conduct.bullk_conduct(z=df_res1['z'],a=df_res1['a'],b=df_res1['b'],conduct=self.bulk_conductivity)
+        hole_c, R_hole_c, facs_hole = conduct.no_bulk_conduct(z=df_res1['z'],a=df_res1['b'],b=df_res1['b'], plot=False, popt=self.popt, conduct=self.bulk_conductivity) 
+        pf1_c, R_pf_c, facs_pf = conduct.no_bulk_conduct(z=df_res1.z,a=df_res1.a,b=df_res1.b, plot=False, popt=self.popt, conduct=self.bulk_conductivity)
 
-            print('conductance (pS)','hole', hole1/pS, 'pf', pf1/pS,)
-            print('conductance (pS)', 'hole_c', hole_c/pS, 'pf_c', pf1_c/pS,)
-            print() 
+        print('conductance (pS)','hole', hole1/pS, 'pf', pf1/pS,)
+        print('conductance (pS)', 'hole_c', hole_c/pS, 'pf_c', pf1_c/pS,)
+        print() 
+        fig, ax = plt.subplots(nrows=1, ncols=2, 
+                       sharex=True,
+                       #sharey='row', 
+                       figsize=(15, 10))
+        ax[0].plot(df_res1['z'][1:], facs_hole, label=r'HOLE with conductivity model')
+        ax[0].plot(df_res1['z'][1:], facs_pf, label=r'PoreAnalyser with conductivity model')
+
+        Ohm_2GOhm = 1e-9
+        ax[1].plot(df_res1['z'][1:], np.array(R_hole_c)*Ohm_2GOhm, label=r'HOLE with conductivity model')
+        ax[1].plot(df_res1['z'][1:], np.array(R_pf_c)*Ohm_2GOhm, label=r'PoreAnalyser with conductivity model')
+        ax[1].plot(df_res1['z'][1:], np.array(R)*Ohm_2GOhm, label=r'HOLE with $\kappa_{bulk}$')
+        ax[1].plot(df_res1['z'][1:], np.array(R_pf_bulk)*Ohm_2GOhm, label=r'PoreAnalyser with $\kappa_{bulk}$')
+        ax[1].legend(prop={'size': f_size*0.9}) 
+
+        ax[0].set_title('Conductivity along pore axis', fontsize=f_size, loc='center')
+        ax[1].set_title('Resistance along pore axis', fontsize=f_size, loc='center')
+        ax[0].set_xlabel("z ($\AA$)", fontsize=f_size)
+        ax[0].set_ylabel(r"$\kappa$(a,b)/$\kappa_{bulk}$", fontsize=f_size)
+        ax[1].set_xlabel("z ($\AA$)", fontsize=f_size)
+        ax[1].set_ylabel(r"Resistance ($G\Omega$)", fontsize=f_size)
+        ax[0].tick_params(axis='both', which='major', labelsize=f_size)
+        ax[1].tick_params(axis='both', which='major', labelsize=f_size)
+        fig.tight_layout()
+        plt.show()
+        return hole1/pS, pf1/pS, hole_c/pS, pf1_c/pS, fig 

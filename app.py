@@ -8,7 +8,7 @@ import MDAnalysis
 from stmol import showmol
 import py3Dmol
 import numpy as np
-from visualization import plt_ellipsoid_pathway, st_write_ellipsoid, example_xy_plane, compare_volume, render_visu, write_pdb_with_ellipsoid_surface
+from visualization import plt_ellipsoid_pathway, st_write_ellipsoid, example_xy_plane, compare_volume, render_visu, write_pdb_with_ellipsoid_surface, st_write_conductance_estimation
 # pathway_visu, write_pdb_with_pore_surface,
 from download_files import download_output, download_Ellipsoid_output
 
@@ -29,7 +29,6 @@ import matplotlib.pyplot as plt
 
 
 st.title("Extending the capabilities of the HOLE Package for Annotation of Ion Channels")
-#st.latex(r''' a+a r^1+a r^2+a r^3 ''')
 
 str1 = 'Over the last two decades, advances in structural biology along with recent artificial intelligence–driven structure prediction '
 str2 = 'algorithms, such as AlphaFold, have revealed a plethora of 3-D ion channel and nanopore structures in different conformational states. '
@@ -108,6 +107,40 @@ str3 = 'b) First Nelder-Mead 4-dim optimization to insert ellipsoid with smaller
 str4 = 'c) Second optimization with larger boundaries for parameters to further increase ellipsoid. The loop takes around 60s to complete...'
 st.write(str0+str1+str2+str3+str4)
 
+st.subheader("Parameter for conductance estimation")
+str0 = "In the development of a physical model to predict conductance through ion channels, Hille initially considered a cylindrical approximation with length L" 
+str1 = " and cross-sectional area A, allowing the resistance R to be expressed as  "
+st.write(str0+str1)
+st.latex(r''' R = \dfrac{1}{g} = \dfrac{\rho L}{A} ''')
+str0 = r'where $\rho$ represents bulk resistivity. This simplistic model was subsequently refined with a more accurate representation of ion channels'
+str1 = ' as a series of stacked cylinders, where the resistance accumulates. Considering ohmic principles and utilizing the HOLE software, '
+str2 = 'which measures cross-sectional areas A(z) along the channel axis z, the refined resistance model becomes'
+st.write(str0+str1)
+st.latex(r''' R_{HOLE} = \dfrac{1}{g_{HOLE}} = \sum_i \dfrac{\rho_{bulk} (z_i-z_{i-1})}{\pi r_i^2} ''')
+str0 = r'However, relying on bulk property resistivity becomes problematic, as conductivity $\kappa=1/\rho$ depends on the diffusion coefficients of ions. '
+str1 = r'The bulk conductivity $\kappa_{bulk}$ of a KCl solution with concentration c is defined as  '
+st.write(str0+str1)
+st.latex(r''' \kappa_{bulk} = \dfrac{c\cdot q_e^2\cdot(D_K+D_{CL})}{k_B T}''')
+str0 = r'where $c$ is the concentration of salts in water, $q_e$ is the elementary charge, $D_K$ and $D_{CL}$ are diffusion coefficients of potassium and chloride ions,' 
+str1 = r'$k_B$ is the Boltzmann constant, and $T$ is temperature. '
+str2 = r'To refine the model for ion channel conductance further, we introduce a conductivity model, expressing the conductivity  $\kappa(a,b)$ as a function '
+str3 = r'of the radii $a$ and $b$ of ellipsoidal probe particles. For larger radii, the ion movement is relatively unconstrained, resulting in  $\kappa(a,b)\approx \kappa_{bulk}$, '
+str3 = r'while narrower constrictions with smaller radii lead to reduced conductivity $\kappa(a,b)<\kappa_{bulk}. '
+str4 = r'Hence, we can further adapt the model for channel resistance / conductance based on the PoreAnalyser profile to'
+st.write(str0+str1+str2+str3+str4)
+st.latex(r''' R_{PA} = \dfrac{1}{g_{PA}} = \sum_i \dfrac{(z_i-z_{i-1})}{\kappa(a_i,b_i)\cdot\pi\cdot a_i\cdot b_i} ''')
+
+D_cation = st.text_input(label='Diffusion coefficient of the cation [m^2/s].', value=1.8e-9, help='Default is 1.8e-9 m^2/s (value for potassium)')
+D_cation = float(D_cation)
+D_anion = st.text_input(label='Diffusion coefficient of the anion [m^2/s].', value=2.032e-9, help='Default is 2.032e-9 m^2/s (value for chloride)')
+D_anion = float(D_anion)
+popt0 = st.text_input(label=r'Scaling parameters for the conductivity model [1/$\AA$].', value=1.40674664, help='Default is 1.40674664')
+popt1 = st.text_input(label=r'Shifting parameters for the conductivity model [dimensionless].', value=1.25040698, help='Default is 1.25040698')
+popt = [float(popt0), float(popt1)]
+temp = st.text_input(label='Temperature in Kelvin.', value=300, help='Default is 300 K')
+temp = float(temp)
+c_m = st.text_input(label='Concentration in mol/l.', value=0.15, help='Default is 0.15 mol/l')
+c_m = float(c_m)
 
 st.subheader("Upload pdb file(s)")
 uploaded_files = st.file_uploader("Choose a file", label_visibility="visible",  accept_multiple_files=True )
@@ -124,7 +157,8 @@ if uploaded_files:
         with open(uploaded_file.name,"wb") as f:
             f.write(uploaded_file.getbuffer())
     #st.write('Uploaded: names_aligned', names_aligned)
-    c = pf.PoreAnalysis(names, num_circle=20, align_bool=align_bool, end_radius=end_radius, pathway_sel = pathway_sel )
+    c = pf.PoreAnalysis(names, num_circle=20, align_bool=align_bool, end_radius=end_radius, pathway_sel = pathway_sel,
+                        D_cation=D_cation, D_anion=D_anion, popt=popt, temp=temp, c_m=c_m)
     fig, df =  c.hole_analysis(plot_lines=True, legend_outside=False, title='', f_size=15, ) 
 
     if align_bool: st.write('First, we align the principal axis to the z-axis.')
@@ -150,7 +184,7 @@ if uploaded_files:
     if plt_ellipsoid:
         st_write_ellipsoid()
         df_res = c.ellipsoid_analysis(index_model=0)
-        fig = c.plt_pathway_ellipsoid(index_model=0 )
+        fig = c.plt_pathway_ellipsoid(index_model=0)
         #ellipsoid_pathway(p=path_save, 
         #                    pdb_name = names_aligned[0], 
         #                    sph_name = names_aligned[0][:-4], 
@@ -184,13 +218,17 @@ if uploaded_files:
         a = df_res['a']
         b = df_res['b']
         st.write('Median',np.mean(a),'Mean and standard dev. of larger radius:',np.mean(a), np.std(a), 'min', min(a), 'max' , max(a) )
-        st.write('Median',np.mean(b),'Mean and standard dev.of smaller radius:', np.mean(b), np.std(b), 'min', min(b), 'max' , max(b) )
+        st.write('Median',np.mean(b),'Mean and standard dev.of smaller radius:', np.mean(b), np.std(b), 'min', min(b), 'max' , max(b) ) 
+
+        ### conductnace estimates ###
+        hole1, pf1, hole_c, pf1_c, fig = c.conductance_estimation(index_model=0)
+        st_write_conductance_estimation(hole1, pf1, hole_c, pf1_c, fig)
 
         ### Download Ellipsoid output###
         st.subheader("Download files for pathway with ellipsoidal probe particle")
         fn ="ellipsoid_pathway_profile."+fig_format
         fig.savefig(fn, format=fig_format, bbox_inches='tight')
-        download_Ellipsoid_output(names_aligned[0][:-4], fn, path_save,  )
+        download_Ellipsoid_output(names_aligned[0][:-4], fn, path_save)
     else:
         st.write('Ellipsoid pathway calculation not activated. To activate set plt_ellipsoid = True')
 
@@ -212,7 +250,8 @@ else:
         #'7tvi.pdb', #'GlyR-Gly',
         #'8fe1.pdb', # 'GlyR-Gly-Ivm'
     ]
-    c = pf.PoreAnalysis(names, num_circle=20, path_save=path_save, align_bool=align_bool, end_radius=end_radius, pathway_sel = pathway_sel)
+    c = pf.PoreAnalysis(names, num_circle=20, path_save=path_save, align_bool=align_bool, end_radius=end_radius, pathway_sel = pathway_sel,
+                        D_cation=D_cation, D_anion=D_anion, popt=popt, temp=temp, c_m=c_m)
     fig, csv =  c.hole_analysis(plot_lines=True, legend_outside=False, title='', f_size=15, ) 
 
     #fig ,csv = hole_analysis.analysis(names, labels=labels, path=path_save, 
@@ -256,7 +295,8 @@ else:
     compare_volume(res, digit=1) 
 
     ### conductnace estimates ###
-    c.conductance_estimation()
+    hole1, pf1, hole_c, pf1_c, fig = c.conductance_estimation()
+    st_write_conductance_estimation(hole1, pf1, hole_c, pf1_c, fig)
 
 
 #st.write(os.listdir())

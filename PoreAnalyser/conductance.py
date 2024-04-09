@@ -85,4 +85,3 @@ def no_bulk_conduct(z,a,b, popt, conduct=bulk_conductivity, plot=True, shift_bon
         fig.tight_layout()
         plt.show()
     return 1/R, R_vec,facs
-

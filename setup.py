@@ -2,11 +2,11 @@ from setuptools import setup
 
 setup(
     name='PoreAnalyser', #'PoreFinding',
-    version='0.0.3',    
+    version='0.0.4',    
     description='A Python package for analysing (ion channel) pore profiles',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    url='https://huggingface.co/spaces/DSeiferth/PoreAnalyser',
+    url='https://poreanalyser.bioch.ox.ac.uk/',
     author='David Seiferth',
     author_email='david.seiferth@oriel.ox.ac.uk',
     #license='BSD 2-clause',

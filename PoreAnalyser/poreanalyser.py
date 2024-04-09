@@ -20,6 +20,8 @@ except:
 sys.path.append(bla+'ProbeParticleEllipsoid/')
 from ellipsoid_optimisation import ellipsoid_pathway
 
+import conductance as conduct 
+
 class PoreAnalysis():
     """
     Class for pore analysis of a set of pdb models.
@@ -105,7 +107,7 @@ class PoreAnalysis():
         - f_size (int, optional): Font size for the plot. Default is 15.
 
         Returns:
-        None
+        Figure  and dataframe
 
         Notes:
         This method performs hole analysis on the set of PDB models and generates visualizations.
@@ -116,7 +118,8 @@ class PoreAnalysis():
         >>> pore_analysis.hole_analysis()
         """
         fig, df = hole_analysis.analysis(self.pdb_array, labels=self.labels, 
-                                          path='', end_radius=self.end_radius, 
+                                          path=self.path_save, #'', 
+                                          end_radius=self.end_radius, 
                                           title=title,
                                           legend_outside=legend_outside, plot_lines=plot_lines, 
                                           f_size=f_size, align_bool=self.align_bool, 
@@ -127,6 +130,7 @@ class PoreAnalysis():
         for i in range(len(self.pdb_array)):
             write_pdb_with_pore_surface(path=self.path_save, name=self.names_aligned[i], 
                                         end_radius=self.end_radius, num_circle = self.num_circle)
+        return fig, df  
     
     def ellipsoid_analysis(self, index_model=0, 
                            plot_lines=True, legend_outside=False, title='', f_size=15):
@@ -141,7 +145,7 @@ class PoreAnalysis():
         - f_size (int, optional): Font size for the plot. Default is 15.
 
         Returns:
-        None
+        datframe df_res
 
         Notes:
         This method performs ellipsoid analysis on a specific PDB model and generates visualizations.
@@ -171,6 +175,7 @@ class PoreAnalysis():
 
         write_pdb_with_ellipsoid_surface(p='', pdbname=self.names_aligned[index_model], 
                                      fname=self.names_aligned[0]+'_pathway_ellipse.txt', num_circle = self.num_circle)
+        return df_res
 
     def plt_pathway_ellipsoid(self, index_model=0, title='', f_size=15):
         """
@@ -208,7 +213,8 @@ class PoreAnalysis():
         >>> pore_analysis = PoreAnalysis(pdb_array=['model1.pdb', 'model2.pdb'])
         >>> xyzview = pore_analysis.pathway_visualisation(index_model=0)
         """
-        xyzview = pathway_visu(path='', name=self.names_aligned[index_model], 
+        xyzview = pathway_visu(path=self.path_save, #path='', 
+                               name=self.names_aligned[index_model], 
                                f_end=f_end, pathway_sel=self.pathway_sel,
                                clipping=self.clipping,
                                )
@@ -226,3 +232,57 @@ class PoreAnalysis():
         """
         render_visu(path='', name=self.names_aligned[index_model], 
                     f_end=f_end, outname=outname, streamlit=False)
+        
+    def conductance_estimation(self, ):
+        """
+        Estimate the conductance of the pore using a conductivity model.
+        Parameters:
+        D_K = 1.8*1e-9 #m^2/s
+        D_Cl = 2.032*1e-9 #m^2/s
+        popt = [1.40674664, 1.25040698]
+        temp in Kelvin
+        c_m in mol/l 
+        """
+        D_cation=1.8e-9
+        D_anion=2.032e-9
+        popt = [1.40674664, 1.25040698]
+        temp=300
+        c_m=0.15
+
+        e = 1.6022*1e-19 # C
+
+        #T = 300 # Kelvin
+        J2kcal = 1/4184 # 1 kcalth = 4184 J
+        kT = 1.380*1e-23 *temp #* J2kcal# J/K
+
+        # diffusion (Balme 25deg)
+        D_Na = 1.334*1e-9 #m^2/s
+        D_K = 1.8*1e-9 #m^2/s
+        D_Cl = 2.032*1e-9 #m^2/s
+        # mobility
+        print('D_cation', D_cation, type(D_cation), 'kT', kT, type(kT)) 
+        mu_Na = D_cation/kT
+        mu_Cl = D_anion/kT
+
+        # concentration
+        l2m3 = 0.001
+        mol = 6.022*1e23 # particles
+        c = c_m *1/l2m3 *mol # mol/ m^3
+        bulk_conductivity = e*e*(mu_Na+mu_Cl)*c
+        print('bulk_conductivity', bulk_conductivity)
+        pS = 1e-12
+        for system in self.labels:
+            print(system)
+            res1 = np.loadtxt(self.path_save+system+'_aligned_z.pdb_pathway_ellipse.txt', 
+                                comments='#', delimiter=',')
+            df_res1 = pd.DataFrame(data=res1, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
+            df_res1.sort_values('z', inplace=True)
+
+            hole1, R = conduct.bullk_conduct(z=df_res1['z'],a=df_res1['b'], b=df_res1['b'],conduct=bulk_conductivity)
+            pf1, R_pf_bulk = conduct.bullk_conduct(z=df_res1['z'],a=df_res1['a'],b=df_res1['b'],conduct=bulk_conductivity)
+            hole_c, R_hole_c, facs_hole = conduct.no_bulk_conduct(z=df_res1['z'],a=df_res1['b'],b=df_res1['b'], plot=False, popt=popt, conduct=bulk_conductivity) 
+            pf1_c, R_pf_c, facs_pf = conduct.no_bulk_conduct(z=df_res1.z,a=df_res1.a,b=df_res1.b, plot=False, popt=popt, conduct=bulk_conductivity)
+
+            print('conductance (pS)','hole', hole1/pS, 'pf', pf1/pS,)
+            print('conductance (pS)', 'hole_c', hole_c/pS, 'pf_c', pf1_c/pS,)
+            print() 

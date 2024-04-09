@@ -1,15 +1,18 @@
 import streamlit as st
 import sys
 sys.path.append('PoreAnalyser/')
-import hole_analysis as hole_analysis
+#import hole_analysis as hole_analysis
 import os
 import io
 import MDAnalysis
 from stmol import showmol
 import py3Dmol
 import numpy as np
-from visualization import write_pdb_with_pore_surface, plt_ellipsoid_pathway, pathway_visu, st_write_ellipsoid, write_pdb_with_ellipsoid_surface, example_xy_plane, compare_volume, render_visu
+from visualization import plt_ellipsoid_pathway, st_write_ellipsoid, example_xy_plane, compare_volume, render_visu, write_pdb_with_ellipsoid_surface
+# pathway_visu, write_pdb_with_pore_surface,
 from download_files import download_output, download_Ellipsoid_output
+
+import PoreAnalyser as pf
 
 try:
     import multiprocessing 
@@ -121,16 +124,19 @@ if uploaded_files:
         with open(uploaded_file.name,"wb") as f:
             f.write(uploaded_file.getbuffer())
     #st.write('Uploaded: names_aligned', names_aligned)
+    c = pf.PoreAnalysis(names, num_circle=20, align_bool=align_bool, end_radius=end_radius, pathway_sel = pathway_sel )
+    fig, df =  c.hole_analysis(plot_lines=True, legend_outside=False, title='', f_size=15, ) 
+
     if align_bool: st.write('First, we align the principal axis to the z-axis.')
-    fig , df = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, title=title,
-                                            legend_outside=False, plot_lines=plot_lines, f_size=f_size, align_bool=align_bool, 
-                                            sel=pathway_sel
-                                            )
+    #fig , df = hole_analysis.analysis(names, labels=labels, path='', end_radius=end_radius, title=title,
+    #                                        legend_outside=False, plot_lines=plot_lines, f_size=f_size, align_bool=align_bool, 
+    #                                        sel=pathway_sel                                        )
     st.pyplot(fig)
     path_save = ''
     st.write("Pathway visualisation for ", names[0])
-    write_pdb_with_pore_surface(path=path_save, name=names[0], end_radius=end_radius, num_circle = 24)
-    xyzview = pathway_visu(path=path_save, name=names[0], pathway_sel=pathway_sel)
+    #write_pdb_with_pore_surface(path=path_save, name=names[0], end_radius=end_radius, num_circle = 24)
+    #xyzview = pathway_visu(path=path_save, name=names[0], pathway_sel=pathway_sel)
+    xyzview = c.pathway_visualisation(index_model=0, f_end='_circle.pdb')
     showmol(xyzview, height=500, width=710)
 
     st.subheader("Download HOLE output files")
@@ -143,29 +149,30 @@ if uploaded_files:
     ### Elipsoid ###
     if plt_ellipsoid:
         st_write_ellipsoid()
-        ellipsoid_pathway(p=path_save, 
-                            pdb_name = names_aligned[0], 
-                            sph_name = names_aligned[0][:-4], 
-                            slice_dz=4, parallel=parallel, #True, 
-                            num_processes=None, timeout=6, 
-                            start_index = 1, end_radius=end_radius-1,
-                            out = 0,
-                            n_xy_fac = 3,#1.6,
-                            pathway_sel=pathway_sel,
-                            opt_method=opt_method,
-                        )
+        df_res = c.ellipsoid_analysis(index_model=0)
+        fig = c.plt_pathway_ellipsoid(index_model=0 )
+        #ellipsoid_pathway(p=path_save, 
+        #                    pdb_name = names_aligned[0], 
+        #                    sph_name = names_aligned[0][:-4], 
+        #                    slice_dz=4, parallel=parallel, #True, 
+        #                    num_processes=None, timeout=6, 
+        #                    start_index = 1, end_radius=end_radius-1,
+        #                    out = 0,
+        #                    n_xy_fac = 3,#1.6,
+        #                    pathway_sel=pathway_sel,
+        #                    opt_method=opt_method,                )
         print(path_save + names_aligned[0]+ '_pathway_ellipse.txt')
-        res = np.loadtxt(path_save + names_aligned[0]+ '_pathway_ellipse.txt', 
-                        comments='#', delimiter=',')
-        print('res.shape',res.shape)
-        df_res = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
-        df_res.sort_values('z', inplace=True)
-        fig = plt_ellipsoid_pathway(df_res, f_size=f_size, title=title, end_radius=end_radius)
+        #res = np.loadtxt(path_save + names_aligned[0]+ '_pathway_ellipse.txt', comments='#', delimiter=',')
+        #print('res.shape',res.shape)
+        #df_res = pd.DataFrame(data=res, columns=['x', 'y', 'z', 'a', 'b', 'theta'])
+        #df_res.sort_values('z', inplace=True)
+        #fig = plt_ellipsoid_pathway(df_res, f_size=f_size, title=title, end_radius=end_radius)
         st.pyplot(fig)
         ### visualization for ellipsoidal surface ###
-        write_pdb_with_ellipsoid_surface(p='', pdbname=names_aligned[0], 
-                                        fname=names_aligned[0]+'_pathway_ellipse.txt', num_circle = 24)
-        xyzview = pathway_visu(path='', name=names_aligned[0], f_end='_ellipsoid.pdb', pathway_sel=pathway_sel,)
+        #write_pdb_with_ellipsoid_surface(p='', pdbname=names_aligned[0], 
+        #                                fname=names_aligned[0]+'_pathway_ellipse.txt', num_circle = 24)
+        #xyzview = pathway_visu(path='', name=names_aligned[0], f_end='_ellipsoid.pdb', pathway_sel=pathway_sel,)
+        xyzview = c.pathway_visualisation(0, f_end='_ellipsoid.pdb')
         showmol(xyzview, height=500, width=710)
 
         ### compare volumes ###
@@ -205,20 +212,23 @@ else:
         #'7tvi.pdb', #'GlyR-Gly',
         #'8fe1.pdb', # 'GlyR-Gly-Ivm'
     ]
-    fig ,csv = hole_analysis.analysis(names, labels=labels, path=path_save, 
-                             end_radius=end_radius, 
-                       #TMD_lower=59, TMD_higher=97,
-                       title=titles[0], 
-                       legend_outside=False,
-                       plot_lines=plot_lines,
-                       f_size=f_size
-                       )
+    c = pf.PoreAnalysis(names, num_circle=20, path_save=path_save, align_bool=align_bool, end_radius=end_radius, pathway_sel = pathway_sel)
+    fig, csv =  c.hole_analysis(plot_lines=True, legend_outside=False, title='', f_size=15, ) 
+
+    #fig ,csv = hole_analysis.analysis(names, labels=labels, path=path_save, 
+    #                         end_radius=end_radius, 
+    #                   #TMD_lower=59, TMD_higher=97,
+    #                   title=titles[0], 
+    #                   legend_outside=False,
+    #                   plot_lines=plot_lines,
+    #                   f_size=f_size)
 
     st.pyplot(fig)
-    write_pdb_with_pore_surface(path=path_save, name=names[0], end_radius=end_radius, num_circle = 24)
+    #write_pdb_with_pore_surface(path=path_save, name=names[0], end_radius=end_radius, num_circle = 24)
     # https://github.com/napoles-uach/stmol
     # https://william-dawson.github.io/using-py3dmol.html
-    xyzview = pathway_visu(path=path_save, name=names[0])
+    #xyzview = pathway_visu(path=path_save, name=names[0])
+    xyzview = c.pathway_visualisation(index_model=0, f_end='_circle.pdb')
     showmol(xyzview, height=500, width=710)
     render_visu(path='PoreAnalyser/pdb_models/', name='7tu9_aligned_z.pdb')
 
@@ -233,16 +243,20 @@ else:
     df_res.sort_values('z', inplace=True)
     fig = plt_ellipsoid_pathway(df_res, f_size=f_size, title=title, end_radius=end_radius)
     st.pyplot(fig)
-    write_pdb_with_ellipsoid_surface(p='PoreAnalyser/pdb_models/', pdbname='7tu9_aligned_z.pdb',
-                                     fname='7tu9_aligned_z.pdb_pathway_ellipse.txt', num_circle = 24)
-    xyzview = pathway_visu(path='PoreAnalyser/pdb_models/', name='7tu9_aligned_z.pdb', f_end='_ellipsoid.pdb')
+    #write_pdb_with_ellipsoid_surface(p='PoreAnalyser/pdb_models/', pdbname='7tu9_aligned_z.pdb',
+    #                                 fname='7tu9_aligned_z.pdb_pathway_ellipse.txt', num_circle = 24)
+    #xyzview = pathway_visu(path='PoreAnalyser/pdb_models/', name='7tu9_aligned_z.pdb', f_end='_ellipsoid.pdb')
+    xyzview = c.pathway_visualisation(index_model=0, f_end='_ellipsoid.pdb')
     showmol(xyzview, height=500, width=710)
     render_visu(path='PoreAnalyser/pdb_models/', name='7tu9_aligned_z.pdb', f_end='_ellipsoid.pdb', outname='_ellipsoid')
 
     ### compare volumes ###
     res = np.loadtxt('PoreAnalyser/pdb_models/7tu9_aligned_z.pdb_pathway_ellipse.txt', 
                  comments='#', delimiter=',')
-    compare_volume(res, digit=1)
+    compare_volume(res, digit=1) 
+
+    ### conductnace estimates ###
+    c.conductance_estimation()
 
 
 #st.write(os.listdir())

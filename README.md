@@ -13,7 +13,7 @@ PoreAnalyser
 ==============================
 
 [//]: # (Badges)
-[![Documentation Status](https://readthedocs.org/projects/porefinding/badge/?version=latest)](https://porefinding.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/porefinding/badge/?version=latest)](https://porefinding.readthedocs.io/en/latest/?badge=latest) ![License: MIT](https://img.shields.io/badge/License-LGPL_2.1-blue)
 
 [Try out this software without installing anything](https://poreanalyser.bioch.ox.ac.uk/)
 

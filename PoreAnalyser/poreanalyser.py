@@ -311,11 +311,11 @@ class PoreAnalysis():
         ax[0].set_title('Conductivity along pore axis', fontsize=f_size, loc='center')
         ax[1].set_title('Resistance along pore axis', fontsize=f_size, loc='center')
         ax[0].set_xlabel("z ($\AA$)", fontsize=f_size)
-        ax[0].set_ylabel(r"$\kappa$(a,b)/$\kappa_{bulk}$", fontsize=f_size)
+        ax[0].set_ylabel(r"$\kappa$(a,b)/\kappa_{bulk}$", fontsize=f_size)
         ax[1].set_xlabel("z ($\AA$)", fontsize=f_size)
         ax[1].set_ylabel(r"Resistance ($G\Omega$)", fontsize=f_size)
         ax[0].tick_params(axis='both', which='major', labelsize=f_size)
         ax[1].tick_params(axis='both', which='major', labelsize=f_size)
-        fig.tight_layout()
+        #fig.tight_layout()
         plt.show()
         return hole1/pS, pf1/pS, hole_c/pS, pf1_c/pS, fig 

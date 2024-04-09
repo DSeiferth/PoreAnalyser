@@ -48,7 +48,7 @@ def bullk_conduct(z,a,b, conduct=bulk_conductivity):
     conduct = 1/R # * bulk_conductivity
     return conduct, R_vec
 
-def no_bulk_conduct(z,a,b, popt, conduct=bulk_conductivity, plot=True, shift_bond=1.85):
+def no_bulk_conduct(z,a,b, popt, conduct=bulk_conductivity, plot=False, shift_bond=1.85):
     '''
     Calculate the conductance of a pore using a conductivity model 
     '''

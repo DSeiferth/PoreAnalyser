@@ -15,7 +15,7 @@ PoreAnalyser
 [//]: # (Badges)
 [![Documentation Status](https://readthedocs.org/projects/porefinding/badge/?version=latest)](https://porefinding.readthedocs.io/en/latest/?badge=latest)
 
-[Try out this protoype on HugginFace without installing anything](https://huggingface.co/spaces/DSeiferth/PoreFinding_pdb)
+[Try out this software without installing anything](https://poreanalyser.bioch.ox.ac.uk/)
 
 Recent advances in structural biology have led to a growing number of ion channel structures featuring heteromeric subunit assembly, exemplified by synaptic Glycine receptors ([GlyRs](https://www.nature.com/articles/s41467-023-37106-7)) and α4β2 nicotinic receptors. These structures exhibit inherent pore asymmetry, which has raised questions about the role of asymmetry in ion channel function.  Furthermore, molecular dynamics simulations performed on symmetrical homomeric channels often lead to thermal distortion that means conformations of the resulting ensemble are also asymmetrical. We introduce an algorithm that employs ellipsoidal probe particles, enabling a more comprehensive characterization of pore asymmetries. A constriction is more asymmetric for a larger difference between the smaller and larger radius of the ellipsoidal probe particle. 
 
@@ -44,12 +44,13 @@ Recent advances in structural biology have led to a growing number of ion channe
 5. Plot pathway and render pore surface. 
 
 ### Installation
-PoreFinder may be installed as the latest release from PyPI ( pip install PoreFinder ) or in the development version from this github repository. 
+PoreAnalyser may be installed as the latest release from PyPI ( pip install PoreAnalyser ) or in the development version from this github repository. 
 Detailed [installation instructions](https://porefinding.readthedocs.io/en/latest/usage.html#installation) can be found in the documentation.
+After having installed PoreAnalyser locally, you can run the streamlit app yourself: streamlit run app.py
 
 ### Links to documentation
-You can either upload your proteins of interest to the [webservice](https://huggingface.co/spaces/DSeiferth/PoreFinding_pdb) hosted on hugginface
-or you can [install](https://porefinding.readthedocs.io/en/latest/usage.html#installation) the PoreFinding python package on your machine. 
+You can either upload your proteins of interest to the [webservice](https://poreanalyser.bioch.ox.ac.uk/) hosted on a webserver of the Department of Biochemistry (University of Oxford)
+or you can [install](https://porefinding.readthedocs.io/en/latest/usage.html#installation) the PoreAnalyser python package on your machine. 
 If you decide to use the webservice, you can download all output files and visualisation scripts to produce high quality figures. 
 More information about the [output files](https://porefinding.readthedocs.io/en/latest/webservice.html) can be found in the documentation. 
 
@@ -58,5 +59,5 @@ See [Visualisation tools](https://porefinding.readthedocs.io/en/latest/visualisa
 
 
 ## Acknowledgements
-* Rocco Meli for pointing out streamlit and hugginface
+* Rocco Meli for pointing out streamlit (and hugginface)
 * SBCB community for discussion

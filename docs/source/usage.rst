@@ -6,7 +6,7 @@ Usage
 Installation
 ------------
 
-To use PoreFinding, first install it using pip:
+To use PoreAnalyser, first install it using pip:
 
 .. code-block:: console
 
@@ -42,7 +42,7 @@ For example:
 
 Running Streamlit app locally
 ------------------------------
-After having installed PoreFinding locally, you can run the streamlit app yourself:
+After having installed PoreAnalyser locally, you can run the streamlit app yourself:
 
 .. code-block:: console
 

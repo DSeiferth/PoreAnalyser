@@ -1,8 +1,8 @@
 Interactive webservice (no installation needed)
 ================================================
 You can try out the package without installing anything using a
-`interactive web-service <https://huggingface.co/spaces/DSeiferth/PoreFinding>`_
-hosted on huggingface. 
+`interactive web-service <https://poreanalyser.bioch.ox.ac.uk/>`_
+hosted on a webserver of the Department of Biochemistry (University of Oxford). 
 
 Output to download
 -------------------

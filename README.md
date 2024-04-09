@@ -49,11 +49,7 @@ Detailed [installation instructions](https://porefinding.readthedocs.io/en/lates
 After having installed PoreAnalyser locally, you can run the streamlit app yourself: streamlit run app.py
 
 ### Links to documentation
-<<<<<<< HEAD
 You can either upload your proteins of interest to the [webservice](https://poreanalyser.bioch.ox.ac.uk/) hosted on a webserver of the Department of Biochemistry (University of Oxford)
-=======
-You can either upload your proteins of interest to the [webservice](https://huggingface.co/spaces/DSeiferth/PoreFinding_pdb) hosted on hugginface
->>>>>>> faa747a0980731742e8bbe83639554a2c76bfa61
 or you can [install](https://porefinding.readthedocs.io/en/latest/usage.html#installation) the PoreAnalyser python package on your machine. 
 If you decide to use the webservice, you can download all output files and visualisation scripts to produce high quality figures. 
 More information about the [output files](https://porefinding.readthedocs.io/en/latest/webservice.html) can be found in the documentation. 

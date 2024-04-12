@@ -37,6 +37,7 @@ VMD
 ----
 Script: visualise_pathway_hole.tcl
 Inputs: pdb and vmd file 
+
 >>> vmd -e visualise_pathway_hole.tcl -args 7tu9_aligned_z.pdb 7tu9_aligned_z.vmd
 
 

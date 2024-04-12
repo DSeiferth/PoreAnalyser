@@ -42,6 +42,11 @@ class PoreAnalysis():
         - popt[1] (float): Shift parameter of the sigmoid function for the conductivity model (dimenionless).
     - temp (int, optional): Temperature in Kelvin. Default is 300.
     - c_m (float, optional): Concentration in mol/l. Default is 0.15.
+    - trajectory (bool, optional): Flag indicating whether the input is a trajectory. Default is False.
+        - If trajectory is True, the input pdb_array should contain the path to the topology file and the trajectory file.
+        - pdb_array[0]: Path to the topology file.
+        - pdb_array[1]: Path to the trajectory file.
+    - traj_frames (int, optional): Number of frames to extract from the trajectory. Default is 1.
 
     Attributes:
     - pdb_array (list): List of file paths to the input PDB models.
@@ -67,6 +72,7 @@ class PoreAnalysis():
     - pathway_visualisation: Visualize the pathway for a specific model.
     - pathway_rendering: Render the pathway for a specific model.
     - conductance_estimation: Estimate the conductance of the pore using a conductivity model.
+    - plt_trajectory_average: Plot the trajectory average of the radius / radii profile.
 
     Example:
     >>> pdb_models = ['model1.pdb', 'model2.pdb']
@@ -77,6 +83,14 @@ class PoreAnalysis():
     >>> pore_analysis.pathway_visualisation(index_model=0)
     >>> pore_analysis.pathway_rendering(index_model=0)
     >>> pore_analysis.conductance_estimation(index_model=0)
+
+    Example with trajectory:
+    >>> pdb_models = [fname+'.tpr', fname+'.xtc']
+    >>> pore_analysis = PoreAnalysis(pdb_array=pdb_models, trajectory=True, traj_frames=10)
+    >>> pore_analysis.hole_analysis()
+    >>> pore_analysis.plt_trajectory_average(HOLE_profile=True)
+    >>> for i in range(10): pore_analysis.ellipsoid_analysis(index_model=i)
+    >>> pore_analysis.plt_trajectory_average(HOLE_profile=False)
     """
     def __init__(self, pdb_array, opt_method='nelder-mead',
                  align_bool=True, end_radius=15, pathway_sel='protein',

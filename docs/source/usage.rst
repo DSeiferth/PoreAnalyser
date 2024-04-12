@@ -59,3 +59,28 @@ After having installed PoreAnalyser locally, you can run the streamlit app yours
 .. code-block:: console
 
    (.venv) $ streamlit run app.py
+
+Spherical and ellipsoidal pore particles
+----------------------------------------
+We align the principal axis of the protein structure to the z-axis by default, although this can be modified as per user preference.
+To calculate the pore geometry, we employ probe-based pathway finding using spherical probe particles as a first step and then we transform each sphere into an ellipsoid.  
+Initially, HOLE is executed using a spherical probe particle, with the centre of mass (COM) as the default starting point. 
+The position of the probe is optimized in subsequent parallel planes to maximize its radius without overlapping the van der Waals sphere of any ion channel atom. 
+The figure below illustrates the schematic representation of van der Waals spheres, the positions of their centres in the xz-plane of a channel aligned to the z-axis, 
+and a surface representation of the pore. 
+
+.. figure:: ../_static/Fig1.png
+   :align: center
+   :alt: Fig1.png
+
+To incorporate an ellipsoidal probe particle, we iteratively transform the spherical probe particles into ellipsoids. 
+To initiate the calculation, we load the output file from HOLE containing the positions and radii of the probes.  
+Next, we iterate through all the spherical probe particles.  
+Then, we perform a loop through all the spherical probe particles and initialize an ellipsoid using the parameters obtained from the HOLE output. 
+The parameters of the ellipsoid include the position of its center [x, y, z], orientation θ, and radii [a, b], where a ≥ b.  
+The smaller radius, b, remains constant along the z-coordinate. To optimize the parameters, we employ a Nelder-Mead four-dimensional optimization algorithm Nelder, 
+first using smaller bounds for the parameters [x, y, a, θ], and then with larger boundaries to further increase the ellipsoid. 
+
+.. figure:: ../_static/Fig2.png
+   :align: center
+   :alt: Fig2.png

@@ -84,21 +84,43 @@ class PoreAnalysis():
                  num_circle=24, clipping=100,
                  D_cation=1.8e-9, D_anion=2.032e-9,
                  popt = [1.40674664, 1.25040698], 
-                 temp=300, c_m=0.15
+                 temp=300, c_m=0.15,
+                 trajectory=False,
+                 traj_frames=1, 
                  ):
-        self.pdb_array = pdb_array
+        self.trajectory = trajectory
+        if trajectory:
+            self.traj_frames = traj_frames 
+            # write out frames from trajectory file
+            top = pdb_array[0]
+            conf = pdb_array[1]
+            fname = conf.split('/')[-1].split('.')[0]
+            u = MDAnalysis.Universe(top, conf)
+            protein = u.select_atoms(pathway_sel)
+            indices = np.arange(0, len(u.trajectory), int((len(u.trajectory))/(traj_frames)))[:traj_frames]
+            self.pdb_array = []
+            for i in indices:
+                u.trajectory[i]
+                s = path_save+fname+str(i)+'.pdb'
+                protein.write(s)
+                self.pdb_array.append(s)
+        else:
+            self.pdb_array = pdb_array
+        print('pdb_array, self'  , self.pdb_array, 'input',  pdb_array )    
         self.align_bool = align_bool
         self.end_radius = end_radius
         self.pathway_sel = pathway_sel
         self.path_save = path_save
         labels = []
         names_aligned = []
-        for ele in pdb_array:
+        for ele in self.pdb_array:
             splits = ele.split('/')[-1]
-            labels.append(splits[:-4])
-            names_aligned.append(ele[:-4]+'_aligned_z.pdb')
+            labels.append(splits.split('.')[0] ) #splits[:-4]
+            names_aligned.append(ele.split('.')[-2] +'_aligned_z.pdb') # ele[:-4]
         self.labels = labels
         self.names_aligned = names_aligned
+        print('self.labels', self.labels )
+        print('self.names_aligned', self.names_aligned)
 
         self.opt_method = opt_method
 
@@ -109,6 +131,7 @@ class PoreAnalysis():
         self.hole_df = None 
 
         self.ellipsoid_dfs = {}
+
 
         ### conductance estimation ###
         self.popt = popt
@@ -162,6 +185,77 @@ class PoreAnalysis():
                                         end_radius=self.end_radius, num_circle = self.num_circle)
         return fig, df  
     
+    def plt_trajectory_average(self, num_bins=100, f_size=20, title='', HOLE_profile=True):
+        """
+        Plot the trajectory average of the hole radius.
+        Parameters:
+        - num_bins (int, optional): Number of bins for the plot. Default is 100.
+        - f_size (int, optional): Font size for the plot. Default is 20.
+        - title (str, optional): Title for the plot. Default is an empty string.
+        - HOLE_profile (bool, optional): Flag indicating whether to plot the HOLE 
+            profile or the PoreAnalysor profile. Default is True.
+        Returns:
+        Figure  and dataframe
+        """
+        z = np.array([])
+        if HOLE_profile:
+            r = np.array([])
+            for l in self.labels:
+                z = np.append(z, self.hole_df[l+' z [A]'])
+                r = np.append(r, self.hole_df[l+' Radius [A]'])
+            df = pd.DataFrame({'z':z, 'r':r})
+            bin_edges = pd.cut(df['z'], bins=num_bins)
+            grouped = df.groupby(bin_edges)
+            result = grouped.agg({
+                'z': ['mean', 'std'],
+                'r': ['mean', 'std'], })
+            self.av_hole = result 
+        else:
+            a = np.array([])
+            b = np.array([])
+            for key in self.ellipsoid_dfs:
+                df_PA = self.ellipsoid_dfs[key]
+                z = np.append(z, df_PA.z)
+                a = np.append(a, df_PA.a)
+                b = np.append(b, df_PA.b)
+            df = pd.DataFrame({'z':z, 'a':a, 'b':b})
+            bin_edges = pd.cut(df['z'], bins=num_bins)
+            grouped = df.groupby(bin_edges)
+            result = grouped.agg({
+                'z': ['mean', 'std'],
+                'a': ['mean', 'std'],
+                'b': ['mean', 'std'],
+            })
+            self.av_PA = result 
+            
+        fig, ax = plt.subplots()
+        ax.set_title(title+' trajectory average', fontsize=f_size)
+        if HOLE_profile:
+            plt.plot(result['z']['mean'], result['r']['mean'], label='r', color='blue'  )
+            plt.fill_between(
+                result['z']['mean'], result['r']['mean']-result['r']['std'],  result['r']['mean']+result['r']['std'],
+                color='blue', alpha=0.2,
+            )
+        else:
+            plt.plot(result['z']['mean'], result['a']['mean'], label='a', color='blue'  )
+            plt.plot(result['z']['mean'], result['b']['mean'], label='b', color='orange'  )
+            plt.fill_between(
+                result['z']['mean'], result['a']['mean']-result['a']['std'],  result['a']['mean']+result['a']['std'],
+                color='blue', alpha=0.2,
+            )
+            plt.fill_between(
+                result['z']['mean'], result['b']['mean']-result['b']['std'],  result['b']['mean']+result['b']['std'],
+                color='orange', alpha=0.2,
+            )
+        ax.set_ylim([0, self.end_radius+10])
+        ax.set_ylabel('Radius ($\AA$)', fontsize=f_size)
+        ax.set_xlabel('z ($\AA$)', fontsize=f_size)
+        ax.tick_params(axis='both', which='major', labelsize=f_size)
+        ax.legend(prop={'size': f_size})
+        fig.tight_layout()
+        plt.show()
+        return fig, result
+    
     def ellipsoid_analysis(self, index_model=0, 
                            plot_lines=True, legend_outside=False, title='', f_size=15):
         """
@@ -204,7 +298,7 @@ class PoreAnalysis():
         self.ellipsoid_dfs[self.labels[index_model]] = df_res
 
         write_pdb_with_ellipsoid_surface(p='', pdbname=self.names_aligned[index_model], 
-                                     fname=self.names_aligned[0]+'_pathway_ellipse.txt', num_circle = self.num_circle)
+                                     fname=self.names_aligned[index_model]+'_pathway_ellipse.txt', num_circle = self.num_circle)
         return df_res
 
     def plt_pathway_ellipsoid(self, index_model=0, title='', f_size=15):

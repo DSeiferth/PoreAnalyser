@@ -3,11 +3,10 @@ from chimera import runCommand as rc # use 'rc' as shorthand for runCommand
 from chimera import replyobj # for emitting status messages
 
 # change to folder with data files
-os.chdir("/biggin/b198/orie4254/PoreFinding/test_save_path/")
+path = 'CHANGE_THIS_TO_YOUR_PATH'
+fname = 'YOUR_INPUT_FILE_aligned_z.pdb'
 
-# gather the names of .pdb files in the folder
-#file_names = [fn for fn in os.listdir(".") if fn.endswith(".pdb")]
-fname = '8fe1_aligned_z.pdb'
+os.chdir(path)
 file_names = [ fname + '_circle.pdb', fname]
 
 # loop through the files, opening, processing, and closing each in turn

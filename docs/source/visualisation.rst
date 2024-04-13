@@ -38,7 +38,11 @@ VMD
 Script: visualise_pathway_hole.tcl
 Inputs: pdb and vmd file 
 
->>> vmd -e visualise_pathway_hole.tcl -args 7tu9_aligned_z.pdb 7tu9_aligned_z.vmd
+>>> vmd -e visualise_pathway_hole.tcl -args 7tvi_aligned_z.pdb 7tvi_aligned_z.vmd
+
+.. figure:: ../_static/GlyR_Gly_7tvi_HOLE_pathway.png
+   :align: center
+   :alt: GlyR_Gly_7tvi_HOLE_pathway.png
 
 
 Chimera
@@ -47,4 +51,8 @@ The 3d pore can also be visualised with `UCSF Chimera <https://www.cgl.ucsf.edu/
 The "chimera_pore.py" script loads the pdb file (specified by the user in the script) and the 
 corresponding point cloud into chimera. The point cloud with a surface representation 
 visualises the pore.
+
+.. figure:: ../_static/chimera_8fe1.png
+   :align: center
+   :alt: chimera_8fe1.png
 

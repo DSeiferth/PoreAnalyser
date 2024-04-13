@@ -5,7 +5,7 @@ print(bla)
 import sys
 sys.path.append(bla)
 import hole_analysis as hole_analysis
-from visualization import write_pdb_with_pore_surface, plt_ellipsoid_pathway, pathway_visu, st_write_ellipsoid, write_pdb_with_ellipsoid_surface, example_xy_plane, compare_volume, render_visu
+from visualization import write_pdb_with_pore_surface, plt_ellipsoid_pathway, pathway_visu, st_write_ellipsoid, write_pdb_with_ellipsoid_surface, example_xy_plane, compare_volume #, render_visu
 import MDAnalysis
 import numpy as np
 import pandas as pd
@@ -70,7 +70,6 @@ class PoreAnalysis():
     - ellipsoid_analysis: Perform ellipsoid analysis on a specific PDB model.
     - plt_pathway_ellipsoid: Plot ellipsoid analysis results for a specific model.
     - pathway_visualisation: Visualize the pathway for a specific model.
-    - pathway_rendering: Render the pathway for a specific model.
     - conductance_estimation: Estimate the conductance of the pore using a conductivity model.
     - plt_trajectory_average: Plot the trajectory average of the radius / radii profile.
 
@@ -358,18 +357,6 @@ class PoreAnalysis():
                                )
         # f_end='_ellipsoid.pdb' f_end='_circle.pdb'
         return xyzview
-    
-    def pathway_rendering(self, index_model=0, f_end='_circle.pdb', outname='out'):
-        """
-        Render the pathway for a specific model.
-
-        Parameters:
-        - index_model (int, optional): Index of the model in the pdb_array. Default is 0.
-        - f_end (str, optional): File ending for the visualization file. Default is '_circle.pdb'.
-        - outname
-        """
-        render_visu(path='', name=self.names_aligned[index_model], 
-                    f_end=f_end, outname=outname, streamlit=False)
         
     def conductance_estimation(self, index_model=0, f_size=15):
         """

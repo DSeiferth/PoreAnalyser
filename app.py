@@ -8,7 +8,7 @@ import MDAnalysis
 from stmol import showmol
 import py3Dmol
 import numpy as np
-from visualization import plt_ellipsoid_pathway, st_write_ellipsoid, example_xy_plane, compare_volume, render_visu, write_pdb_with_ellipsoid_surface, st_write_conductance_estimation
+from visualization import plt_ellipsoid_pathway, st_write_ellipsoid, example_xy_plane, compare_volume, write_pdb_with_ellipsoid_surface, st_write_conductance_estimation
 # pathway_visu, write_pdb_with_pore_surface,
 from download_files import download_output, download_Ellipsoid_output
 
@@ -269,7 +269,7 @@ else:
     #xyzview = pathway_visu(path=path_save, name=names[0])
     xyzview = c.pathway_visualisation(index_model=0, f_end='_circle.pdb')
     showmol(xyzview, height=500, width=710)
-    render_visu(path='PoreAnalyser/pdb_models/', name='7tu9_aligned_z.pdb')
+    #render_visu(path='PoreAnalyser/pdb_models/', name='7tu9_aligned_z.pdb')
 
     ### Ellipsoidal probe particle ###
     st_write_ellipsoid()
@@ -286,8 +286,8 @@ else:
     #                                 fname='7tu9_aligned_z.pdb_pathway_ellipse.txt', num_circle = 24)
     #xyzview = pathway_visu(path='PoreAnalyser/pdb_models/', name='7tu9_aligned_z.pdb', f_end='_ellipsoid.pdb')
     xyzview = c.pathway_visualisation(index_model=0, f_end='_ellipsoid.pdb')
-    showmol(xyzview, height=500, width=710)
-    render_visu(path='PoreAnalyser/pdb_models/', name='7tu9_aligned_z.pdb', f_end='_ellipsoid.pdb', outname='_ellipsoid')
+    
+    # render_visu(path='PoreAnalyser/pdb_models/', name='7tu9_aligned_z.pdb', f_end='_ellipsoid.pdb', outname='_ellipsoid')
 
     ### compare volumes ###
     res = np.loadtxt('PoreAnalyser/pdb_models/7tu9_aligned_z.pdb_pathway_ellipse.txt', 

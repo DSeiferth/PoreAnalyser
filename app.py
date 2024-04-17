@@ -37,6 +37,11 @@ str4 = 'Different tools, such as HOLE and CHAP, allow the analysis of the physic
 str5 = 'Here, we present an interactive web-service based on the PoreAnalyser python package that allows users to calculate the pore profile of any input structure. '
 str6 = 'Based on the well-established HOLE programme, we add a new feature to capture pore asymmetry by using an ellipsoidal probe particle. '
 st.write(str1+str2+str3+str4+str5+str6)
+url1 = "https://porefinding.readthedocs.io/en/latest/index.html"
+url2 = "https://porefinding.readthedocs.io/en/latest/visualisation.html"
+str1 = "The [documentation](%s) of the PoreAnalyser python package " % url1
+str2 = "gives more information about [visualisation](%s) with the output files that you can download here." % url2
+st.write(str1+str2)
 
 st.subheader("Pathway Finding Settings")
 string1 = 'Radius in Å, which is considered to be the end of the pore. '

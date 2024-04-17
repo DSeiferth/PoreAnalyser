@@ -31,7 +31,7 @@ COPY app.py /app/app.py
 COPY PoreAnalyser /app/PoreAnalyser
 COPY visualise_pathway_hole.tcl /app/visualise_pathway_hole.tcl
 COPY chimera_pore.py /app/chimera_pore.py
-COPY source pymol_pore_visu.py /app/pymol_pore_visu.py
+COPY pymol_pore_visu.py /app/pymol_pore_visu.py
 COPY README.md /app/README.md
 
 # Install Python dependencies

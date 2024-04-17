@@ -8,7 +8,7 @@ authors = [{name = "David Seiferth", email = "david.seiferth@oriel.ox.ac.uk"}]
 license = {file = "LICENSE"}
 readme = {file = "README.md", content-type = "text/markdown"}
 description = "PoreAnalyser package based on HOLE and MDAnalysis"
-version = "0.0.4"
+version = "0.0.5"
 requires-python = ">=3.6"
 dependencies = [
 #python<=3.11,

@@ -35,13 +35,17 @@ The "pathway_visualisation" method returns a py3Dmol object. Alternatively, one 
 
 
 Pore profile visualisation with VMD, Pymol or Chimera
-------------------------------------
+-----------------------------------------------------
 
-The `pymol <https://pymol.org/>`
+The `vmd visualisation script <https://github.com/DSeiferth/PoreAnalyser/blob/main/visualise_pathway_hole.tcl>`, 
+the `pymol visualisation script <https://github.com/DSeiferth/PoreAnalyser/blob/main/pymol_pore_visu.py>` and
+the `chimera visualisation script <https://github.com/DSeiferth/PoreAnalyser/blob/main/chimera_pore.py>` can be downloaded
+from the `github repository <https://github.com/DSeiferth/PoreAnalyser>`. The scripts visualise the pore surface and the pathway in the pore. 
+They are in output folder of the streamlit app as well.
 
-VMD
+VMDs
 ^^^^^^^^
-Script: visualise_pathway_hole.tcl
+Script: `visualise_pathway_hole.tcl <https://github.com/DSeiferth/PoreAnalyser/blob/main/visualise_pathway_hole.tcl>`
 Inputs: pdb and vmd file 
 
 >>> vmd -e visualise_pathway_hole.tcl -args 7tvi_aligned_z.pdb 7tvi_aligned_z.vmd
@@ -54,7 +58,7 @@ Inputs: pdb and vmd file
 Pymol
 ^^^^^^^^
 The pore surface can also be visualised with `pymol <https://pymol.org/>`_ .
-The "pymol_pore_visu.py" script loads the pdb file (specified by "-structure" flag) and the 
+The `pymol_pore_visu.py <https://github.com/DSeiferth/PoreAnalyser/blob/main/pymol_pore_visu.py>` script loads the pdb file (specified by "-structure" flag) and the 
 corresponding point cloud (specified by the -surface flag). The point cloud with a surface representation 
 visualises the pore.
 
@@ -69,9 +73,17 @@ visualises the pore.
 Chimera
 ^^^^^^^^
 The 3d pore can also be visualised with `UCSF Chimera <https://www.cgl.ucsf.edu/chimera/>`_ .
-The "chimera_pore.py" script loads the pdb file (specified by the user in the script) and the 
+The `chimera_pore.py <https://github.com/DSeiferth/PoreAnalyser/blob/main/chimera_pore.py>` script loads the pdb file (specified by the user in the script) and the 
 corresponding point cloud into chimera. The point cloud with a surface representation 
 visualises the pore.   
+
+.. code-block:: python
+
+   # change to folder with data files
+   path = 'CHANGE_THIS_TO_YOUR_PATH'
+   fname = 'YOUR_INPUT_FILE_aligned_z.pdb'
+   os.chdir(path)
+   file_names = [ fname + '_circle.pdb', fname]
 
 .. figure:: ../_static/chimera_8fe1.png
    :align: center

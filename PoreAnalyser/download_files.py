@@ -17,6 +17,8 @@ def download_output(pdb_name, fn, df, fig, fig_format,
     with ZipFile("poreFinding_HOLE_output.zip", "w") as newzip:
             newzip.write(pdb_name+'.vmd')
             newzip.write("visualise_pathway_hole.tcl")
+            newzip.write("pymol_pore_visu.py")
+            newzip.write("chimera_pore.py")
             newzip.write(path_save + names[0] + '_circle.pdb')
             newzip.write(pdb_name+'.pdb')
             newzip.write("README.md")
@@ -73,6 +75,8 @@ def download_Ellipsoid_output(pdb_name, fn, path_save,  ):
             ### vmd ###
             newzip.write(pdb_name+'.pdb_pathway_ellipse.vmd')
             newzip.write("visualise_pathway_hole.tcl")
+            newzip.write("pymol_pore_visu.py")
+            newzip.write("chimera_pore.py")
             ### pdb files ### 
             newzip.write(path_save + pdb_name + '.pdb_ellipsoid.pdb')
             newzip.write(pdb_name+'.pdb')

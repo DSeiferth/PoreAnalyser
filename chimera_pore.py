@@ -5,7 +5,6 @@ from chimera import replyobj # for emitting status messages
 # change to folder with data files
 path = 'CHANGE_THIS_TO_YOUR_PATH'
 fname = 'YOUR_INPUT_FILE_aligned_z.pdb'
-
 os.chdir(path)
 file_names = [ fname + '_circle.pdb', fname]
 

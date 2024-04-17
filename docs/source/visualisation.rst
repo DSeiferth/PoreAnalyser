@@ -33,8 +33,14 @@ nglview
 The "pathway_visualisation" method returns a py3Dmol object. Alternatively, one can use
 `nglview <https://nglviewer.org/nglview/latest/>`_ , an IPython/Jupyter widget to interactively view molecular structures and trajectories. 
 
+
+Pore profile visualisation with VMD, Pymol or Chimera
+------------------------------------
+
+The `pymol <https://pymol.org/>`
+
 VMD
-----
+^^^^^^^^
 Script: visualise_pathway_hole.tcl
 Inputs: pdb and vmd file 
 
@@ -45,12 +51,27 @@ Inputs: pdb and vmd file
    :alt: GlyR_Gly_7tvi_HOLE_pathway.png
 
 
+Pymol
+^^^^^^^^
+The pore surface can also be visualised with `pymol <https://pymol.org/>`_ .
+The "pymol_pore_visu.py" script loads the pdb file (specified by "-structure" flag) and the 
+corresponding point cloud (specified by the -surface flag). The point cloud with a surface representation 
+visualises the pore.
+
+>>> pymol -r pymol_pore_visu.py -- -structure 7tvi_aligned_z.pdb -surface 7tvi_aligned_z.pdb_circle.pdb
+
+   
+
+.. figure:: ../_static/pymol_example.png
+   :align: center
+   :alt: pymol_example.png
+
 Chimera
--------
+^^^^^^^^
 The 3d pore can also be visualised with `UCSF Chimera <https://www.cgl.ucsf.edu/chimera/>`_ .
 The "chimera_pore.py" script loads the pdb file (specified by the user in the script) and the 
 corresponding point cloud into chimera. The point cloud with a surface representation 
-visualises the pore.
+visualises the pore.   
 
 .. figure:: ../_static/chimera_8fe1.png
    :align: center

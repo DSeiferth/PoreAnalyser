@@ -1,4 +1,4 @@
-Visualisation
+git statVisualisation
 =============
 
 Visualisation online
@@ -37,15 +37,15 @@ The "pathway_visualisation" method returns a py3Dmol object. Alternatively, one 
 Pore profile visualisation with VMD, Pymol or Chimera
 -----------------------------------------------------
 
-The `vmd visualisation script <https://github.com/DSeiferth/PoreAnalyser/blob/main/visualise_pathway_hole.tcl>`, 
-the `pymol visualisation script <https://github.com/DSeiferth/PoreAnalyser/blob/main/pymol_pore_visu.py>` and
-the `chimera visualisation script <https://github.com/DSeiferth/PoreAnalyser/blob/main/chimera_pore.py>` can be downloaded
-from the `github repository <https://github.com/DSeiferth/PoreAnalyser>`. The scripts visualise the pore surface and the pathway in the pore. 
+The `vmd <https://github.com/DSeiferth/PoreAnalyser/blob/main/visualise_pathway_hole.tcl>` visualisation script, 
+the `pymol <https://github.com/DSeiferth/PoreAnalyser/blob/main/pymol_pore_visu.py>` visualisation script and
+the `chimera <https://github.com/DSeiferth/PoreAnalyser/blob/main/chimera_pore.py>` visualisation script can be downloaded
+from the github `repository <https://github.com/DSeiferth/PoreAnalyser>`. The scripts visualise the pore surface and the pathway in the pore. 
 They are in output folder of the streamlit app as well.
 
 VMDs
 ^^^^^^^^
-Script: `visualise_pathway_hole.tcl <https://github.com/DSeiferth/PoreAnalyser/blob/main/visualise_pathway_hole.tcl>`
+Script: `visualise_pathway_hole <https://github.com/DSeiferth/PoreAnalyser/blob/main/visualise_pathway_hole.tcl>`.tcl
 Inputs: pdb and vmd file 
 
 >>> vmd -e visualise_pathway_hole.tcl -args 7tvi_aligned_z.pdb 7tvi_aligned_z.vmd
@@ -58,7 +58,7 @@ Inputs: pdb and vmd file
 Pymol
 ^^^^^^^^
 The pore surface can also be visualised with `pymol <https://pymol.org/>`_ .
-The `pymol_pore_visu.py <https://github.com/DSeiferth/PoreAnalyser/blob/main/pymol_pore_visu.py>` script loads the pdb file (specified by "-structure" flag) and the 
+The `pymol_pore_visu <https://github.com/DSeiferth/PoreAnalyser/blob/main/pymol_pore_visu.py>`.py script loads the pdb file (specified by "-structure" flag) and the 
 corresponding point cloud (specified by the -surface flag). The point cloud with a surface representation 
 visualises the pore.
 
@@ -73,7 +73,7 @@ visualises the pore.
 Chimera
 ^^^^^^^^
 The 3d pore can also be visualised with `UCSF Chimera <https://www.cgl.ucsf.edu/chimera/>`_ .
-The `chimera_pore.py <https://github.com/DSeiferth/PoreAnalyser/blob/main/chimera_pore.py>` script loads the pdb file (specified by the user in the script) and the 
+The `chimera_pore <https://github.com/DSeiferth/PoreAnalyser/blob/main/chimera_pore.py>`.py script loads the pdb file (specified by the user in the script) and the 
 corresponding point cloud into chimera. The point cloud with a surface representation 
 visualises the pore.   
 

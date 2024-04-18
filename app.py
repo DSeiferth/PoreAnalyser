@@ -8,7 +8,7 @@ import MDAnalysis
 from stmol import showmol
 import py3Dmol
 import numpy as np
-from visualization import plt_ellipsoid_pathway, st_write_ellipsoid, example_xy_plane, compare_volume, render_visu, write_pdb_with_ellipsoid_surface, st_write_conductance_estimation
+from visualization import plt_ellipsoid_pathway, st_write_ellipsoid, example_xy_plane, compare_volume, write_pdb_with_ellipsoid_surface, st_write_conductance_estimation
 # pathway_visu, write_pdb_with_pore_surface,
 from download_files import download_output, download_Ellipsoid_output
 
@@ -27,16 +27,21 @@ from ellipsoid_optimisation import ellipsoid_pathway
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
-st.title("Extending the capabilities of the HOLE Package for Annotation of Ion Channels")
+st.title("PoreAnalyser: Exploring the Influence of Pore Shape on Conductance and Permeation")
+#st.title("Extending the capabilities of the HOLE Package for Annotation of Ion Channels")
 
 str1 = 'Over the last two decades, advances in structural biology along with recent artificial intelligence–driven structure prediction '
 str2 = 'algorithms, such as AlphaFold, have revealed a plethora of 3-D ion channel and nanopore structures in different conformational states. '
 str3 = 'However, in nearly every case, these structures still require functional annotation. '
 str4 = 'Different tools, such as HOLE and CHAP, allow the analysis of the physical dimensions of the pore running through an ion channel. '
-str5 = 'Here, we present an interactive web-page that allows users to calculate the pore profile of any input structure. '
+str5 = 'Here, we present an interactive web-service based on the PoreAnalyser python package that allows users to calculate the pore profile of any input structure. '
 str6 = 'Based on the well-established HOLE programme, we add a new feature to capture pore asymmetry by using an ellipsoidal probe particle. '
 st.write(str1+str2+str3+str4+str5+str6)
+url1 = "https://porefinding.readthedocs.io/en/latest/index.html"
+url2 = "https://porefinding.readthedocs.io/en/latest/visualisation.html"
+str1 = "The [documentation](%s) of the PoreAnalyser python package " % url1
+str2 = "gives more information about [visualisation](%s) with the output files that you can download here." % url2
+st.write(str1+str2)
 
 st.subheader("Pathway Finding Settings")
 string1 = 'Radius in Å, which is considered to be the end of the pore. '
@@ -269,7 +274,7 @@ else:
     #xyzview = pathway_visu(path=path_save, name=names[0])
     xyzview = c.pathway_visualisation(index_model=0, f_end='_circle.pdb')
     showmol(xyzview, height=500, width=710)
-    render_visu(path='PoreAnalyser/pdb_models/', name='7tu9_aligned_z.pdb')
+    #render_visu(path='PoreAnalyser/pdb_models/', name='7tu9_aligned_z.pdb')
 
     ### Ellipsoidal probe particle ###
     st_write_ellipsoid()
@@ -286,8 +291,8 @@ else:
     #                                 fname='7tu9_aligned_z.pdb_pathway_ellipse.txt', num_circle = 24)
     #xyzview = pathway_visu(path='PoreAnalyser/pdb_models/', name='7tu9_aligned_z.pdb', f_end='_ellipsoid.pdb')
     xyzview = c.pathway_visualisation(index_model=0, f_end='_ellipsoid.pdb')
-    showmol(xyzview, height=500, width=710)
-    render_visu(path='PoreAnalyser/pdb_models/', name='7tu9_aligned_z.pdb', f_end='_ellipsoid.pdb', outname='_ellipsoid')
+    
+    # render_visu(path='PoreAnalyser/pdb_models/', name='7tu9_aligned_z.pdb', f_end='_ellipsoid.pdb', outname='_ellipsoid')
 
     ### compare volumes ###
     res = np.loadtxt('PoreAnalyser/pdb_models/7tu9_aligned_z.pdb_pathway_ellipse.txt', 
@@ -303,4 +308,4 @@ else:
 st.subheader("References")
 st.write("Smart, O.S., Neduvelil, J.G., Wang, X., Wallace, B.A., Sansom, M.S.P., 1996. HOLE: A program for the analysis of the pore dimensions of ion channel structural models. Journal of Molecular Graphics 14, 354–360. https://doi.org/10.1016/S0263-7855(97)00009-X")
 st.write("Gowers, R., Linke, M., Barnoud, J., Reddy, T., Melo, M., Seyler, S., Domański, J., Dotson, D., Buchoux, S., Kenney, I., Beckstein, O., 2016. MDAnalysis: A Python Package for the Rapid Analysis of Molecular Dynamics Simulations. Presented at the Python in Science Conference, Austin, Texas, pp. 98–105. https://doi.org/10.25080/Majora-629e541a-00e")
-
+st.write("(preprint) Seiferth, D., Biggin, P., 2024. Exploring the Influence of Pore Shape on Conductance and Permeation.")

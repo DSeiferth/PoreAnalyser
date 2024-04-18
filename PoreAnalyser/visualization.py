@@ -287,34 +287,12 @@ def pathway_visu(path, name, f_end='_circle.pdb', clipping=100, pathway_sel='pro
     xyzview.zoomTo()
     xyzview.rotate(90,'y',0)
     xyzview.render()
-    uri = xyzview.pngURI()
-    print('pngURI', uri)
-    #png =  xyzview.png() # AssertionError: Must instantiate viewer before generating image.
+    #uri = xyzview.pngURI()
+    #print('pngURI', uri)
+    #png = xyzview.png() # AssertionError: Must instantiate viewer before generating image.
     #print('png', png)
     return xyzview
 
-def render_visu(path, name, f_end='_circle.pdb',outname='', streamlit=True ):
-    u = MDAnalysis.Universe(path+name, topology_format='pdb', format='pdb')
-    u2 = MDAnalysis.Universe(path+name + f_end, topology_format='pdb', format='pdb')
-    v = nv.show_mdanalysis(u.atoms)
-
-    v.clear_representations(component=0)
-    v.add_representation('cartoon', color='blue', component=0)
-    v.add_trajectory(u2.atoms)
-    v.add_surface(component=1,
-                probeRadius=0.1, surfaceType='ms')
-    v._remote_call("setSize", target="Widget", args=["1200px", "800px"])
-    v.control.spin([0, 1, 0], 3.1415/2)
-    v.center()
-    if streamlit:
-        im1 = v.render_image()
-        with open('nglview'+outname+'.png', 'wb') as fh:
-            fh.write(im1.value) 
-        print('renderd', im1)
-    else:
-        print('renderd via download', 'nglview'+outname+'.png')
-        v.download_image('nglview'+outname+'.png')
-    return v 
 
 def st_write_ellipsoid():
     st.subheader("Path finding with ellipsoidal probe particle")

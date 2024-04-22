@@ -308,4 +308,4 @@ else:
 st.subheader("References")
 st.write("Smart, O.S., Neduvelil, J.G., Wang, X., Wallace, B.A., Sansom, M.S.P., 1996. HOLE: A program for the analysis of the pore dimensions of ion channel structural models. Journal of Molecular Graphics 14, 354–360. https://doi.org/10.1016/S0263-7855(97)00009-X")
 st.write("Gowers, R., Linke, M., Barnoud, J., Reddy, T., Melo, M., Seyler, S., Domański, J., Dotson, D., Buchoux, S., Kenney, I., Beckstein, O., 2016. MDAnalysis: A Python Package for the Rapid Analysis of Molecular Dynamics Simulations. Presented at the Python in Science Conference, Austin, Texas, pp. 98–105. https://doi.org/10.25080/Majora-629e541a-00e")
-st.write("(preprint) Seiferth, D., Biggin, P., 2024. Exploring the Influence of Pore Shape on Conductance and Permeation.")
+st.write("(preprint) Seiferth, D., Biggin, P., 2024. Exploring the Influence of Pore Shape on Conductance and Permeation. https://doi.org/10.1101/2024.04.18.589791")

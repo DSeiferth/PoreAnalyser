@@ -15,6 +15,8 @@ hosted on a webserver of the Department of Biochemistry (University of Oxford).
 
 We introduce an algorithm that employs ellipsoidal probe particles, enabling a more comprehensive characterization of pore asymmetries. A constriction is more asymmetric for a larger difference between the smaller and larger radius of the ellipsoidal probe particle. 
 
+In the accompanying `preprint <https://doi.org/10.1101/2024.04.18.589791>`_ , we explore the influence of pore shape on conductance and permeation.
+
 The package uses the `HOLE <https://github.com/osmart/hole2/>`_
 programme wrapped by `MDAnalysis <https://github.com/MDAnalysis/mdanalysis>`_.
 

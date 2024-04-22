@@ -17,6 +17,8 @@ PoreAnalyser
 
 [Try out this software without installing anything](https://poreanalyser.bioch.ox.ac.uk/)
 
+[Read the accompanying preprint](https://doi.org/10.1101/2024.04.18.589791)
+
 Recent advances in structural biology have led to a growing number of ion channel structures featuring heteromeric subunit assembly, exemplified by synaptic Glycine receptors ([GlyRs](https://www.nature.com/articles/s41467-023-37106-7)) and α4β2 nicotinic receptors. These structures exhibit inherent pore asymmetry, which has raised questions about the role of asymmetry in ion channel function.  Furthermore, molecular dynamics simulations performed on symmetrical homomeric channels often lead to thermal distortion that means conformations of the resulting ensemble are also asymmetrical. We introduce an algorithm that employs ellipsoidal probe particles, enabling a more comprehensive characterization of pore asymmetries. A constriction is more asymmetric for a larger difference between the smaller and larger radius of the ellipsoidal probe particle. 
 
 #### Existing tools for pore pathfinding

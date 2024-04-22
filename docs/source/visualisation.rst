@@ -1,4 +1,4 @@
-git statVisualisation
+Visualisation
 =============
 
 Visualisation online

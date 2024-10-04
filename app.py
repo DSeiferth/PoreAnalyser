@@ -44,8 +44,9 @@ str2 = "gives more information about [visualisation](%s) with the output files t
 st.write(str1+str2)
 url1 = "https://doi.org/10.1016/j.bpj.2024.07.010"
 str1 = "The [publication](%s) corresponding to the PoreAnalyser python package " % url1
-str2 = "ivestigates the influence of pore shape on conductance and permeation."
-str3 = "Please cite [Seiferth and Biggin, 2024](%s) when you use PoreAnalyser." % url1
+str2 = " ivestigates the influence of pore shape on conductance and permeation."
+str3 = " Please cite [Seiferth and Biggin, 2024](%s) when you use PoreAnalyser." % url1
+st.write(str1+str2+str3)
 
 st.subheader("Pathway Finding Settings")
 string1 = 'Radius in Å, which is considered to be the end of the pore. '

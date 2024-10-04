@@ -40,4 +40,4 @@ Hence, we can further adapt the model for channel resistance / conductance based
    :alt: Fig10_Innexin_6kfg_example_row.png
 
 
-Find out more about the conductance model in our `preprint <https://doi.org/10.1101/2024.04.18.589791>`_ .
+Find out more about the conductance model in our `publication <https://doi.org/10.1016/j.bpj.2024.07.010>`_ .

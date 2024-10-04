@@ -42,6 +42,10 @@ url2 = "https://porefinding.readthedocs.io/en/latest/visualisation.html"
 str1 = "The [documentation](%s) of the PoreAnalyser python package " % url1
 str2 = "gives more information about [visualisation](%s) with the output files that you can download here." % url2
 st.write(str1+str2)
+url1 = "https://doi.org/10.1016/j.bpj.2024.07.010"
+str1 = "The [publication](%s) corresponding to the PoreAnalyser python package " % url1
+str2 = "ivestigates the influence of pore shape on conductance and permeation."
+str3 = "Please cite [Seiferth and Biggin, 2024](%s) when you use PoreAnalyser." % url1
 
 st.subheader("Pathway Finding Settings")
 string1 = 'Radius in Å, which is considered to be the end of the pore. '
@@ -308,4 +312,4 @@ else:
 st.subheader("References")
 st.write("Smart, O.S., Neduvelil, J.G., Wang, X., Wallace, B.A., Sansom, M.S.P., 1996. HOLE: A program for the analysis of the pore dimensions of ion channel structural models. Journal of Molecular Graphics 14, 354–360. https://doi.org/10.1016/S0263-7855(97)00009-X")
 st.write("Gowers, R., Linke, M., Barnoud, J., Reddy, T., Melo, M., Seyler, S., Domański, J., Dotson, D., Buchoux, S., Kenney, I., Beckstein, O., 2016. MDAnalysis: A Python Package for the Rapid Analysis of Molecular Dynamics Simulations. Presented at the Python in Science Conference, Austin, Texas, pp. 98–105. https://doi.org/10.25080/Majora-629e541a-00e")
-st.write("(preprint) Seiferth, D., Biggin, P. C., 2024. Exploring the Influence of Pore Shape on Conductance and Permeation. https://doi.org/10.1101/2024.04.18.589791")
+st.write("Seiferth, D., Biggin, P. C., 2024. Exploring the Influence of Pore Shape on Conductance and Permeation. Biophysical Journal. https://doi.org/10.1016/j.bpj.2024.07.010")

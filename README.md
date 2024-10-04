@@ -59,6 +59,9 @@ More information about the [output files](https://porefinding.readthedocs.io/en/
 To render 3d representations of the pore surface, you can use a variety of software ranging from py3Dmol, VMD to UCSF Chimera.
 See [Visualisation tools](https://porefinding.readthedocs.io/en/latest/visualisation.html).
 
+### Publication
+[Seiferth and Biggin, 2024](https://doi.org/10.1016/j.bpj.2024.07.010)
+
 ### Preprint
 ![qrcode](https://connect.biorxiv.org/qr/qr_img.php?id=2024.04.18.589791)
 

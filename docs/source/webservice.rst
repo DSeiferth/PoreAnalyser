@@ -16,6 +16,10 @@ example: pdb_name = '7tu9_aligned_z.pdb'
 - vmd files
   - pdb_name + ".vmd": vmd surface for uploaded pdb file
   - "visualise_pathway_hole.tcl": vmd script for plotting the pore surface; the script can be used in the following way: "vmd -e visualise_pathway_hole.tcl -args  7tu9_aligned_z.pdb 7tu9_aligned_z.vmd"
+- `chimera <https://www.cgl.ucsf.edu/chimerax/progress.html>`_ files
+  - chimera_pore.py : you have to adjust the path and the filenames as discussed `here <https://porefinding.readthedocs.io/en/latest/visualisation.html>`_
+  - chimeraX_pore.py
+- pymol_pore_visu.py 
 - other files
   - "hole_pathway_profile.csv": A DataFrame containing the results of the hole analysis, with the following columns:
     - 'Label z [A]': the z-coordinate of each point along the pore axis.
@@ -32,6 +36,10 @@ example: pdb_name = 7tu9_aligned_z
   - pdb_name+'.pdb_pathway_ellipse.vmd'
   - "visualise_pathway_hole.tcl"
   - the script can be used in the following way: "vmd -e visualise_pathway_hole.tcl -args  7tu9_aligned_z.pdb 7tu9_aligned_z.pdb_pathway_ellipse.vmd.vmd"
+- `chimera <https://www.cgl.ucsf.edu/chimerax/progress.html>`_ files
+  - chimera_pore.py : you have to adjust the path and the filenames as discussed `here <https://porefinding.readthedocs.i>
+  - chimeraX_pore.py
+- pymol_pore_visu.py 
 - pdb files 
   - pdb_name + '.pdb_ellipsoid.pdb'
   - pdb_name+'.pdb'

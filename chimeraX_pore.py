@@ -11,8 +11,8 @@ fname = 'YOUR_INPUT_FILE_aligned_z.pdb'
 os.chdir(path)
 file_names = [fname + '_ellipsoid.pdb', fname]
 
-# Access the current ChimeraX session
-session = session  # Assuming this script is being run in an environment where the session is available
+# Access the current ChimeraX session # session is undefined...
+#session = session  # Assuming this script is being run in an environment where the session is available
 
 # loop through the files, opening, processing, and closing each in turn
 i = 0

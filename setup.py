@@ -9,10 +9,11 @@ setup(
     url='https://poreanalyser.bioch.ox.ac.uk/',
     author='David Seiferth',
     author_email='david.seiferth@oriel.ox.ac.uk',
+    python_requires='>=3.6,<=3.12',
     #license='BSD 2-clause',
     packages=['PoreAnalyser'],
     install_requires=[
-        'python<=3.12',
+        #'python<=3.12',
         'numpy>=1.0',  # 1.22.0
         'MDAnalysis>=2.0,<3.0', #2.0.0
         'matplotlib>=0.1', # 3.5.1 for base , for inline 0.1.3

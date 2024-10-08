@@ -8,7 +8,7 @@ and cross-sectional area A, allowing the resistance R to be expressed as
 
     R = \dfrac{1}{g} = \dfrac{\rho L}{A} 
 
-where $\rho$ represents bulk resistivity. This simplistic model was subsequently refined with a more accurate representation of ion channels
+where :math:`\rho` represents bulk resistivity. This simplistic model was subsequently refined with a more accurate representation of ion channels
 as a series of stacked cylinders, where the resistance accumulates. Considering ohmic principles and utilizing the HOLE software
 which measures cross-sectional areas A(z) along the channel axis z, the refined resistance model becomes
 

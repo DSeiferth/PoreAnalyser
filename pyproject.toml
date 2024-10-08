@@ -11,7 +11,7 @@ description = "PoreAnalyser package based on HOLE and MDAnalysis"
 version = "0.0.7"
 requires-python = ">=3.6"
 dependencies = [
-#python<=3.11,
+'python<=3.12',
 'numpy >=1.0, <1.23.0',
 'MDAnalysis >=2.0, <3.0',
 'matplotlib>=0.1',

@@ -9,9 +9,8 @@ license = {file = "LICENSE"}
 readme = {file = "README.md", content-type = "text/markdown"}
 description = "PoreAnalyser package based on HOLE and MDAnalysis"
 version = "0.0.11"
-requires-python = ">=3.6,<=3.12"
+requires-python = ">=3.6,<3.13"
 dependencies = [
-#'python<=3.12',
 'numpy >=1.0',
 'MDAnalysis >=2.0, <3.0',
 'matplotlib>=0.1',

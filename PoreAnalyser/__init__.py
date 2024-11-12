@@ -14,7 +14,7 @@ from .poreanalyser import PoreAnalysis
 #from download_files import download_output, download_Ellipsoid_output
 #from ellipsoid_optimisation import ellipsoid_pathway
 
-__version__ = "0.0.11"
+__version__ = "0.0.12"
 __author__ = 'David Seiferth'
 
 from .hole_analysis import hole_analysis

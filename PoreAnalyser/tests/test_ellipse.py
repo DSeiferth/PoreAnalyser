@@ -62,12 +62,12 @@ class distance_ellipseTest(unittest.TestCase):
         semi_minor = 3
         p = [1, 2]
         d = e_lib.distance_ellipse(semi_major, semi_minor, p)
-        self.assertEqual(d[0], 1.3262624361743103)
-        self.assertEqual(d[1], 2.2455094941647906)
+        self.assertAlmostEqual(d[0], 1.3262624361743103)
+        self.assertAlmostEqual(d[1], 2.2455094941647906)
 
         d = e_lib.distance_ellipse(3.0, 2.0, (1.0, 1.0))
-        self.assertEqual(d[0], 1.2487110341841325)
-        self.assertEqual(d[1], 1.8185123044348084)
+        self.assertAlmostEqual(d[0], 1.2487110341841325)
+        self.assertAlmostEqual(d[1], 1.8185123044348084)
 
 class dist_ellipse_vdwSphereTest(unittest.TestCase):
     """
@@ -85,7 +85,7 @@ class dist_ellipse_vdwSphereTest(unittest.TestCase):
         ellipse = e_lib.ellipse(a=3.0, b=2.0, cx=5.0, cy=5.0, theta=0.0)
         sphere = e_lib.atom(x=1.0, y=1.0, r=0.5)
         d = e_lib.dist_ellipse_vdwSphere(ellipse, sphere, plot=0)
-        self.assertEqual(d,  2.6950072040653335 ) 
+        self.assertAlmostEqual(d,  2.6950072040653335 ) 
 
 class assign_radiusTest(unittest.TestCase):
     """

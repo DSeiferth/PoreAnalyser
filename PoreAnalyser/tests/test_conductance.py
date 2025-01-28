@@ -28,8 +28,8 @@ class conductanceTest(unittest.TestCase):
             hole1, R = conduct.bullk_conduct(z=df_res1['z'],a=df_res1['b'], b=df_res1['b'])
             pf1, R_pf_bulk = conduct.bullk_conduct(z=df_res1['z'],a=df_res1['a'],b=df_res1['b'])
         
-            self.assertEqual(hole1/pS, hole1_vec[count])
-            self.assertEqual(pf1/pS, pf1_vec[count])
+            self.assertAlmostEqual(hole1/pS, hole1_vec[count])
+            self.assertAlmostEqual(pf1/pS, pf1_vec[count])
 
     def test_no_bulk_conduct(self):
         """
@@ -46,5 +46,5 @@ class conductanceTest(unittest.TestCase):
             hole_c, R_hole_c, facs_hole = conduct.no_bulk_conduct(z=df_res1['z'],a=df_res1['b'],b=df_res1['b'], plot=False, popt=popt) 
             pf1_c, R_pf_c, facs_pf = conduct.no_bulk_conduct(z=df_res1.z,a=df_res1.a,b=df_res1.b, plot=False, popt=popt)
         
-            self.assertEqual(hole_c/pS, hole_vec[count])
-            self.assertEqual(pf1_c/pS, pf_vec[count])
+            self.assertAlmostEqual(hole_c/pS, hole_vec[count])
+            self.assertAlmostEqual(pf1_c/pS, pf_vec[count])

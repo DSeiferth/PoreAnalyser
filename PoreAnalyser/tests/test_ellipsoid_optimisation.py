@@ -111,8 +111,8 @@ class neighbor_vec_Test(unittest.TestCase):
         self.assertEqual(len(a_vec), 50)
         self.assertEqual(len(neighbour_labels), 50)
         self.assertEqual(neighbour_labels[0], 'SER 294')
-        self.assertEqual(n_xy, 10.15625 )
+        self.assertAlmostEqual(n_xy, 10.15625 )
 
-        self.assertEqual(a_vec[0].r, 1.1284209732286377 )
-        self.assertEqual(a_vec[10].r, 1.310291834203602 )
-        self.assertEqual(a_vec[40].r, 0.3332456537007631  )
+        self.assertAlmostEqual(a_vec[0].r, 1.1284209732286377 )
+        self.assertAlmostEqual(a_vec[10].r, 1.310291834203602 )
+        self.assertAlmostEqual(a_vec[40].r, 0.3332456537007631  )

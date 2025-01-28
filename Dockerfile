@@ -33,6 +33,7 @@ COPY visualise_pathway_hole.tcl /app/visualise_pathway_hole.tcl
 COPY chimera_pore.py /app/chimera_pore.py
 COPY pymol_pore_visu.py /app/pymol_pore_visu.py
 COPY README.md /app/README.md
+COPY chimeraX_pore.py /app/chimeraX_pore.py
 
 # Install Python dependencies
 #RUN python3.11 -m pip install PoreAnalyser #--no-cache-dir -r requirements.txt

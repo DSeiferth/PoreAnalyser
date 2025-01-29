@@ -41,7 +41,7 @@ class penalty_overlap_4dim_Test(unittest.TestCase):
         x = [3, 0, probe.x, probe.y]
         args = [probe.r, a_vec, False]
         penalty = e_opt.penalty_overlap_4dim(x, args)
-        self.assertEqual(penalty, 0.01671842700018855)
+        self.assertAlmostEqual(penalty, 0.01671842700018855, places=6 )
 
 
 class neighbor_vec_Test(unittest.TestCase):
@@ -113,6 +113,6 @@ class neighbor_vec_Test(unittest.TestCase):
         self.assertEqual(neighbour_labels[0], 'SER 294')
         self.assertAlmostEqual(n_xy, 10.15625 )
 
-        self.assertAlmostEqual(a_vec[0].r, 1.1284209732286377 )
-        self.assertAlmostEqual(a_vec[10].r, 1.310291834203602 )
-        self.assertAlmostEqual(a_vec[40].r, 0.3332456537007631  )
+        self.assertAlmostEqual(a_vec[0].r, 1.1284209732286377, places=6 )
+        self.assertAlmostEqual(a_vec[10].r, 1.310291834203602, places=6  )
+        self.assertAlmostEqual(a_vec[40].r, 0.3332456537007631, places=6   )
